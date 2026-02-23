@@ -101,24 +101,6 @@ const Index = () => {
           </div>
         </section>
 
-        {/* INCLUSIVITY */}
-        <section id="inclusivity">
-          <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 md:px-20 py-20">
-            <div className={`${glassPanel} px-10 py-14 md:px-20 md:py-20 max-w-3xl text-center`}>
-              <span className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 mb-6 block font-mono">
-                {'>'} values.inclusivity()
-              </span>
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6 leading-tight">
-                코딩을 몰라도{' '}
-                <span className="text-primary text-glow">괜찮습니다.</span>
-              </h2>
-              <p className="text-xl md:text-2xl font-display font-light text-foreground/80">
-                열정만 있다면{' '}
-                <span className="text-secondary text-glow-cyan">누구나 환영합니다.</span>
-              </p>
-            </div>
-          </div>
-        </section>
 
         {/* JOIN */}
         <section id="join">
@@ -128,13 +110,13 @@ const Index = () => {
                 {'>'} recruit.apply()
               </span>
               <h2 className="text-4xl md:text-6xl font-display font-bold text-foreground mb-6">
-                함께 <span className="text-primary text-glow">해킹</span>할
+                함께 <span className="text-primary text-glow">활동</span>할
                 <br />
                 준비가 되셨나요?
               </h2>
               <p className="text-muted-foreground mb-10 max-w-md mx-auto text-sm">
-                보안에 대한 열정만 있다면 누구든 환영합니다.
-                초보자도 걱정하지 마세요.
+                코딩을 몰라도 괜찮습니다.
+                열정만 있다면 누구나 환영합니다.
               </p>
               <a
                 href="https://forms.gle/ATrZoSs8qcBwoc4C6"
