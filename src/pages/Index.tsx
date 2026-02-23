@@ -1,13 +1,15 @@
 import Scene3D from "../components/Scene3D";
 import ScrambleText from "../components/ScrambleText";
 import ReticleCursor from "../components/ReticleCursor";
+import ActivityCards from "../components/ActivityCards";
+import PhotoGallery from "../components/PhotoGallery";
 
 const Index = () => {
   return (
     <div className="bg-background scan-line">
       <ReticleCursor />
       <Scene3D />
-      <div id="scroll-container" className="relative z-10">
+      <div id="scroll-container" className="relative z-10 pointer-events-auto">
         {/* HERO */}
         <section id="hero">
           <div className="flex flex-col items-center justify-center min-h-screen text-center px-6">
@@ -56,31 +58,37 @@ const Index = () => {
 
         {/* ACTIVITIES */}
         <section id="activities">
-          <div className="flex flex-col items-end justify-center min-h-screen px-6 md:px-20 max-w-2xl ml-auto">
+          <div className="flex flex-col items-center justify-center min-h-screen px-6 md:px-20 py-20">
             <span className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 mb-4 font-mono">
               {'>'} modules.list()
             </span>
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground text-right mb-8">
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground text-center mb-4">
               활동 영역
             </h2>
-            <div className="space-y-3 text-right w-full">
-              {[
-                { label: "Reverse Engineering", desc: "바이너리 분석 & 리버싱" },
-                { label: "Web Hacking", desc: "웹 취약점 분석 & 익스플로잇" },
-                { label: "Cryptography", desc: "암호 알고리즘 분석 & 구현" },
-                { label: "CTF Competition", desc: "국내외 CTF 대회 참가" },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className="border border-border rounded p-4 neon-border-cyan bg-card/30 backdrop-blur-sm transition-all duration-300 hover:bg-card/60 hover:border-secondary/50"
-                >
-                  <h3 className="text-secondary font-display font-semibold text-lg">
-                    {item.label}
-                  </h3>
-                  <p className="text-muted-foreground text-sm mt-1">{item.desc}</p>
-                </div>
-              ))}
+            <p className="text-muted-foreground text-sm text-center max-w-lg mb-3">
+              보안에만 국한되지 않습니다. 개발, AI, 해커톤, 자격증 스터디부터
+              MT, 회식까지 — 다양한 활동이 여러분을 기다립니다.
+            </p>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/5 mb-10">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              <span className="text-primary text-xs font-mono">
+                모든 활동은 자유 참여 — 원하는 것만, 몇 개든 OK
+              </span>
             </div>
+            <ActivityCards />
+          </div>
+        </section>
+
+        {/* GALLERY */}
+        <section id="gallery">
+          <div className="flex flex-col items-center justify-center min-h-[70vh] px-6 md:px-20 py-20">
+            <span className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 mb-4 font-mono">
+              {'>'} gallery.render()
+            </span>
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground text-center mb-10">
+              우리의 <span className="text-secondary text-glow-cyan">순간들</span>
+            </h2>
+            <PhotoGallery />
           </div>
         </section>
 
