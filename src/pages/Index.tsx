@@ -101,6 +101,25 @@ const Index = () => {
           </div>
         </section>
 
+        {/* INCLUSIVITY */}
+        <section id="inclusivity">
+          <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 md:px-20 py-20">
+            <div className={`${glassPanel} px-10 py-14 md:px-20 md:py-20 max-w-3xl text-center`}>
+              <span className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 mb-6 block font-mono">
+                {'>'} values.inclusivity()
+              </span>
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6 leading-tight">
+                코딩을 몰라도{' '}
+                <span className="text-primary text-glow">괜찮습니다.</span>
+              </h2>
+              <p className="text-xl md:text-2xl font-display font-light text-foreground/80">
+                열정만 있다면{' '}
+                <span className="text-secondary text-glow-cyan">누구나 환영합니다.</span>
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* JOIN */}
         <section id="join">
           <div className="flex flex-col items-center justify-center min-h-screen text-center px-6">
@@ -117,9 +136,14 @@ const Index = () => {
                 보안에 대한 열정만 있다면 누구든 환영합니다.
                 초보자도 걱정하지 마세요.
               </p>
-              <button className="group relative px-10 py-3 border border-secondary text-secondary font-display font-semibold tracking-wider uppercase text-sm rounded neon-border-cyan hover:bg-secondary hover:text-secondary-foreground transition-all duration-300">
+              <a
+                href="https://forms.gle/ATrZoSs8qcBwoc4C6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-10 py-3 border border-secondary text-secondary font-display font-semibold tracking-wider uppercase text-sm rounded neon-border-cyan hover:bg-secondary hover:text-secondary-foreground transition-all duration-300"
+              >
                 Apply Now
-              </button>
+              </a>
             </div>
             <div className="mt-24 text-muted-foreground text-[10px] opacity-40 font-mono">
               © 2026 Decompiler — SUNY Korea
