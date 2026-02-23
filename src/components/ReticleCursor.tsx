@@ -18,7 +18,7 @@ const ReticleCursor = () => {
 
     let raf: number;
     const animate = () => {
-      const lerp = 0.15;
+      const lerp = 0.35;
       current.current.x += (pos.current.x - current.current.x) * lerp;
       current.current.y += (pos.current.y - current.current.y) * lerp;
 
