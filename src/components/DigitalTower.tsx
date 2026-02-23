@@ -1,23 +1,57 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useEffect, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const TowerRing = ({ y, radius, color, speed, thickness }: { y: number; radius: number; color: string; speed: number; thickness: number }) => {
+gsap.registerPlugin(ScrollTrigger);
+
+// Shared scroll progress for tower animations
+let globalScrollProgress = 0;
+
+export const useScrollProgress = () => {
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        trigger: "#scroll-container",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1,
+        onUpdate: (self) => {
+          globalScrollProgress = self.progress;
+        },
+      });
+    });
+    return () => ctx.revert();
+  }, []);
+};
+
+const TowerRing = ({ y, radius, color, speed, thickness, index, total }: { y: number; radius: number; color: string; speed: number; thickness: number; index: number; total: number }) => {
   const groupRef = useRef<THREE.Group>(null);
+  const baseRadius = radius;
+  const normalizedIndex = index / total;
 
   useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y = state.clock.elapsedTime * speed;
+      // Scroll-reactive spread: rings expand outward as scroll progresses
+      const spread = 1 + globalScrollProgress * 0.6 * Math.sin(normalizedIndex * Math.PI);
+      const scaleOscillation = 1 + Math.sin(state.clock.elapsedTime * 1.5 + index * 0.8) * 0.08;
+      const currentScale = spread * scaleOscillation;
+
+      groupRef.current.scale.set(currentScale, 1, currentScale);
+      groupRef.current.rotation.y = state.clock.elapsedTime * speed + globalScrollProgress * Math.PI * 0.5;
       groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.5 + y) * 0.15;
+
+      // Vertical spread based on scroll
+      const yOffset = (normalizedIndex - 0.5) * globalScrollProgress * 2;
+      groupRef.current.position.y = y + yOffset;
     }
   });
 
-  // Create a double-ring with gap for a more techy look
   return (
     <group ref={groupRef} position={[0, y, 0]}>
-      {/* Outer ring */}
       <mesh>
-        <torusGeometry args={[radius, thickness, 3, 4]} />
+        <torusGeometry args={[baseRadius, thickness, 3, 4]} />
         <meshStandardMaterial
           color={color}
           emissive={color}
@@ -27,9 +61,8 @@ const TowerRing = ({ y, radius, color, speed, thickness }: { y: number; radius: 
           wireframe
         />
       </mesh>
-      {/* Inner accent ring */}
       <mesh rotation={[Math.PI / 4, 0, 0]}>
-        <torusGeometry args={[radius * 0.7, thickness * 0.5, 3, 6]} />
+        <torusGeometry args={[baseRadius * 0.7, thickness * 0.5, 3, 6]} />
         <meshStandardMaterial
           color={color}
           emissive={color}
@@ -43,13 +76,15 @@ const TowerRing = ({ y, radius, color, speed, thickness }: { y: number; radius: 
   );
 };
 
-const HexPlate = ({ y, radius, color, speed }: { y: number; radius: number; color: string; speed: number }) => {
+const HexPlate = ({ y, radius, color, speed, index }: { y: number; radius: number; color: string; speed: number; index: number }) => {
   const ref = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
     if (ref.current) {
       ref.current.rotation.y = state.clock.elapsedTime * speed;
-      ref.current.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 2 + y) * 0.05);
+      const breathe = 1 + Math.sin(state.clock.elapsedTime * 2 + y) * 0.05;
+      const scrollScale = 1 + globalScrollProgress * 0.3;
+      ref.current.scale.setScalar(breathe * scrollScale);
     }
   });
 
@@ -84,12 +119,7 @@ const TowerSegment = ({ y, height, radius }: { y: number; height: number; radius
   return (
     <group position={[0, y, 0]}>
       <mesh ref={ref} geometry={geometry}>
-        <meshStandardMaterial
-          color="#0a1a1a"
-          transparent
-          opacity={0.3}
-          side={THREE.DoubleSide}
-        />
+        <meshStandardMaterial color="#0a1a1a" transparent opacity={0.3} side={THREE.DoubleSide} />
       </mesh>
       <lineSegments ref={edgesRef} geometry={edges}>
         <lineBasicMaterial color="#0AF0E0" transparent opacity={0.35} />
@@ -120,9 +150,7 @@ const DataStream = ({ angle, height }: { angle: number; height: number }) => {
       const arr = posAttr.array as Float32Array;
       for (let i = 0; i < count; i++) {
         arr[i * 3 + 1] += 0.02;
-        if (arr[i * 3 + 1] > height / 2) {
-          arr[i * 3 + 1] = -height / 2;
-        }
+        if (arr[i * 3 + 1] > height / 2) arr[i * 3 + 1] = -height / 2;
       }
       posAttr.needsUpdate = true;
     }
@@ -131,12 +159,7 @@ const DataStream = ({ angle, height }: { angle: number; height: number }) => {
   return (
     <points ref={ref}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={count}
-          array={positions}
-          itemSize={3}
-        />
+        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
       </bufferGeometry>
       <pointsMaterial color="#3DF5C8" size={0.04} transparent opacity={0.6} sizeAttenuation />
     </points>
@@ -149,7 +172,9 @@ const DigitalTower = () => {
   const segmentHeight = 1.2;
   const totalHeight = segmentCount * segmentHeight;
 
-  // Analogous palette: teals, aquamarines, mints
+  // Hook up scroll listener
+  useScrollProgress();
+
   const palette = ["#0AF0E0", "#3DF5C8", "#08C8D4", "#5BFFD0", "#06B6C4"];
 
   const rings = useMemo(() => {
@@ -161,6 +186,8 @@ const DigitalTower = () => {
         color: palette[i % palette.length],
         speed: 0.3 + (i % 3) * 0.25,
         thickness: 0.015 + (i % 2) * 0.01,
+        index: i,
+        total: 14,
       });
     }
     return r;
@@ -174,6 +201,7 @@ const DigitalTower = () => {
         radius: 0.9 + Math.sin(i) * 0.2,
         color: palette[(i + 2) % palette.length],
         speed: 0.15 + i * 0.08,
+        index: i,
       });
     }
     return h;
@@ -194,45 +222,31 @@ const DigitalTower = () => {
   const streams = useMemo(() => {
     const s = [];
     for (let i = 0; i < 8; i++) {
-      s.push({
-        angle: (i / 8) * Math.PI * 2,
-        height: totalHeight,
-      });
+      s.push({ angle: (i / 8) * Math.PI * 2, height: totalHeight });
     }
     return s;
   }, [totalHeight]);
 
   return (
     <group ref={groupRef}>
-      {/* Core pillar */}
       <mesh position={[0, 0, 0]}>
         <cylinderGeometry args={[0.06, 0.06, totalHeight, 16]} />
-        <meshStandardMaterial
-          color="#0AF0E0"
-          emissive="#0AF0E0"
-          emissiveIntensity={2}
-          transparent
-          opacity={0.6}
-        />
+        <meshStandardMaterial color="#0AF0E0" emissive="#0AF0E0" emissiveIntensity={2} transparent opacity={0.6} />
       </mesh>
 
       {segments.map((seg, i) => (
         <TowerSegment key={`seg-${i}`} {...seg} />
       ))}
-
       {rings.map((ring, i) => (
         <TowerRing key={`ring-${i}`} {...ring} />
       ))}
-
       {hexPlates.map((plate, i) => (
         <HexPlate key={`hex-${i}`} {...plate} />
       ))}
-
       {streams.map((stream, i) => (
         <DataStream key={`stream-${i}`} {...stream} />
       ))}
 
-      {/* Top & bottom beacons */}
       <pointLight position={[0, totalHeight / 2 + 0.5, 0]} color="#3DF5C8" intensity={3} distance={5} />
       <pointLight position={[0, -totalHeight / 2, 0]} color="#0AF0E0" intensity={2} distance={4} />
     </group>
