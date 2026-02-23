@@ -1,31 +1,42 @@
 import { Shield, Code, Users, Award } from "lucide-react";
 
-const glass = "backdrop-blur-lg bg-background/25 border border-foreground/[0.06] rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.3)]";
+const glass =
+  "backdrop-blur-lg bg-background/25 border border-foreground/[0.06] rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.3)]";
 
 const activities = [
   {
     icon: Shield,
     title: "Security",
     subtitle: "보안 연구",
-    items: ["웹 해킹 & 시스템 해킹", "리버스 엔지니어링", "CTF 대회 참가", "Google Cybersecurity Certificate"],
+    items: ["웹 해킹 & 시스템 해킹", "리버스 엔지니어링", "CTF 대회 참가 지원", "Google Cybersecurity Certificate"],
   },
   {
     icon: Code,
     title: "Development",
     subtitle: "개발 스터디",
-    items: ["웹 개발 (React, Node.js)", "Python / Java 코딩 스터디", "AI & 머신러닝 프로젝트", "해커톤 참가"],
+    items: [
+      "웹 개발 (React, Node.js, etc..)",
+      "Python / Java 코딩 스터디",
+      "AI & 머신러닝 프로젝트",
+      "SBU Seek-Once Project",
+    ],
   },
   {
     icon: Users,
     title: "Community",
     subtitle: "커뮤니티",
-    items: ["MT (바닷가 여행)", "학기초 & 시험 후 회식", "외부 연사 초청 세미나", "엔드 세미나 & 네트워킹"],
+    items: ["MT (여행)", "학기초 & 시험 후 회식", "외부 연사 초청 강연", "엔드 세미나 & 네트워킹"],
   },
   {
     icon: Award,
     title: "Professional",
     subtitle: "전문 활동",
-    items: ["SUNY Korea 최초 아이디어톤 개최", "Google Certificate 자격증 스터디", "외부 기관 협력 프로젝트", "암호학 연구"],
+    items: [
+      "SUNY Korea 최초 아이디어톤 개최",
+      "외부 기관 협력 프로젝트",
+      "실생활 보안연구 및 제언",
+      "외부기업 탐방 및 투어",
+    ],
   },
 ];
 
@@ -44,9 +55,7 @@ const ActivityCards = () => {
                 <Icon className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-foreground text-base">
-                  {activity.title}
-                </h3>
+                <h3 className="font-display font-bold text-foreground text-base">{activity.title}</h3>
                 <p className="text-muted-foreground text-[10px]">{activity.subtitle}</p>
               </div>
             </div>

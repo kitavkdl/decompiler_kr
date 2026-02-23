@@ -4,7 +4,8 @@ import ReticleCursor from "../components/ReticleCursor";
 import ActivityCards from "../components/ActivityCards";
 import PhotoGallery from "../components/PhotoGallery";
 
-const glass = "backdrop-blur-lg bg-background/25 border border-foreground/[0.06] rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.3)]";
+const glass =
+  "backdrop-blur-lg bg-background/25 border border-foreground/[0.06] rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.3)]";
 
 const Index = () => {
   return (
@@ -46,7 +47,7 @@ const Index = () => {
             <div className="max-w-2xl space-y-4">
               <div className={`${glass} px-5 py-3 inline-block`}>
                 <span className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 font-mono">
-                  {'>'} about.init()
+                  {">"} about.init()
                 </span>
               </div>
               <div className={`${glass} p-6 md:p-8`}>
@@ -58,10 +59,9 @@ const Index = () => {
               </div>
               <div className={`${glass} p-5 md:p-6`}>
                 <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
-                  Decompiler는 SUNY Korea 최대 규모의 정보보안 동아리입니다.
-                  리버스 엔지니어링, 웹 보안, 시스템 해킹, 암호학 등
-                  다양한 보안 분야를 연구하며, CTF 대회 참가와
-                  보안 프로젝트를 통해 실력을 키워나갑니다.
+                  Decompiler는 SUNY Korea 최대 규모의 정보보안/개발 동아리입니다. 웹개발, 보안, 네트워크뿐만 아니라
+                  세부적인 코딩 문제들까지 함께 공부하며 전반적인 컴퓨팅 지식을 쌓습니다. 뿐만 아니라 관련 지식이 전무한
+                  학생들도 다양하게 협력하고 활동하며 즐거움을 찾습니다.
                 </p>
               </div>
             </div>
@@ -75,24 +75,20 @@ const Index = () => {
           <div className="flex flex-col items-center justify-center min-h-screen px-4 md:px-20 py-16">
             <div className={`${glass} px-5 py-3 mb-4`}>
               <span className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 font-mono">
-                {'>'} modules.list()
+                {">"} modules.list()
               </span>
             </div>
             <div className={`${glass} p-5 md:p-6 text-center mb-4`}>
-              <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-3">
-                활동 영역
-              </h2>
+              <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-3">활동 영역</h2>
               <p className="text-muted-foreground text-sm max-w-lg mx-auto">
-                보안에만 국한되지 않습니다. 개발, AI, 해커톤, 자격증 스터디부터
-                MT, 회식까지 — 다양한 활동이 여러분을 기다립니다.
+                보안에만 국한되지 않습니다. 개발, AI, 해커톤 주최, 자격증 스터디부터 MT, 회식까지 — 다양한 활동이
+                여러분을 기다립니다.
               </p>
             </div>
             <div className={`${glass} px-4 py-2 rounded-full mb-8`}>
               <div className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                <span className="text-primary text-xs font-mono">
-                  모든 활동은 자유 참여 — 원하는 것만, 몇 개든 OK
-                </span>
+                <span className="text-primary text-xs font-mono">모든 활동은 자유 참여 : 원하는 것만, 몇 개든 OK</span>
               </div>
             </div>
             <ActivityCards />
@@ -106,7 +102,7 @@ const Index = () => {
           <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 md:px-20 py-16">
             <div className={`${glass} px-5 py-3 mb-4`}>
               <span className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 font-mono">
-                {'>'} gallery.render()
+                {">"} gallery.render()
               </span>
             </div>
             <div className={`${glass} p-5 text-center mb-8`}>
@@ -125,7 +121,7 @@ const Index = () => {
           <div className="flex flex-col items-center justify-center min-h-screen text-center px-4">
             <div className={`${glass} px-5 py-3 mb-4`}>
               <span className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 font-mono">
-                {'>'} recruit.apply()
+                {">"} recruit.apply()
               </span>
             </div>
             <div className={`${glass} p-6 md:p-10 max-w-lg mb-6`}>
@@ -150,6 +146,8 @@ const Index = () => {
             </div>
             <div className="mt-16 text-muted-foreground text-[10px] opacity-40 font-mono">
               © 2026 Decompiler — SUNY Korea
+              <br />
+              jiyul.ahn@stonybrook.edu
             </div>
           </div>
         </section>
