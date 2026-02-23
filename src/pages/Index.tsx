@@ -1,7 +1,6 @@
 import Scene3D from "../components/Scene3D";
 import ScrambleText from "../components/ScrambleText";
 import ReticleCursor from "../components/ReticleCursor";
-import ActivityCards from "../components/ActivityCards";
 
 const Index = () => {
   return (
@@ -16,7 +15,10 @@ const Index = () => {
               SUNY Korea // Security Research Club
             </p>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-foreground mb-4 leading-tight">
-              <ScrambleText text="Decompiler" className="text-primary text-glow" />
+              <ScrambleText
+                text="Decompiler"
+                className="text-primary text-glow"
+              />
             </h1>
             <p className="text-lg md:text-2xl font-display font-light text-foreground/80 mb-2">
               <ScrambleText text="Break the Code," />
@@ -52,8 +54,35 @@ const Index = () => {
           </div>
         </section>
 
-        {/* ACTIVITY CARDS */}
-        <ActivityCards />
+        {/* ACTIVITIES */}
+        <section id="activities">
+          <div className="flex flex-col items-end justify-center min-h-screen px-6 md:px-20 max-w-2xl ml-auto">
+            <span className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 mb-4 font-mono">
+              {'>'} modules.list()
+            </span>
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground text-right mb-8">
+              활동 영역
+            </h2>
+            <div className="space-y-3 text-right w-full">
+              {[
+                { label: "Reverse Engineering", desc: "바이너리 분석 & 리버싱" },
+                { label: "Web Hacking", desc: "웹 취약점 분석 & 익스플로잇" },
+                { label: "Cryptography", desc: "암호 알고리즘 분석 & 구현" },
+                { label: "CTF Competition", desc: "국내외 CTF 대회 참가" },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="border border-border rounded p-4 neon-border-cyan bg-card/30 backdrop-blur-sm transition-all duration-300 hover:bg-card/60 hover:border-secondary/50"
+                >
+                  <h3 className="text-secondary font-display font-semibold text-lg">
+                    {item.label}
+                  </h3>
+                  <p className="text-muted-foreground text-sm mt-1">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
         {/* JOIN */}
         <section id="join">
