@@ -45,7 +45,7 @@ const ParticleField = () => {
         />
       </bufferGeometry>
       <pointsMaterial
-        color="#00ffaa"
+        color="#00D4FF"
         size={0.03}
         transparent
         opacity={0.3}

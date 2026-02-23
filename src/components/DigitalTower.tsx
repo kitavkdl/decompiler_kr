@@ -49,7 +49,7 @@ const TowerSegment = ({ y, height, radius }: { y: number; height: number; radius
         />
       </mesh>
       <lineSegments ref={edgesRef} geometry={edges}>
-        <lineBasicMaterial color="#00ffaa" transparent opacity={0.4} />
+        <lineBasicMaterial color="#00D4FF" transparent opacity={0.4} />
       </lineSegments>
     </group>
   );
@@ -95,7 +95,7 @@ const DataStream = ({ angle, height }: { angle: number; height: number }) => {
           itemSize={3}
         />
       </bufferGeometry>
-      <pointsMaterial color="#00ffaa" size={0.04} transparent opacity={0.6} sizeAttenuation />
+      <pointsMaterial color="#00FF88" size={0.04} transparent opacity={0.6} sizeAttenuation />
     </points>
   );
 };
@@ -112,7 +112,7 @@ const DigitalTower = () => {
       r.push({
         y: -totalHeight / 2 + (i / 19) * totalHeight,
         radius: 0.6 + Math.sin(i * 0.5) * 0.2,
-        color: i % 3 === 0 ? "#00ffaa" : i % 3 === 1 ? "#00ccff" : "#aa44ff",
+        color: i % 3 === 0 ? "#00FF88" : i % 3 === 1 ? "#00D4FF" : "#00FF88",
         speed: 0.2 + Math.random() * 0.5,
       });
     }
@@ -148,8 +148,8 @@ const DigitalTower = () => {
       <mesh position={[0, 0, 0]}>
         <cylinderGeometry args={[0.08, 0.08, totalHeight, 16]} />
         <meshStandardMaterial
-          color="#00ffaa"
-          emissive="#00ffaa"
+          color="#00D4FF"
+          emissive="#00D4FF"
           emissiveIntensity={2}
           transparent
           opacity={0.6}
@@ -169,8 +169,8 @@ const DigitalTower = () => {
       ))}
 
       {/* Top beacon */}
-      <pointLight position={[0, totalHeight / 2 + 0.5, 0]} color="#00ffaa" intensity={3} distance={5} />
-      <pointLight position={[0, -totalHeight / 2, 0]} color="#00ccff" intensity={2} distance={4} />
+      <pointLight position={[0, totalHeight / 2 + 0.5, 0]} color="#00FF88" intensity={3} distance={5} />
+      <pointLight position={[0, -totalHeight / 2, 0]} color="#00D4FF" intensity={2} distance={4} />
     </group>
   );
 };
