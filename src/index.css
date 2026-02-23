@@ -132,4 +132,44 @@
     pointer-events: none;
     z-index: 50;
   }
+
+  .rgb-split {
+    position: relative;
+    background: transparent;
+    height: 3px;
+    overflow: visible;
+  }
+
+  .rgb-split::before,
+  .rgb-split::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+  }
+
+  .rgb-split::before {
+    top: -1px;
+    background: linear-gradient(90deg, transparent 5%, hsl(300 100% 50% / 0.5) 20%, transparent 35%, hsl(300 100% 50% / 0.3) 60%, transparent 80%);
+    animation: rgb-shift-1 4s ease-in-out infinite;
+  }
+
+  .rgb-split::after {
+    top: 1px;
+    background: linear-gradient(90deg, transparent 15%, hsl(263 80% 55% / 0.5) 40%, transparent 55%, hsl(263 80% 55% / 0.3) 75%, transparent 95%);
+    animation: rgb-shift-2 4s ease-in-out infinite reverse;
+  }
+
+  @keyframes rgb-shift-1 {
+    0%, 100% { transform: translateX(0); opacity: 0.6; }
+    25% { transform: translateX(3px); opacity: 1; }
+    75% { transform: translateX(-2px); opacity: 0.4; }
+  }
+
+  @keyframes rgb-shift-2 {
+    0%, 100% { transform: translateX(0); opacity: 0.6; }
+    25% { transform: translateX(-3px); opacity: 1; }
+    75% { transform: translateX(2px); opacity: 0.4; }
+  }
 }

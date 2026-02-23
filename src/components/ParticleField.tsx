@@ -2,9 +2,8 @@ import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-const ParticleField = () => {
+const ParticleField = ({ count = 2000 }: { count?: number }) => {
   const ref = useRef<THREE.Points>(null);
-  const count = 2000;
 
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);

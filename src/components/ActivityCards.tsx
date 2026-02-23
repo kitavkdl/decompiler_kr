@@ -1,5 +1,7 @@
 import { Shield, Code, Users, Award } from "lucide-react";
 
+const glass = "backdrop-blur-lg bg-background/25 border border-foreground/[0.06] rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.3)]";
+
 const activities = [
   {
     icon: Shield,
@@ -29,31 +31,28 @@ const activities = [
 
 const ActivityCards = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-4xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-4xl mx-auto">
       {activities.map((activity) => {
         const Icon = activity.icon;
         return (
           <div
             key={activity.title}
-            className="group relative border border-border rounded-lg p-6 bg-card/40 backdrop-blur-sm transition-all duration-500 hover:border-secondary/60 hover:bg-card/70 hover:shadow-[0_0_30px_hsl(189_100%_50%/0.15)] hover:scale-[1.02]"
+            className={`${glass} group p-5 transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_24px_rgba(255,0,255,0.12)] hover:scale-[1.02]`}
           >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 rounded border border-secondary/30 text-secondary group-hover:border-secondary/60 group-hover:shadow-[0_0_12px_hsl(189_100%_50%/0.3)] transition-all duration-500">
-                <Icon className="w-5 h-5" />
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2 rounded border border-primary/20 text-primary group-hover:border-primary/50 group-hover:shadow-[0_0_12px_rgba(255,0,255,0.2)] transition-all duration-500">
+                <Icon className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-foreground text-lg">
+                <h3 className="font-display font-bold text-foreground text-base">
                   {activity.title}
                 </h3>
-                <p className="text-muted-foreground text-xs">{activity.subtitle}</p>
+                <p className="text-muted-foreground text-[10px]">{activity.subtitle}</p>
               </div>
             </div>
-            <ul className="space-y-1.5">
+            <ul className="space-y-1">
               {activity.items.map((item) => (
-                <li
-                  key={item}
-                  className="text-muted-foreground text-sm flex items-center gap-2"
-                >
+                <li key={item} className="text-muted-foreground text-xs flex items-center gap-2">
                   <span className="w-1 h-1 rounded-full bg-primary/60" />
                   {item}
                 </li>
