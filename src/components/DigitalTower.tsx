@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect, useState } from "react";
+import { useRef, useMemo, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import gsap from "gsap";
@@ -6,7 +6,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Shared scroll progress for tower animations
 let globalScrollProgress = 0;
 
 export const useScrollProgress = () => {
@@ -33,7 +32,6 @@ const TowerRing = ({ y, radius, color, speed, thickness, index, total }: { y: nu
 
   useFrame((state) => {
     if (groupRef.current) {
-      // Scroll-reactive spread: rings expand outward as scroll progresses
       const spread = 1 + globalScrollProgress * 0.6 * Math.sin(normalizedIndex * Math.PI);
       const scaleOscillation = 1 + Math.sin(state.clock.elapsedTime * 1.5 + index * 0.8) * 0.08;
       const currentScale = spread * scaleOscillation;
@@ -42,7 +40,6 @@ const TowerRing = ({ y, radius, color, speed, thickness, index, total }: { y: nu
       groupRef.current.rotation.y = state.clock.elapsedTime * speed + globalScrollProgress * Math.PI * 0.5;
       groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.5 + y) * 0.15;
 
-      // Vertical spread based on scroll
       const yOffset = (normalizedIndex - 0.5) * globalScrollProgress * 2;
       groupRef.current.position.y = y + yOffset;
     }
@@ -52,31 +49,17 @@ const TowerRing = ({ y, radius, color, speed, thickness, index, total }: { y: nu
     <group ref={groupRef} position={[0, y, 0]}>
       <mesh>
         <torusGeometry args={[baseRadius, thickness, 3, 4]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={color}
-          emissiveIntensity={1.2}
-          transparent
-          opacity={0.85}
-          wireframe
-        />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={1.2} transparent opacity={0.85} wireframe />
       </mesh>
       <mesh rotation={[Math.PI / 4, 0, 0]}>
         <torusGeometry args={[baseRadius * 0.7, thickness * 0.5, 3, 6]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={color}
-          emissiveIntensity={0.6}
-          transparent
-          opacity={0.4}
-          wireframe
-        />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.6} transparent opacity={0.4} wireframe />
       </mesh>
     </group>
   );
 };
 
-const HexPlate = ({ y, radius, color, speed, index }: { y: number; radius: number; color: string; speed: number; index: number }) => {
+const HexPlate = ({ y, radius, color, speed }: { y: number; radius: number; color: string; speed: number }) => {
   const ref = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
@@ -91,14 +74,7 @@ const HexPlate = ({ y, radius, color, speed, index }: { y: number; radius: numbe
   return (
     <mesh ref={ref} position={[0, y, 0]} rotation={[Math.PI / 2, 0, 0]}>
       <ringGeometry args={[radius * 0.85, radius, 6]} />
-      <meshStandardMaterial
-        color={color}
-        emissive={color}
-        emissiveIntensity={0.5}
-        transparent
-        opacity={0.35}
-        side={THREE.DoubleSide}
-      />
+      <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.5} transparent opacity={0.35} side={THREE.DoubleSide} />
     </mesh>
   );
 };
@@ -119,10 +95,10 @@ const TowerSegment = ({ y, height, radius }: { y: number; height: number; radius
   return (
     <group position={[0, y, 0]}>
       <mesh ref={ref} geometry={geometry}>
-        <meshStandardMaterial color="#0a1a1a" transparent opacity={0.3} side={THREE.DoubleSide} />
+        <meshStandardMaterial color="#0a0a12" transparent opacity={0.3} side={THREE.DoubleSide} />
       </mesh>
       <lineSegments ref={edgesRef} geometry={edges}>
-        <lineBasicMaterial color="#0AF0E0" transparent opacity={0.35} />
+        <lineBasicMaterial color="#FF00FF" transparent opacity={0.3} />
       </lineSegments>
     </group>
   );
@@ -161,7 +137,7 @@ const DataStream = ({ angle, height }: { angle: number; height: number }) => {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
       </bufferGeometry>
-      <pointsMaterial color="#3DF5C8" size={0.04} transparent opacity={0.6} sizeAttenuation />
+      <pointsMaterial color="#BB66FF" size={0.04} transparent opacity={0.6} sizeAttenuation />
     </points>
   );
 };
@@ -172,10 +148,9 @@ const DigitalTower = () => {
   const segmentHeight = 1.2;
   const totalHeight = segmentCount * segmentHeight;
 
-  // Hook up scroll listener
   useScrollProgress();
 
-  const palette = ["#0AF0E0", "#3DF5C8", "#08C8D4", "#5BFFD0", "#06B6C4"];
+  const palette = ["#FF00FF", "#8A2BE2", "#CC44FF", "#AA33DD", "#FF44CC"];
 
   const rings = useMemo(() => {
     const r = [];
@@ -201,7 +176,6 @@ const DigitalTower = () => {
         radius: 0.9 + Math.sin(i) * 0.2,
         color: palette[(i + 2) % palette.length],
         speed: 0.15 + i * 0.08,
-        index: i,
       });
     }
     return h;
@@ -229,10 +203,7 @@ const DigitalTower = () => {
 
   return (
     <group ref={groupRef}>
-      <mesh position={[0, 0, 0]}>
-        <cylinderGeometry args={[0.06, 0.06, totalHeight, 16]} />
-        <meshStandardMaterial color="#0AF0E0" emissive="#0AF0E0" emissiveIntensity={2} transparent opacity={0.6} />
-      </mesh>
+      {/* Core pillar removed */}
 
       {segments.map((seg, i) => (
         <TowerSegment key={`seg-${i}`} {...seg} />
@@ -247,8 +218,8 @@ const DigitalTower = () => {
         <DataStream key={`stream-${i}`} {...stream} />
       ))}
 
-      <pointLight position={[0, totalHeight / 2 + 0.5, 0]} color="#3DF5C8" intensity={3} distance={5} />
-      <pointLight position={[0, -totalHeight / 2, 0]} color="#0AF0E0" intensity={2} distance={4} />
+      <pointLight position={[0, totalHeight / 2 + 0.5, 0]} color="#FF00FF" intensity={3} distance={5} />
+      <pointLight position={[0, -totalHeight / 2, 0]} color="#8A2BE2" intensity={2} distance={4} />
     </group>
   );
 };

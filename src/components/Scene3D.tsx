@@ -11,9 +11,9 @@ const Scene3D = () => {
         gl={{ antialias: true, alpha: true }}
         style={{ background: "transparent" }}
       >
-        <fog attach="fog" args={["#030808", 8, 25]} />
+        <fog attach="fog" args={["#050510", 8, 25]} />
         <ambientLight intensity={0.1} />
-        <directionalLight position={[5, 10, 5]} intensity={0.3} color="#00D4FF" />
+        <directionalLight position={[5, 10, 5]} intensity={0.3} color="#8A2BE2" />
         <ScrollCamera />
         <DigitalTower />
         <ParticleField />
