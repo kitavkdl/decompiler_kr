@@ -17,10 +17,7 @@ const Index = () => {
               SUNY Korea // Security Research Club
             </p>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold text-foreground mb-4 leading-tight">
-              <ScrambleText
-                text="Decompiler"
-                className="text-primary text-glow"
-              />
+              <ScrambleText text="Decompiler" className="text-primary text-glow" />
             </h1>
             <p className="text-lg md:text-2xl font-display font-light text-foreground/80 mb-2">
               <ScrambleText text="Break the Code," />
@@ -57,8 +54,9 @@ const Index = () => {
         </section>
 
         {/* ACTIVITIES */}
-        <section id="activities">
-          <div className="flex flex-col items-center justify-center min-h-screen px-6 md:px-20 py-20">
+        <section id="activities" className="relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/80 to-transparent pointer-events-none" />
+          <div className="relative flex flex-col items-center justify-center min-h-screen px-6 md:px-20 py-20">
             <span className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 mb-4 font-mono">
               {'>'} modules.list()
             </span>
@@ -80,8 +78,9 @@ const Index = () => {
         </section>
 
         {/* GALLERY */}
-        <section id="gallery">
-          <div className="flex flex-col items-center justify-center min-h-[70vh] px-6 md:px-20 py-20">
+        <section id="gallery" className="relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-transparent pointer-events-none" />
+          <div className="relative flex flex-col items-center justify-center min-h-[70vh] px-6 md:px-20 py-20">
             <span className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 mb-4 font-mono">
               {'>'} gallery.render()
             </span>
