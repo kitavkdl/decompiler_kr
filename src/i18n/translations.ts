@@ -3,8 +3,8 @@ export type Lang = "ko" | "en";
 export const translations = {
   hero: {
     subtitle: { ko: "SUNY Korea // 보안 연구 동아리", en: "SUNY Korea // Security Research Club" },
-    tagline1: { ko: "코드를 해체하고,", en: "Break the Code," },
-    tagline2: { ko: "미래를 구축하라", en: "Build the Future" },
+    tagline1: { ko: "Break the Code,", en: "Break the Code," },
+    tagline2: { ko: "Build the Future", en: "Build the Future" },
     scroll: { ko: "스크롤하여 탐색", en: "Scroll to Explore" },
   },
   about: {
