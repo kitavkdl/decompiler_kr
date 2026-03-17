@@ -9,19 +9,22 @@ const LanguageToggle = () => {
   const { lang, toggle } = useLang();
   const [easterEggOpen, setEasterEggOpen] = useState(false);
   const clickTimestamps = useRef<number[]>([]);
+  const lockedUntil = useRef<number>(0);
 
   const handleClick = useCallback(() => {
+    const now = Date.now();
+    if (now < lockedUntil.current) return;
+
     toggle();
 
-    const now = Date.now();
     clickTimestamps.current.push(now);
-    // Keep only recent clicks
     clickTimestamps.current = clickTimestamps.current.filter(
       (t) => now - t < RAPID_CLICK_WINDOW
     );
 
     if (clickTimestamps.current.length >= RAPID_CLICK_COUNT) {
       clickTimestamps.current = [];
+      lockedUntil.current = now + 3000;
       setEasterEggOpen(true);
     }
   }, [toggle]);
