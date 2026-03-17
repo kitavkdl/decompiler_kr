@@ -58,7 +58,7 @@ const InterviewEasterEgg = ({ open, onOpenChange }: InterviewEasterEggProps) => 
       <DialogContent className="backdrop-blur-xl bg-background/90 border-primary/20 shadow-[0_0_40px_rgba(255,0,255,0.15)] max-w-md">
         <DialogHeader>
           <DialogTitle className="font-display text-primary text-glow text-xl tracking-wide">
-            🔓 ACCESS GRANTED
+            ACCESS GRANTED
           </DialogTitle>
           <DialogDescription className="text-muted-foreground font-mono text-xs">
             Information related to executive face-to-face interviews
