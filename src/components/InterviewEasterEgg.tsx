@@ -7,6 +7,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import locationImg from "@/assets/club_office_location.png";
 
 const INTERVIEW_DATA: Record<string, string> = {
   "117710759": "08:00 PM",
@@ -32,6 +33,7 @@ const InterviewEasterEgg = ({ open, onOpenChange }: InterviewEasterEggProps) => 
   const [studentId, setStudentId] = useState("");
   const [result, setResult] = useState<{ time: string } | "not_found" | null>(null);
   const [locked, setLocked] = useState(false);
+  const [showMap, setShowMap] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
@@ -60,11 +62,13 @@ const InterviewEasterEgg = ({ open, onOpenChange }: InterviewEasterEggProps) => 
     if (!val) {
       setStudentId("");
       setResult(null);
+      setShowMap(false);
     }
     onOpenChange(val);
   };
 
   return (
+    <>
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className="backdrop-blur-xl bg-background/90 border-primary/20 shadow-[0_0_40px_rgba(255,0,255,0.15)] max-w-md"
@@ -131,6 +135,19 @@ const InterviewEasterEgg = ({ open, onOpenChange }: InterviewEasterEggProps) => 
                 </span>
               </div>
             </div>
+            <div
+              className="rounded-lg border border-foreground/10 overflow-hidden cursor-pointer hover:border-primary/40 transition-colors"
+              onClick={() => setShowMap(true)}
+            >
+              <img
+                src={locationImg}
+                alt="IGC #3042 location map"
+                className="w-full h-auto"
+              />
+              <p className="text-center text-[10px] font-mono text-muted-foreground/60 py-1">
+                Click to enlarge
+              </p>
+            </div>
             <p className="text-center text-primary text-glow font-display font-bold text-lg tracking-wide">
               See you on Wed
             </p>
@@ -147,6 +164,21 @@ const InterviewEasterEgg = ({ open, onOpenChange }: InterviewEasterEggProps) => 
         )}
       </DialogContent>
     </Dialog>
+
+    {/* Lightbox */}
+    {showMap && (
+      <div
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 cursor-pointer"
+        onClick={() => setShowMap(false)}
+      >
+        <img
+          src={locationImg}
+          alt="IGC #3042 location map"
+          className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
+        />
+      </div>
+    )}
+  </>
   );
 };
 
