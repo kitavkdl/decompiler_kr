@@ -62,6 +62,7 @@ const InterviewEasterEgg = ({ open, onOpenChange }: InterviewEasterEggProps) => 
     if (!val) {
       setStudentId("");
       setResult(null);
+      setShowMap(false);
     }
     onOpenChange(val);
   };
