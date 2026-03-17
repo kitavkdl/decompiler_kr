@@ -163,6 +163,21 @@ const InterviewEasterEgg = ({ open, onOpenChange }: InterviewEasterEggProps) => 
         )}
       </DialogContent>
     </Dialog>
+
+    {/* Lightbox */}
+    {showMap && (
+      <div
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 cursor-pointer"
+        onClick={() => setShowMap(false)}
+      >
+        <img
+          src={locationImg}
+          alt="IGC #3042 location map"
+          className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
+        />
+      </div>
+    )}
+  </>
   );
 };
 
