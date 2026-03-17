@@ -68,6 +68,7 @@ const InterviewEasterEgg = ({ open, onOpenChange }: InterviewEasterEggProps) => 
   };
 
   return (
+    <>
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className="backdrop-blur-xl bg-background/90 border-primary/20 shadow-[0_0_40px_rgba(255,0,255,0.15)] max-w-md"
