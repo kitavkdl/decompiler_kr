@@ -33,6 +33,7 @@ const InterviewEasterEgg = ({ open, onOpenChange }: InterviewEasterEggProps) => 
   const [studentId, setStudentId] = useState("");
   const [result, setResult] = useState<{ time: string } | "not_found" | null>(null);
   const [locked, setLocked] = useState(false);
+  const [showMap, setShowMap] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
