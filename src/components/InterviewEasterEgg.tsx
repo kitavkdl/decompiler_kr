@@ -31,6 +31,16 @@ interface InterviewEasterEggProps {
 const InterviewEasterEgg = ({ open, onOpenChange }: InterviewEasterEggProps) => {
   const [studentId, setStudentId] = useState("");
   const [result, setResult] = useState<{ time: string } | "not_found" | null>(null);
+  const [locked, setLocked] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => {
+    if (open) {
+      setLocked(true);
+      timerRef.current = setTimeout(() => setLocked(false), 3000);
+    }
+    return () => clearTimeout(timerRef.current);
+  }, [open]);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
@@ -46,6 +56,7 @@ const InterviewEasterEgg = ({ open, onOpenChange }: InterviewEasterEggProps) => 
   );
 
   const handleOpenChange = (val: boolean) => {
+    if (!val && locked) return;
     if (!val) {
       setStudentId("");
       setResult(null);
@@ -55,7 +66,11 @@ const InterviewEasterEgg = ({ open, onOpenChange }: InterviewEasterEggProps) => 
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="backdrop-blur-xl bg-background/90 border-primary/20 shadow-[0_0_40px_rgba(255,0,255,0.15)] max-w-md">
+      <DialogContent
+        className="backdrop-blur-xl bg-background/90 border-primary/20 shadow-[0_0_40px_rgba(255,0,255,0.15)] max-w-md"
+        onInteractOutside={(e) => { if (locked) e.preventDefault(); }}
+        onEscapeKeyDown={(e) => { if (locked) e.preventDefault(); }}
+      >
         <DialogHeader>
           <DialogTitle className="font-display text-primary text-glow text-xl tracking-wide">
             ACCESS GRANTED
