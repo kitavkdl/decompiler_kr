@@ -134,6 +134,19 @@ const InterviewEasterEgg = ({ open, onOpenChange }: InterviewEasterEggProps) => 
                 </span>
               </div>
             </div>
+            <div
+              className="rounded-lg border border-foreground/10 overflow-hidden cursor-pointer hover:border-primary/40 transition-colors"
+              onClick={() => setShowMap(true)}
+            >
+              <img
+                src={locationImg}
+                alt="IGC #3042 location map"
+                className="w-full h-auto"
+              />
+              <p className="text-center text-[10px] font-mono text-muted-foreground/60 py-1">
+                Click to enlarge
+              </p>
+            </div>
             <p className="text-center text-primary text-glow font-display font-bold text-lg tracking-wide">
               See you on Wed
             </p>
