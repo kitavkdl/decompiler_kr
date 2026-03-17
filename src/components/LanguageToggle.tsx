@@ -13,7 +13,6 @@ const LanguageToggle = () => {
 
   const handleClick = useCallback(() => {
     const now = Date.now();
-    if (now < lockedUntil.current) return;
 
     toggle();
 
