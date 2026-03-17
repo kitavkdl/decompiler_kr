@@ -7,6 +7,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import locationImg from "@/assets/club_office_location.png";
 
 const INTERVIEW_DATA: Record<string, string> = {
   "117710759": "08:00 PM",
