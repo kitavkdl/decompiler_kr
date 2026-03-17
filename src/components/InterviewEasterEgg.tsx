@@ -132,7 +132,7 @@ const InterviewEasterEgg = ({ open, onOpenChange }: InterviewEasterEggProps) => 
               </div>
             </div>
             <p className="text-center text-primary text-glow font-display font-bold text-lg tracking-wide">
-              See you on Wed 🚀
+              See you on Wed
             </p>
             <button
               onClick={() => {
