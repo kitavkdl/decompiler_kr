@@ -1,25 +1,21 @@
 import { useState, useCallback, useEffect, useRef } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import locationImg from "@/assets/club_office_location.png";
 
 const INTERVIEW_DATA: Record<string, string> = {
+  "117516463": "08:00 PM",
   "117710759": "08:00 PM",
   "118470557": "08:15 PM",
   "118451729": "08:30 PM",
-  "117710315": "08:45 PM",
+  "118413941": "08:45 PM",
   "118450845": "09:00 PM",
   "117924653": "09:15 PM",
   "117710777": "09:30 PM",
   "117667536": "09:45 PM",
   "117710661": "10:15 PM",
   "117668368": "10:30 PM",
+  "117490855": "10:45 PM",
 };
 
 const LOCATION = "IGC #3042";
@@ -54,7 +50,7 @@ const InterviewEasterEgg = ({ open, onOpenChange }: InterviewEasterEggProps) => 
         setResult("not_found");
       }
     },
-    [studentId]
+    [studentId],
   );
 
   const handleOpenChange = (val: boolean) => {
@@ -69,116 +65,108 @@ const InterviewEasterEgg = ({ open, onOpenChange }: InterviewEasterEggProps) => 
 
   return (
     <>
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent
-        className="backdrop-blur-xl bg-background/90 border-primary/20 shadow-[0_0_40px_rgba(255,0,255,0.15)] max-w-md"
-        onInteractOutside={(e) => { if (locked) e.preventDefault(); }}
-        onEscapeKeyDown={(e) => { if (locked) e.preventDefault(); }}
-      >
-        <DialogHeader>
-          <DialogTitle className="font-display text-primary text-glow text-xl tracking-wide">
-            ACCESS GRANTED
-          </DialogTitle>
-          <DialogDescription className="text-muted-foreground font-mono text-xs">
-            Information related to executive face-to-face interviews
-          </DialogDescription>
-        </DialogHeader>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent
+          className="backdrop-blur-xl bg-background/90 border-primary/20 shadow-[0_0_40px_rgba(255,0,255,0.15)] max-w-md"
+          onInteractOutside={(e) => {
+            if (locked) e.preventDefault();
+          }}
+          onEscapeKeyDown={(e) => {
+            if (locked) e.preventDefault();
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle className="font-display text-primary text-glow text-xl tracking-wide">
+              ACCESS GRANTED
+            </DialogTitle>
+            <DialogDescription className="text-muted-foreground font-mono text-xs">
+              Information related to executive face-to-face interviews
+            </DialogDescription>
+          </DialogHeader>
 
-        {!result || result === "not_found" ? (
-          <form onSubmit={handleSubmit} className="space-y-4 mt-2">
-            <div>
-              <label className="text-xs font-mono text-secondary/70 tracking-widest uppercase mb-2 block">
-                Student ID
-              </label>
-              <Input
-                value={studentId}
-                onChange={(e) => {
-                  setStudentId(e.target.value);
+          {!result || result === "not_found" ? (
+            <form onSubmit={handleSubmit} className="space-y-4 mt-2">
+              <div>
+                <label className="text-xs font-mono text-secondary/70 tracking-widest uppercase mb-2 block">
+                  Student ID
+                </label>
+                <Input
+                  value={studentId}
+                  onChange={(e) => {
+                    setStudentId(e.target.value);
+                    setResult(null);
+                  }}
+                  placeholder="Enter your student ID"
+                  className="bg-background/50 border-foreground/10 font-mono text-foreground placeholder:text-muted-foreground/40 focus:border-primary/50"
+                  maxLength={20}
+                  autoFocus
+                />
+              </div>
+              {result === "not_found" && (
+                <p className="text-destructive text-xs font-mono animate-fade-in">
+                  ⚠ Student ID not found in the system.
+                </p>
+              )}
+              <button
+                type="submit"
+                className="w-full px-4 py-2.5 bg-primary/10 border border-primary/40 text-primary font-mono text-sm tracking-wider uppercase rounded-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+              >
+                LOOK UP
+              </button>
+            </form>
+          ) : (
+            <div className="space-y-4 mt-2 animate-fade-in">
+              <div className="space-y-3 p-4 rounded-lg border border-secondary/20 bg-secondary/5">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
+                    Interview Time
+                  </span>
+                  <span className="text-secondary text-glow-cyan font-display font-bold text-lg">{result.time}</span>
+                </div>
+                <div className="h-px bg-foreground/5" />
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">Location</span>
+                  <span className="text-foreground font-mono text-sm">{LOCATION}</span>
+                </div>
+              </div>
+              <div
+                className="rounded-lg border border-foreground/10 overflow-hidden cursor-pointer hover:border-primary/40 transition-colors"
+                onClick={() => setShowMap(true)}
+              >
+                <img src={locationImg} alt="IGC #3042 location map" className="w-full h-auto" />
+                <p className="text-center text-[10px] font-mono text-muted-foreground/60 py-1">Click to enlarge</p>
+              </div>
+              <p className="text-center text-primary text-glow font-display font-bold text-lg tracking-wide">
+                See you on Wed
+              </p>
+              <button
+                onClick={() => {
+                  setStudentId("");
                   setResult(null);
                 }}
-                placeholder="Enter your student ID"
-                className="bg-background/50 border-foreground/10 font-mono text-foreground placeholder:text-muted-foreground/40 focus:border-primary/50"
-                maxLength={20}
-                autoFocus
-              />
+                className="w-full px-4 py-2 border border-foreground/10 text-muted-foreground font-mono text-xs tracking-wider uppercase rounded-lg hover:border-primary/40 hover:text-primary transition-all duration-300"
+              >
+                LOOK UP ANOTHER
+              </button>
             </div>
-            {result === "not_found" && (
-              <p className="text-destructive text-xs font-mono animate-fade-in">
-                ⚠ Student ID not found in the system.
-              </p>
-            )}
-            <button
-              type="submit"
-              className="w-full px-4 py-2.5 bg-primary/10 border border-primary/40 text-primary font-mono text-sm tracking-wider uppercase rounded-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-            >
-              LOOK UP
-            </button>
-          </form>
-        ) : (
-          <div className="space-y-4 mt-2 animate-fade-in">
-            <div className="space-y-3 p-4 rounded-lg border border-secondary/20 bg-secondary/5">
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-                  Interview Time
-                </span>
-                <span className="text-secondary text-glow-cyan font-display font-bold text-lg">
-                  {result.time}
-                </span>
-              </div>
-              <div className="h-px bg-foreground/5" />
-              <div className="flex justify-between items-center">
-                <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-                  Location
-                </span>
-                <span className="text-foreground font-mono text-sm">
-                  {LOCATION}
-                </span>
-              </div>
-            </div>
-            <div
-              className="rounded-lg border border-foreground/10 overflow-hidden cursor-pointer hover:border-primary/40 transition-colors"
-              onClick={() => setShowMap(true)}
-            >
-              <img
-                src={locationImg}
-                alt="IGC #3042 location map"
-                className="w-full h-auto"
-              />
-              <p className="text-center text-[10px] font-mono text-muted-foreground/60 py-1">
-                Click to enlarge
-              </p>
-            </div>
-            <p className="text-center text-primary text-glow font-display font-bold text-lg tracking-wide">
-              See you on Wed
-            </p>
-            <button
-              onClick={() => {
-                setStudentId("");
-                setResult(null);
-              }}
-              className="w-full px-4 py-2 border border-foreground/10 text-muted-foreground font-mono text-xs tracking-wider uppercase rounded-lg hover:border-primary/40 hover:text-primary transition-all duration-300"
-            >
-              LOOK UP ANOTHER
-            </button>
-          </div>
-        )}
-      </DialogContent>
-    </Dialog>
+          )}
+        </DialogContent>
+      </Dialog>
 
-    {/* Lightbox */}
-    {showMap && (
-      <div
-        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 cursor-pointer"
-        onClick={() => setShowMap(false)}
-      >
-        <img
-          src={locationImg}
-          alt="IGC #3042 location map"
-          className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
-        />
-      </div>
-    )}
-  </>
+      {/* Lightbox */}
+      {showMap && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 cursor-pointer"
+          onClick={() => setShowMap(false)}
+        >
+          <img
+            src={locationImg}
+            alt="IGC #3042 location map"
+            className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
+          />
+        </div>
+      )}
+    </>
   );
 };
 
