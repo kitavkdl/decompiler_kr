@@ -443,6 +443,8 @@ export default function Order() {
           jiyul.ahn@stonybrook.edu
         </a>
       </footer>
+
+      <AdminStatsModal open={showAdmin} onClose={() => setShowAdmin(false)} />
       {/* sticky bar */}
       <motion.div
         initial={false}
