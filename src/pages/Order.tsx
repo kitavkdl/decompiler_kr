@@ -270,46 +270,56 @@ export default function Order() {
         <Section title="SINGLE MENU" items={SINGLE} qty={qty} bump={bump} />
         <Section title="COMBO" items={COMBO} qty={qty} bump={bump} />
 
-        {/* Inline hotdog options panel — slides down only when a hotdog is in the cart. */}
+        {/* Per-hotdog option panels — one per unit. */}
         <AnimatePresence initial={false}>
-          {hotdogCount > 0 && (
-            <motion.div
-              key="hotdog-options-panel"
-              initial={{ opacity: 0, height: 0, y: -12, scale: 0.96 }}
-              animate={{ opacity: 1, height: "auto", y: 0, scale: 1 }}
-              exit={{ opacity: 0, height: 0, y: -12, scale: 0.96 }}
-              transition={spring}
-              className="overflow-hidden"
-            >
-              <div className="bg-white rounded-3xl p-5 shadow-sm space-y-4">
-                <div>
-                  <h2 className="font-extrabold text-lg text-orange-600">
-                    🌭 핫도그 옵션
-                  </h2>
-                  <p className="text-xs text-stone-500 mt-0.5">
-                    소스 / 토핑은 하나만 선택할 수 있어요 · 각 ₩500
-                  </p>
-                </div>
+          {HOTDOG_ITEM_IDS.flatMap((itemId) => {
+            const item = ITEM_ORDER.find((x) => x.id === itemId)!;
+            const opts = hotdogOpts[itemId] || [];
+            return opts.map((opt, idx) => (
+              <motion.div
+                key={`${itemId}-${idx}`}
+                layout
+                initial={{ opacity: 0, height: 0, y: -10, scale: 0.96 }}
+                animate={{ opacity: 1, height: "auto", y: 0, scale: 1 }}
+                exit={{ opacity: 0, height: 0, y: -10, scale: 0.96 }}
+                transition={spring}
+                className="overflow-hidden"
+              >
+                <div className="bg-white rounded-3xl p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 className="font-extrabold text-base text-orange-600">
+                      🌭 {item.name} <span className="text-stone-400">#{idx + 1}</span>
+                    </h2>
+                    <span className="text-[10px] font-mono bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">
+                      옵션
+                    </span>
+                  </div>
 
-                <BouncyCheck
-                  checked={noRelish}
-                  onChange={setNoRelish}
-                  label="렐리쉬 피클 제거"
-                />
+                  <BouncyCheck
+                    checked={opt.noRelish}
+                    onChange={(v) => updateOpt(itemId, idx, { noRelish: v })}
+                    label="렐리쉬 피클 제거"
+                  />
 
-                <div className="border-t border-stone-100 pt-3 space-y-3">
-                  {ADDONS.map((a) => (
-                    <BouncyCheck
-                      key={a.id}
-                      checked={selectedAddon === a.id}
-                      onChange={(v) => pickAddon(v ? a.id : null)}
-                      label={`${a.name} (+₩${a.price.toLocaleString()})`}
-                    />
-                  ))}
+                  <div className="border-t border-stone-100 pt-3 space-y-3">
+                    <p className="text-xs text-stone-500">
+                      소스 / 토핑은 하나만 선택할 수 있어요 · 각 ₩500
+                    </p>
+                    {ADDONS.map((a) => (
+                      <BouncyCheck
+                        key={a.id}
+                        checked={opt.addon === a.id}
+                        onChange={(v) =>
+                          updateOpt(itemId, idx, { addon: v ? a.id : null })
+                        }
+                        label={`${a.name} (+₩${a.price.toLocaleString()})`}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          )}
+              </motion.div>
+            ));
+          })}
         </AnimatePresence>
 
         {/* membership — secret phrase auto-checks */}
