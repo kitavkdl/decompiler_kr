@@ -51,6 +51,20 @@ export default function Order() {
   const bump = (id: string, d: number) =>
     setQty((q) => ({ ...q, [id]: Math.max(0, (q[id] || 0) + d) }));
 
+  // Mutually-exclusive addon picker: selecting one clears the others.
+  const hotdogCount = HOTDOG_ITEM_IDS.reduce((s, id) => s + (qty[id] || 0), 0);
+  const selectedAddon = ADDON_IDS.find((id) => (qty[id] || 0) > 0) ?? null;
+  const pickAddon = (id: string | null) => {
+    setQty((q) => {
+      const next = { ...q };
+      ADDON_IDS.forEach((a) => {
+        next[a] = 0;
+      });
+      if (id) next[id] = 1;
+      return next;
+    });
+  };
+
   const proceedToPayment = () => {
     if (!nickname.trim()) {
       toast.error("닉네임을 적어주세요!");
