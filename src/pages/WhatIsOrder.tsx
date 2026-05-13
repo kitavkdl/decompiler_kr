@@ -166,13 +166,13 @@ export default function WhatIsOrder() {
           return (
             <section key={cat.key} className="flex flex-col">
               <div
-                className={`flex items-center justify-between mb-3 px-4 py-3 rounded-2xl bg-${cat.color}-100 border border-${cat.color}-200`}
+                className={`flex items-center justify-between mb-3 px-4 py-3 rounded-2xl border ${cat.style.headerBg} ${cat.style.headerBorder}`}
               >
-                <h2 className={`font-extrabold text-lg text-${cat.color}-700 flex items-center gap-2`}>
+                <h2 className={`font-extrabold text-lg flex items-center gap-2 ${cat.style.headerText}`}>
                   <span className="text-2xl">{cat.emoji}</span>
                   {cat.label}
                 </h2>
-                <span className={`text-sm font-bold text-${cat.color}-700 bg-white px-2.5 py-1 rounded-full`}>
+                <span className={`text-sm font-bold bg-white px-2.5 py-1 rounded-full ${cat.style.headerText}`}>
                   {ordersInCat.reduce(
                     (s, o) => s + itemsForCategory(o, cat.key).reduce((a, it) => a + it.qty, 0),
                     0
