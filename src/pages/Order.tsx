@@ -260,12 +260,21 @@ export default function Order() {
           <h1 className="text-2xl font-extrabold tracking-tight">SPECIAL HOTDOG DAY</h1>
           <p className="text-xs text-stone-500">Hot &amp; Fresh · Decompiler</p>
         </div>
-        <button
-          onClick={() => setShowMenu(true)}
-          className="text-xs font-bold bg-stone-900 text-white px-3 py-2 rounded-full active:scale-95 transition"
-        >
-          메뉴판
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowAdmin(true)}
+            className="text-xs font-bold bg-white text-stone-900 border border-stone-200 px-3 py-2 rounded-full active:scale-95 transition"
+            aria-label="관리자"
+          >
+            📊
+          </button>
+          <button
+            onClick={() => setShowMenu(true)}
+            className="text-xs font-bold bg-stone-900 text-white px-3 py-2 rounded-full active:scale-95 transition"
+          >
+            메뉴판
+          </button>
+        </div>
       </header>
 
       <main className="px-5 space-y-6 mt-2">
