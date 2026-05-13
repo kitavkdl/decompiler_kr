@@ -63,12 +63,19 @@
 
   /* Pages that need the native OS cursor (e.g. /order, /whatisorder, /qrreader) */
   .show-cursor, .show-cursor * {
-    cursor: revert !important;
+    cursor: auto !important;
   }
   .show-cursor button,
   .show-cursor [role="button"],
-  .show-cursor a {
+  .show-cursor a,
+  .show-cursor label,
+  .show-cursor summary,
+  .show-cursor [onclick] {
     cursor: pointer !important;
+  }
+  .show-cursor input,
+  .show-cursor textarea {
+    cursor: text !important;
   }
 
   h1, h2, h3, h4, h5, h6 {
