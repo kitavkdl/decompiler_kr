@@ -7,6 +7,7 @@ import { LanguageProvider } from "@/i18n/LanguageContext";
 import Index from "./pages/Index";
 import Order from "./pages/Order";
 import WhatIsOrder from "./pages/WhatIsOrder";
+import QrReader from "./pages/QrReader";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
