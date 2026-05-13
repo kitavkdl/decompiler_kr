@@ -48,6 +48,9 @@ export default function Order() {
   const [submitting, setSubmitting] = useState(false);
   const [paymentCode, setPaymentCode] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [orderCreatedAt, setOrderCreatedAt] = useState<string | null>(null);
+  const [queueAhead, setQueueAhead] = useState<number | null>(null);
+  const [elapsedSec, setElapsedSec] = useState(0);
 
   // Aggregate addon counts derived from per-hotdog selections.
   const addonCounts = useMemo(() => {
