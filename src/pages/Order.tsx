@@ -72,11 +72,19 @@ export default function Order() {
     });
   };
 
-  // Auto-clear addon selection if no hotdog remains.
+  // Auto-clear addon + relish selection if no hotdog remains.
   useEffect(() => {
-    if (hotdogCount === 0 && selectedAddon) pickAddon(null);
+    if (hotdogCount === 0) {
+      if (selectedAddon) pickAddon(null);
+      if (noRelish) setNoRelish(false);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hotdogCount]);
+
+  // Member status auto-derives from secret phrase.
+  useEffect(() => {
+    setIsMember(phrase.trim() === MEMBER_PHRASE);
+  }, [phrase]);
 
   const proceedToPayment = () => {
     if (!nickname.trim()) {
