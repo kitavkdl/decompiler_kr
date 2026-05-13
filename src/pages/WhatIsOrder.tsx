@@ -164,8 +164,19 @@ export default function WhatIsOrder() {
   return (
     <div className="show-cursor min-h-screen bg-stone-50 text-stone-900 px-4 py-6 md:px-8">
       <header className="max-w-7xl mx-auto mb-5">
-        <h1 className="text-3xl font-extrabold">📋 주문 현황판</h1>
-        <p className="text-sm text-stone-500">실시간으로 들어오는 결제 완료 주문</p>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h1 className="text-3xl font-extrabold">📋 주문 현황판</h1>
+            <p className="text-sm text-stone-500">실시간으로 들어오는 결제 완료 주문</p>
+          </div>
+          <button
+            onClick={() => setShowAdmin(true)}
+            className="text-sm font-bold bg-white text-stone-900 border border-stone-200 px-4 py-2 rounded-full active:scale-95 transition"
+            aria-label="관리자 통계"
+          >
+            📊 관리자
+          </button>
+        </div>
         <div className="mt-4 flex flex-wrap gap-2">
           {(["pending", "done", "all"] as const).map((f) => (
             <button
