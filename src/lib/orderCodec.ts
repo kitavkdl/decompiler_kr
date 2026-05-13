@@ -11,6 +11,8 @@ export type MenuItem = {
   group: "single" | "combo" | "addon";
   // Categories this item contributes to on the dashboard.
   categories: Category[];
+  // For combo items: short label per category for the kitchen board.
+  displayByCategory?: Partial<Record<Category, string>>;
 };
 
 // IMPORTANT: Order is the encoding order. Do not reorder or remove items
@@ -21,9 +23,9 @@ export const ITEM_ORDER: MenuItem[] = [
   { id: "grape",         name: "Green Grape Ade",               price: 3000,  group: "single", categories: ["drink"] },
   { id: "lemon",         name: "Lemon Ade",                     price: 3000,  group: "single", categories: ["drink"] },
   { id: "icetea",        name: "Iced Tea",                      price: 2000,  group: "single", categories: ["drink"] },
-  { id: "setA",          name: "Set A: Iced Tea + Hotdog",      price: 6000,  group: "combo",  categories: ["hotdog", "drink"] },
-  { id: "setB",          name: "Set B: Ade + Hotdog",           price: 7000,  group: "combo",  categories: ["hotdog", "drink"] },
-  { id: "setC",          name: "Set C: Icetea + Hotdog + Keycap", price: 10000, group: "combo", categories: ["hotdog", "drink"] },
+  { id: "setA",          name: "Set A: Iced Tea + Hotdog",      price: 6000,  group: "combo",  categories: ["hotdog", "drink"], displayByCategory: { hotdog: "Hot Dog", drink: "Iced Tea" } },
+  { id: "setB",          name: "Set B: Ade + Hotdog",           price: 7000,  group: "combo",  categories: ["hotdog", "drink"], displayByCategory: { hotdog: "Hot Dog", drink: "Ade (Grape/Lemon)" } },
+  { id: "setC",          name: "Set C: Icetea + Hotdog + Keycap", price: 10000, group: "combo", categories: ["hotdog", "drink"], displayByCategory: { hotdog: "Hot Dog", drink: "Iced Tea" } },
   { id: "cheese_buldak", name: "Cheese + Buldak Sauce",         price: 500,   group: "addon",  categories: ["addon"] },
   { id: "cheese",        name: "Cheese Only",                   price: 500,   group: "addon",  categories: ["addon"] },
   { id: "buldak",        name: "Buldak Sauce Only",             price: 500,   group: "addon",  categories: ["addon"] },
