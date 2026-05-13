@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ITEM_BY_ID, type Category } from "@/lib/orderCodec";
+import AdminStatsModal from "@/components/AdminStatsModal";
 
 type HotdogOpt = { no_relish?: boolean; addon?: string | null; addon_name?: string | null };
 type OrderItem = {
