@@ -19,10 +19,9 @@ const HOTDOG_ITEM_IDS = ITEM_ORDER
   .filter((i) => i.categories.includes("hotdog"))
   .map((i) => i.id);
 
-// TODO: 실제 디컴파일러 계좌번호로 교체하세요
 const BANK_INFO = {
-  bank: "OOO은행",
-  account: "000-0000-0000-00",
+  bank: "토스뱅크",
+  account: "1002-4730-0262",
   holder: "최원석",
 };
 
