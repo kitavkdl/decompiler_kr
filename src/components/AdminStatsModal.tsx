@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ITEM_BY_ID } from "@/lib/orderCodec";
+import { ITEM_BY_ID, ITEM_ORDER } from "@/lib/orderCodec";
+import { useSoldOut, setSoldOut } from "@/lib/soldOut";
 
 const ADMIN_PASSWORD = "1029";
 const spring = { type: "spring" as const, stiffness: 320, damping: 22 };
