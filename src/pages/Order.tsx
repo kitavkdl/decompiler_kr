@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +11,12 @@ type MenuRow = (typeof ITEM_ORDER)[number];
 const SINGLE: MenuRow[] = ITEM_ORDER.filter((i) => i.group === "single");
 const COMBO: MenuRow[] = ITEM_ORDER.filter((i) => i.group === "combo");
 const ADDONS: MenuRow[] = ITEM_ORDER.filter((i) => i.group === "addon");
+const ADDON_IDS = ADDONS.map((a) => a.id);
+
+// Items that include a hotdog — selecting any of these reveals the addon panel.
+const HOTDOG_ITEM_IDS = ITEM_ORDER
+  .filter((i) => i.categories.includes("hotdog"))
+  .map((i) => i.id);
 
 // TODO: 실제 디컴파일러 계좌번호로 교체하세요
 const BANK_INFO = {
@@ -44,6 +50,26 @@ export default function Order() {
 
   const bump = (id: string, d: number) =>
     setQty((q) => ({ ...q, [id]: Math.max(0, (q[id] || 0) + d) }));
+
+  // Mutually-exclusive addon picker: selecting one clears the others.
+  const hotdogCount = HOTDOG_ITEM_IDS.reduce((s, id) => s + (qty[id] || 0), 0);
+  const selectedAddon = ADDON_IDS.find((id) => (qty[id] || 0) > 0) ?? null;
+  const pickAddon = (id: string | null) => {
+    setQty((q) => {
+      const next = { ...q };
+      ADDON_IDS.forEach((a) => {
+        next[a] = 0;
+      });
+      if (id) next[id] = 1;
+      return next;
+    });
+  };
+
+  // Auto-clear addon selection if no hotdog remains.
+  useEffect(() => {
+    if (hotdogCount === 0 && selectedAddon) pickAddon(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hotdogCount]);
 
   const proceedToPayment = () => {
     if (!nickname.trim()) {
@@ -115,7 +141,7 @@ export default function Order() {
      ========================================================= */
   if (stage === "done" && paymentCode) {
     return (
-      <div className="min-h-screen bg-orange-50 text-stone-900 px-5 py-8 flex flex-col items-center">
+      <div className="show-cursor min-h-screen bg-orange-50 text-stone-900 px-5 py-8 flex flex-col items-center">
         <motion.div
           initial={{ scale: 0.6, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -161,7 +187,7 @@ export default function Order() {
      STAGE: CART — main menu / form
      ========================================================= */
   return (
-    <div className="min-h-screen bg-orange-50 text-stone-900 pb-32">
+    <div className="show-cursor min-h-screen bg-orange-50 text-stone-900 pb-32">
       {/* header */}
       <header className="px-5 pt-6 pb-3 flex items-center justify-between sticky top-0 bg-orange-50/90 backdrop-blur z-20">
         <div>
@@ -179,7 +205,39 @@ export default function Order() {
       <main className="px-5 space-y-6 mt-2">
         <Section title="SINGLE MENU" items={SINGLE} qty={qty} bump={bump} />
         <Section title="COMBO" items={COMBO} qty={qty} bump={bump} />
-        <Section title="ADD-ONS (₩500)" items={ADDONS} qty={qty} bump={bump} />
+
+        {/* Inline addon panel — slides down only when a hotdog is in the cart. */}
+        <AnimatePresence initial={false}>
+          {hotdogCount > 0 && (
+            <motion.div
+              key="addon-panel"
+              initial={{ opacity: 0, height: 0, y: -12, scale: 0.96 }}
+              animate={{ opacity: 1, height: "auto", y: 0, scale: 1 }}
+              exit={{ opacity: 0, height: 0, y: -12, scale: 0.96 }}
+              transition={spring}
+              className="overflow-hidden"
+            >
+              <div className="bg-white rounded-3xl p-5 shadow-sm space-y-3">
+                <div>
+                  <h2 className="font-extrabold text-lg text-orange-600">
+                    🌭 소스 / 토핑 추가하시겠어요?
+                  </h2>
+                  <p className="text-xs text-stone-500 mt-0.5">
+                    하나만 선택할 수 있어요 · 각 ₩500
+                  </p>
+                </div>
+                {ADDONS.map((a) => (
+                  <BouncyCheck
+                    key={a.id}
+                    checked={selectedAddon === a.id}
+                    onChange={(v) => pickAddon(v ? a.id : null)}
+                    label={`${a.name} (+₩${a.price.toLocaleString()})`}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* options */}
         <div className="bg-white rounded-3xl p-5 shadow-sm space-y-4">
