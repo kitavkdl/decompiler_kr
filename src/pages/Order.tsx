@@ -19,10 +19,9 @@ const HOTDOG_ITEM_IDS = ITEM_ORDER
   .filter((i) => i.categories.includes("hotdog"))
   .map((i) => i.id);
 
-// TODO: 실제 디컴파일러 계좌번호로 교체하세요
 const BANK_INFO = {
-  bank: "OOO은행",
-  account: "000-0000-0000-00",
+  bank: "토스뱅크",
+  account: "1002-4730-0262",
   holder: "최원석",
 };
 
@@ -49,6 +48,9 @@ export default function Order() {
   const [submitting, setSubmitting] = useState(false);
   const [paymentCode, setPaymentCode] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [orderCreatedAt, setOrderCreatedAt] = useState<string | null>(null);
+  const [queueAhead, setQueueAhead] = useState<number | null>(null);
+  const [elapsedSec, setElapsedSec] = useState(0);
 
   // Aggregate addon counts derived from per-hotdog selections.
   const addonCounts = useMemo(() => {
@@ -169,7 +171,7 @@ export default function Order() {
         payment_code: code,
         paid: false,
       })
-      .select("id")
+      .select("id, created_at")
       .single();
     setSubmitting(false);
     if (error || !data) {
@@ -178,6 +180,7 @@ export default function Order() {
     }
     setPaymentCode(code);
     setOrderId(data.id);
+    setOrderCreatedAt(data.created_at as string);
     if (method === "cash") {
       // For cash: mark as paid immediately so it shows on dashboard.
       await supabase.from("orders").update({ paid: true }).eq("id", data.id);
@@ -202,6 +205,49 @@ export default function Order() {
     setStage("cart");
     setPaymentCode(null);
     setOrderId(null);
+    setOrderCreatedAt(null);
+    setQueueAhead(null);
+    setElapsedSec(0);
+  };
+
+  // Compute queue position when QR is shown, and refresh every 30s.
+  useEffect(() => {
+    if (stage !== "done" || !orderCreatedAt) return;
+    let cancelled = false;
+    const fetchQueue = async () => {
+      const { count } = await supabase
+        .from("orders")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "pending")
+        .eq("paid", true)
+        .lt("created_at", orderCreatedAt);
+      if (!cancelled) setQueueAhead(count ?? 0);
+    };
+    fetchQueue();
+    const iv = window.setInterval(fetchQueue, 30000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(iv);
+    };
+  }, [stage, orderCreatedAt]);
+
+  // Elapsed timer from when order is placed.
+  useEffect(() => {
+    if (stage !== "done" || !orderCreatedAt) return;
+    const start = new Date(orderCreatedAt).getTime();
+    const tick = () => setElapsedSec(Math.max(0, Math.floor((Date.now() - start) / 1000)));
+    tick();
+    const iv = window.setInterval(tick, 1000);
+    return () => window.clearInterval(iv);
+  }, [stage, orderCreatedAt]);
+
+  const copyAccount = async () => {
+    try {
+      await navigator.clipboard.writeText(BANK_INFO.account.replace(/-/g, ""));
+      toast.success("계좌번호가 복사되었어요!");
+    } catch {
+      toast.error("복사 실패. 직접 입력해주세요.");
+    }
   };
 
   /* =========================================================
@@ -227,6 +273,41 @@ export default function Order() {
           <div className="mt-3 font-mono text-xs text-stone-500 break-all">
             {paymentCode}
           </div>
+
+          {/* Queue / wait estimate */}
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={spring}
+            className="mt-5 bg-gradient-to-br from-orange-100 to-amber-100 border-2 border-orange-300 rounded-2xl p-4 text-left"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-[11px] font-bold text-orange-700 uppercase tracking-wider">
+                  예상 대기 시간
+                </div>
+                <div className="text-3xl font-extrabold text-orange-600 mt-0.5">
+                  {queueAhead === null ? "…" : `약 ${queueAhead}분`}
+                </div>
+                <div className="text-xs text-stone-600 mt-1">
+                  {queueAhead === null
+                    ? "대기열을 확인하는 중…"
+                    : queueAhead === 0
+                      ? "지금 바로 만들고 있어요!"
+                      : `앞에 ${queueAhead}건 대기 중 · 1건당 약 1분`}
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">
+                  경과
+                </div>
+                <div className="text-2xl font-extrabold font-mono text-stone-900 tabular-nums">
+                  {String(Math.floor(elapsedSec / 60)).padStart(2, "0")}:
+                  {String(elapsedSec % 60).padStart(2, "0")}
+                </div>
+              </div>
+            </div>
+          </motion.div>
           <div className="mt-5 text-left bg-orange-50 rounded-2xl p-4 text-sm">
             <div className="font-bold mb-1">닉네임</div>
             <div className="mb-2">{nickname}</div>
@@ -568,12 +649,21 @@ export default function Order() {
               </p>
 
               <div className="bg-orange-50 border-2 border-orange-300 rounded-2xl p-5 space-y-3">
-                <div>
-                  <div className="text-xs font-bold text-orange-700">은행 / 계좌번호</div>
-                  <div className="font-mono font-bold text-lg select-all">
+                <button
+                  type="button"
+                  onClick={copyAccount}
+                  className="w-full text-left active:scale-[0.98] transition"
+                >
+                  <div className="text-xs font-bold text-orange-700 flex items-center justify-between">
+                    <span>은행 / 계좌번호</span>
+                    <span className="text-[10px] bg-orange-200 text-orange-800 px-2 py-0.5 rounded-full">
+                      탭하여 복사 📋
+                    </span>
+                  </div>
+                  <div className="font-mono font-bold text-lg select-all break-all">
                     {BANK_INFO.bank} {BANK_INFO.account}
                   </div>
-                </div>
+                </button>
                 <div>
                   <div className="text-xs font-bold text-orange-700">예금주</div>
                   <div className="font-bold text-lg">{BANK_INFO.holder}</div>
