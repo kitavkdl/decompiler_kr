@@ -11,6 +11,12 @@ type MenuRow = (typeof ITEM_ORDER)[number];
 const SINGLE: MenuRow[] = ITEM_ORDER.filter((i) => i.group === "single");
 const COMBO: MenuRow[] = ITEM_ORDER.filter((i) => i.group === "combo");
 const ADDONS: MenuRow[] = ITEM_ORDER.filter((i) => i.group === "addon");
+const ADDON_IDS = ADDONS.map((a) => a.id);
+
+// Items that include a hotdog — selecting any of these reveals the addon panel.
+const HOTDOG_ITEM_IDS = ITEM_ORDER
+  .filter((i) => i.categories.includes("hotdog"))
+  .map((i) => i.id);
 
 // TODO: 실제 디컴파일러 계좌번호로 교체하세요
 const BANK_INFO = {
