@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import menuImg from "@/assets/menu.png";
 import { ITEM_ORDER, encodeOrderCode } from "@/lib/orderCodec";
 import AdminStatsModal from "@/components/AdminStatsModal";
+import { useSoldOut } from "@/lib/soldOut";
 
 type MenuRow = (typeof ITEM_ORDER)[number];
 
