@@ -424,6 +424,17 @@ export default function Order() {
         </div>
       </main>
 
+      <footer className="px-5 mt-10 text-center text-stone-400">
+        <div className="text-xs font-semibold tracking-wide">
+          Decompiler — Since 2021
+        </div>
+        <a
+          href="mailto:jiyul.ahn@stonybrook.edu"
+          className="text-[11px] text-stone-400 hover:text-stone-600 transition-colors"
+        >
+          jiyul.ahn@stonybrook.edu
+        </a>
+      </footer>
       {/* sticky bar */}
       <motion.div
         initial={false}
