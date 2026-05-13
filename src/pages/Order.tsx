@@ -43,10 +43,16 @@ export default function Order() {
   const [paymentCode, setPaymentCode] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
 
-  const total = useMemo(
+  const subtotal = useMemo(
     () => ITEM_ORDER.reduce((s, it) => s + (qty[it.id] || 0) * it.price, 0),
     [qty]
   );
+  const addonTotal = useMemo(
+    () => ADDONS.reduce((s, a) => s + (qty[a.id] || 0) * a.price, 0),
+    [qty]
+  );
+  const memberDiscount = isMember ? addonTotal : 0;
+  const total = subtotal - memberDiscount;
   const itemCount = Object.values(qty).reduce((a, b) => a + b, 0);
 
   const bump = (id: string, d: number) =>
