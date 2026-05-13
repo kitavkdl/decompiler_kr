@@ -61,6 +61,16 @@
     cursor: none;
   }
 
+  /* Pages that need the native OS cursor (e.g. /order, /whatisorder, /qrreader) */
+  .show-cursor, .show-cursor * {
+    cursor: revert !important;
+  }
+  .show-cursor button,
+  .show-cursor [role="button"],
+  .show-cursor a {
+    cursor: pointer !important;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-display;
   }
