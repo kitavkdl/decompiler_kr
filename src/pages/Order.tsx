@@ -273,6 +273,41 @@ export default function Order() {
           <div className="mt-3 font-mono text-xs text-stone-500 break-all">
             {paymentCode}
           </div>
+
+          {/* Queue / wait estimate */}
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={spring}
+            className="mt-5 bg-gradient-to-br from-orange-100 to-amber-100 border-2 border-orange-300 rounded-2xl p-4 text-left"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-[11px] font-bold text-orange-700 uppercase tracking-wider">
+                  예상 대기 시간
+                </div>
+                <div className="text-3xl font-extrabold text-orange-600 mt-0.5">
+                  {queueAhead === null ? "…" : `약 ${queueAhead}분`}
+                </div>
+                <div className="text-xs text-stone-600 mt-1">
+                  {queueAhead === null
+                    ? "대기열을 확인하는 중…"
+                    : queueAhead === 0
+                      ? "지금 바로 만들고 있어요!"
+                      : `앞에 ${queueAhead}건 대기 중 · 1건당 약 1분`}
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">
+                  경과
+                </div>
+                <div className="text-2xl font-extrabold font-mono text-stone-900 tabular-nums">
+                  {String(Math.floor(elapsedSec / 60)).padStart(2, "0")}:
+                  {String(elapsedSec % 60).padStart(2, "0")}
+                </div>
+              </div>
+            </div>
+          </motion.div>
           <div className="mt-5 text-left bg-orange-50 rounded-2xl p-4 text-sm">
             <div className="font-bold mb-1">닉네임</div>
             <div className="mb-2">{nickname}</div>
