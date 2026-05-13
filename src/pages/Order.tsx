@@ -343,8 +343,8 @@ export default function Order() {
       </header>
 
       <main className="px-5 space-y-6 mt-2">
-        <Section title="SINGLE MENU" items={SINGLE} qty={qty} bump={bump} />
-        <Section title="COMBO" items={COMBO} qty={qty} bump={bump} />
+        <Section title="SINGLE MENU" items={SINGLE} qty={qty} bump={bump} soldOut={soldOut} />
+        <Section title="COMBO" items={COMBO} qty={qty} bump={bump} soldOut={soldOut} />
 
         {/* Per-hotdog option panels — one per unit. */}
         <AnimatePresence initial={false}>
