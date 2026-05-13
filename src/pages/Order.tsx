@@ -662,11 +662,13 @@ function Section({
   items,
   qty,
   bump,
+  soldOut,
 }: {
   title: string;
   items: MenuRow[];
   qty: Record<string, number>;
   bump: (id: string, d: number) => void;
+  soldOut: Set<string>;
 }) {
   return (
     <section className="bg-white rounded-3xl p-5 shadow-sm">
@@ -674,17 +676,29 @@ function Section({
       <ul className="divide-y divide-stone-100">
         {items.map((it) => {
           const n = qty[it.id] || 0;
+          const out = soldOut.has(it.id);
           return (
-            <li key={it.id} className="flex items-center justify-between py-3">
+            <li
+              key={it.id}
+              className={`flex items-center justify-between py-3 ${out ? "opacity-50" : ""}`}
+            >
               <div className="flex-1">
-                <div className="font-semibold text-sm">{it.name}</div>
+                <div className="font-semibold text-sm flex items-center gap-2">
+                  <span className={out ? "line-through" : ""}>{it.name}</span>
+                  {out && (
+                    <span className="text-[10px] font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full">
+                      품절
+                    </span>
+                  )}
+                </div>
                 <div className="text-xs text-stone-500">₩{it.price.toLocaleString()}</div>
               </div>
               <div className="flex items-center gap-2">
                 <motion.button
                   whileTap={{ scale: 0.8 }}
                   onClick={() => bump(it.id, -1)}
-                  className="w-9 h-9 rounded-full bg-stone-100 font-bold text-lg active:bg-stone-200"
+                  disabled={out}
+                  className="w-9 h-9 rounded-full bg-stone-100 font-bold text-lg active:bg-stone-200 disabled:opacity-40"
                 >
                   −
                 </motion.button>
@@ -699,8 +713,9 @@ function Section({
                 </motion.span>
                 <motion.button
                   whileTap={{ scale: 0.8 }}
-                  onClick={() => bump(it.id, 1)}
-                  className="w-9 h-9 rounded-full bg-orange-500 text-white font-bold text-lg shadow active:bg-orange-600"
+                  onClick={() => !out && bump(it.id, 1)}
+                  disabled={out}
+                  className="w-9 h-9 rounded-full bg-orange-500 text-white font-bold text-lg shadow active:bg-orange-600 disabled:bg-stone-300 disabled:cursor-not-allowed"
                 >
                   +
                 </motion.button>
