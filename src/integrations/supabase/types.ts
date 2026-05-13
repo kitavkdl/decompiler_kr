@@ -14,7 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      orders: {
+        Row: {
+          created_at: string
+          id: string
+          is_member: boolean
+          items: Json
+          member_phrase: string | null
+          nickname: string
+          no_relish: boolean
+          status: string
+          total: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_member?: boolean
+          items?: Json
+          member_phrase?: string | null
+          nickname: string
+          no_relish?: boolean
+          status?: string
+          total?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_member?: boolean
+          items?: Json
+          member_phrase?: string | null
+          nickname?: string
+          no_relish?: boolean
+          status?: string
+          total?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
