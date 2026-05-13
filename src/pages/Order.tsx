@@ -33,6 +33,7 @@ export default function Order() {
   const [qty, setQty] = useState<Record<string, number>>({});
   const [nickname, setNickname] = useState("");
   const [isMember, setIsMember] = useState(false);
+  const MEMBER_PHRASE = "6463";
   const [noRelish, setNoRelish] = useState(false);
   const [phrase, setPhrase] = useState("");
   const [showMenu, setShowMenu] = useState(false);
