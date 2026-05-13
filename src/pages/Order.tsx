@@ -477,14 +477,14 @@ export default function Order() {
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
             maxLength={30}
-            placeholder="예: 핫도그러버"
+            placeholder="예: 핫도그야르"
             className="w-full bg-orange-50 rounded-2xl px-4 py-3 text-base border-2 border-transparent focus:outline-none focus:border-orange-400"
           />
         </div>
       </main>
 
       <footer className="px-5 mt-10 text-center text-stone-400">
-        <div className="text-xs font-semibold tracking-wide">Decompiler — Since 2021</div>
+        <div className="text-xs font-semibold tracking-wide">Decompiler — Since 2020</div>
         <a
           href="mailto:jiyul.ahn@stonybrook.edu"
           className="text-[11px] text-stone-400 hover:text-stone-600 transition-colors"
