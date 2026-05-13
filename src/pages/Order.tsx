@@ -65,6 +65,12 @@ export default function Order() {
     });
   };
 
+  // Auto-clear addon selection if no hotdog remains.
+  useEffect(() => {
+    if (hotdogCount === 0 && selectedAddon) pickAddon(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hotdogCount]);
+
   const proceedToPayment = () => {
     if (!nickname.trim()) {
       toast.error("닉네임을 적어주세요!");
