@@ -649,12 +649,21 @@ export default function Order() {
               </p>
 
               <div className="bg-orange-50 border-2 border-orange-300 rounded-2xl p-5 space-y-3">
-                <div>
-                  <div className="text-xs font-bold text-orange-700">은행 / 계좌번호</div>
-                  <div className="font-mono font-bold text-lg select-all">
+                <button
+                  type="button"
+                  onClick={copyAccount}
+                  className="w-full text-left active:scale-[0.98] transition"
+                >
+                  <div className="text-xs font-bold text-orange-700 flex items-center justify-between">
+                    <span>은행 / 계좌번호</span>
+                    <span className="text-[10px] bg-orange-200 text-orange-800 px-2 py-0.5 rounded-full">
+                      탭하여 복사 📋
+                    </span>
+                  </div>
+                  <div className="font-mono font-bold text-lg select-all break-all">
                     {BANK_INFO.bank} {BANK_INFO.account}
                   </div>
-                </div>
+                </button>
                 <div>
                   <div className="text-xs font-bold text-orange-700">예금주</div>
                   <div className="font-bold text-lg">{BANK_INFO.holder}</div>
