@@ -40,6 +40,7 @@ export default function Order() {
   const [isMember, setIsMember] = useState(false);
   const MEMBER_PHRASE = "6463";
   const [phrase, setPhrase] = useState("");
+  const [memberOpen, setMemberOpen] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
   const [stage, setStage] = useState<Stage>("cart");
