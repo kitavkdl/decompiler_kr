@@ -171,7 +171,7 @@ export default function Order() {
         payment_code: code,
         paid: false,
       })
-      .select("id")
+      .select("id, created_at")
       .single();
     setSubmitting(false);
     if (error || !data) {
@@ -180,6 +180,7 @@ export default function Order() {
     }
     setPaymentCode(code);
     setOrderId(data.id);
+    setOrderCreatedAt(data.created_at as string);
     if (method === "cash") {
       // For cash: mark as paid immediately so it shows on dashboard.
       await supabase.from("orders").update({ paid: true }).eq("id", data.id);
