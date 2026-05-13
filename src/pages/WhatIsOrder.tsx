@@ -4,7 +4,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ITEM_BY_ID, type Category } from "@/lib/orderCodec";
 
-type OrderItem = { id: string; name: string; qty: number; price: number };
+type HotdogOpt = { no_relish?: boolean; addon?: string | null; addon_name?: string | null };
+type OrderItem = {
+  id: string;
+  name: string;
+  qty: number;
+  price: number;
+  hotdog_options?: HotdogOpt[];
+};
 
 type Order = {
   id: string;
