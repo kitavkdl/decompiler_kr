@@ -124,10 +124,35 @@ export default function Order() {
 
   const submitOrder = async (method: "cash" | "transfer") => {
     setSubmitting(true);
-    const code = encodeOrderCode(qty);
+    // Combine non-addon qty with derived addon qty for the QR codec.
+    const fullQty: Record<string, number> = { ...qty, ...addonCounts };
+    const code = encodeOrderCode(fullQty);
     const items = ITEM_ORDER
-      .filter((it) => qty[it.id])
-      .map((it) => ({ id: it.id, name: it.name, qty: qty[it.id], price: it.price }));
+      .filter((it) => (fullQty[it.id] || 0) > 0)
+      .map((it) => {
+        const base = {
+          id: it.id,
+          name: it.name,
+          qty: fullQty[it.id] || 0,
+          price: it.price,
+        };
+        if (HOTDOG_ITEM_IDS.includes(it.id) && hotdogOpts[it.id]) {
+          return {
+            ...base,
+            hotdog_options: hotdogOpts[it.id].map((o) => ({
+              no_relish: o.noRelish,
+              addon: o.addon,
+              addon_name: o.addon
+                ? ITEM_ORDER.find((x) => x.id === o.addon)?.name ?? null
+                : null,
+            })),
+          };
+        }
+        return base;
+      });
+    const anyNoRelish = Object.values(hotdogOpts)
+      .flat()
+      .some((o) => o.noRelish);
     const { data, error } = await supabase
       .from("orders")
       .insert({
@@ -135,7 +160,7 @@ export default function Order() {
         items,
         total,
         is_member: isMember,
-        no_relish: noRelish,
+        no_relish: anyNoRelish,
         member_phrase: isMember ? phrase.trim() || null : null,
         payment_method: method,
         payment_code: code,
@@ -166,9 +191,9 @@ export default function Order() {
 
   const reset = () => {
     setQty({});
+    setHotdogOpts({});
     setNickname("");
     setIsMember(false);
-    setNoRelish(false);
     setPhrase("");
     setStage("cart");
     setPaymentCode(null);
