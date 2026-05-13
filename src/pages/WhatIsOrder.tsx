@@ -250,17 +250,43 @@ export default function WhatIsOrder() {
                           </span>
                         </div>
 
-                        <ul className="space-y-2 mb-2 text-sm">
+                        <ul className="space-y-2 mb-2">
                           {catItems.map((it) => {
                             const isHotdog = cat.key === "hotdog";
+                            const isDrink = cat.key === "drink";
+                            const big = isHotdog || isDrink;
+                            const displayName =
+                              ITEM_BY_ID[it.id]?.displayByCategory?.[cat.key] ?? it.name;
                             return (
                               <li key={it.id} className="font-semibold">
-                                <div className="flex justify-between">
-                                  <span className="truncate pr-2">{it.name}</span>
-                                  <span className="font-mono shrink-0">x{it.qty}</span>
+                                <div
+                                  className={`flex justify-between items-baseline gap-2 ${
+                                    big
+                                      ? "bg-stone-50 rounded-xl px-3 py-2"
+                                      : ""
+                                  }`}
+                                >
+                                  <span
+                                    className={`truncate pr-2 ${
+                                      big
+                                        ? "text-2xl font-extrabold leading-tight"
+                                        : "text-sm"
+                                    }`}
+                                  >
+                                    {displayName}
+                                  </span>
+                                  <span
+                                    className={`font-mono shrink-0 ${
+                                      big
+                                        ? "text-3xl font-extrabold text-orange-600 tabular-nums"
+                                        : "text-sm"
+                                    }`}
+                                  >
+                                    x{it.qty}
+                                  </span>
                                 </div>
                                 {isHotdog && it.hotdog_options && it.hotdog_options.length > 0 && (
-                                  <ul className="mt-1 ml-1 space-y-0.5 text-[11px] font-normal text-stone-600">
+                                  <ul className="mt-1.5 ml-1 space-y-1 text-sm font-normal text-stone-700">
                                     {it.hotdog_options.map((o, i) => {
                                       const parts: string[] = [];
                                       if (o.no_relish) parts.push("렐리쉬 제거");
@@ -273,7 +299,7 @@ export default function WhatIsOrder() {
                                           <span
                                             className={
                                               parts.length
-                                                ? "text-orange-700 font-semibold"
+                                                ? "text-orange-700 font-bold"
                                                 : "text-stone-400"
                                             }
                                           >
