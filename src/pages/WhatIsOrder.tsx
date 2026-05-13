@@ -23,10 +23,26 @@ type Order = {
 
 const spring = { type: "spring" as const, stiffness: 320, damping: 22 };
 
-const CATEGORIES: { key: Category; label: string; emoji: string; color: string }[] = [
-  { key: "hotdog",  label: "핫도그",  emoji: "🌭", color: "orange" },
-  { key: "drink",   label: "음료",    emoji: "🥤", color: "sky" },
-  { key: "popcorn", label: "팝콘",    emoji: "🍿", color: "yellow" },
+type CatStyle = { headerBg: string; headerBorder: string; headerText: string };
+const CATEGORIES: { key: Category; label: string; emoji: string; style: CatStyle }[] = [
+  {
+    key: "hotdog",
+    label: "핫도그",
+    emoji: "🌭",
+    style: { headerBg: "bg-orange-100", headerBorder: "border-orange-200", headerText: "text-orange-700" },
+  },
+  {
+    key: "drink",
+    label: "음료",
+    emoji: "🥤",
+    style: { headerBg: "bg-sky-100", headerBorder: "border-sky-200", headerText: "text-sky-700" },
+  },
+  {
+    key: "popcorn",
+    label: "팝콘",
+    emoji: "🍿",
+    style: { headerBg: "bg-yellow-100", headerBorder: "border-yellow-200", headerText: "text-yellow-700" },
+  },
 ];
 
 function normalizeOrder(row: Record<string, unknown>): Order {
