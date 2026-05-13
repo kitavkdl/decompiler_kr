@@ -133,7 +133,7 @@ export default function WhatIsOrder() {
   );
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-900 px-4 py-6 md:px-8">
+    <div className="show-cursor min-h-screen bg-stone-50 text-stone-900 px-4 py-6 md:px-8">
       <header className="max-w-7xl mx-auto mb-5">
         <h1 className="text-3xl font-extrabold">📋 주문 현황판</h1>
         <p className="text-sm text-stone-500">실시간으로 들어오는 결제 완료 주문</p>
