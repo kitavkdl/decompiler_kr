@@ -135,7 +135,7 @@ export default function Order() {
      ========================================================= */
   if (stage === "done" && paymentCode) {
     return (
-      <div className="min-h-screen bg-orange-50 text-stone-900 px-5 py-8 flex flex-col items-center">
+      <div className="show-cursor min-h-screen bg-orange-50 text-stone-900 px-5 py-8 flex flex-col items-center">
         <motion.div
           initial={{ scale: 0.6, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
