@@ -79,6 +79,7 @@ function itemsForCategory(o: Order, cat: Category): OrderItem[] {
 export default function WhatIsOrder() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [filter, setFilter] = useState<"pending" | "done" | "all">("pending");
+  const [showAdmin, setShowAdmin] = useState(false);
   const highlight = new URLSearchParams(window.location.search).get("id");
 
   useEffect(() => {
