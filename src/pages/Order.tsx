@@ -196,6 +196,7 @@ export default function Order() {
     setNickname("");
     setIsMember(false);
     setPhrase("");
+    setMemberOpen(false);
     setStage("cart");
     setPaymentCode(null);
     setOrderId(null);
