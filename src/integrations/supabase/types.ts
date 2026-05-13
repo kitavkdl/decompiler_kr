@@ -23,6 +23,9 @@ export type Database = {
           member_phrase: string | null
           nickname: string
           no_relish: boolean
+          paid: boolean
+          payment_code: string | null
+          payment_method: string | null
           status: string
           total: number
         }
@@ -34,6 +37,9 @@ export type Database = {
           member_phrase?: string | null
           nickname: string
           no_relish?: boolean
+          paid?: boolean
+          payment_code?: string | null
+          payment_method?: string | null
           status?: string
           total?: number
         }
@@ -45,6 +51,9 @@ export type Database = {
           member_phrase?: string | null
           nickname?: string
           no_relish?: boolean
+          paid?: boolean
+          payment_code?: string | null
+          payment_method?: string | null
           status?: string
           total?: number
         }
