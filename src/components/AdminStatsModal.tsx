@@ -289,6 +289,42 @@ export default function AdminStatsModal({
                   </div>
                 </div>
 
+                {/* Sold-out toggles */}
+                <div>
+                  <h3 className="font-extrabold mb-2 text-sm">
+                    🚫 품절 관리{" "}
+                    <span className="text-[10px] font-normal text-stone-400">
+                      탭하여 토글 · 주문 화면에 즉시 반영
+                    </span>
+                  </h3>
+                  <div className="bg-stone-50 rounded-2xl divide-y divide-stone-200">
+                    {ITEM_ORDER.filter((it) => it.group !== "addon").map((it) => {
+                      const out = soldOut.has(it.id);
+                      return (
+                        <button
+                          key={it.id}
+                          type="button"
+                          onClick={() => setSoldOut(it.id, !out)}
+                          className="w-full flex items-center justify-between gap-2 px-3 py-2 text-sm text-left active:scale-[0.99] transition"
+                        >
+                          <span
+                            className={`min-w-0 truncate ${out ? "text-stone-400 line-through" : "text-stone-800"}`}
+                          >
+                            {it.name}
+                          </span>
+                          <span
+                            className={`text-[11px] font-bold px-2 py-1 rounded-full whitespace-nowrap ${
+                              out ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
+                            }`}
+                          >
+                            {out ? "🚫 품절" : "✅ 판매중"}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 {/* Order list with delete */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
