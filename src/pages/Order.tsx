@@ -327,13 +327,6 @@ export default function Order() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setShowAdmin(true)}
-            className="text-xs font-bold bg-white text-stone-900 border border-stone-200 px-3 py-2 rounded-full active:scale-95 transition"
-            aria-label="관리자"
-          >
-            📊
-          </button>
-          <button
             onClick={() => setShowMenu(true)}
             className="text-xs font-bold bg-stone-900 text-white px-3 py-2 rounded-full active:scale-95 transition"
           >
