@@ -4,28 +4,24 @@ import { QRCodeSVG } from "qrcode.react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import menuImg from "@/assets/menu.png";
+import { ITEM_ORDER, encodeOrderCode } from "@/lib/orderCodec";
 
-type Item = { id: string; name: string; price: number; group: "single" | "combo" };
+type MenuRow = (typeof ITEM_ORDER)[number];
 
-const SINGLE: Item[] = [
-  { id: "hotdog", name: "Hot Dog", price: 5000, group: "single" },
-  { id: "popcorn", name: "Popcorn", price: 1000, group: "single" },
-  { id: "grape", name: "Green Grape Ade", price: 3000, group: "single" },
-  { id: "lemon", name: "Lemon Ade", price: 3000, group: "single" },
-  { id: "icetea", name: "Iced Tea", price: 2000, group: "single" },
-];
-const COMBO: Item[] = [
-  { id: "setA", name: "Set A: Iced Tea + Hotdog", price: 6000, group: "combo" },
-  { id: "setB", name: "Set B: Ade + Hotdog", price: 7000, group: "combo" },
-  { id: "setC", name: "Set C: Icetea + Hotdog + Keycap", price: 10000, group: "combo" },
-];
-const ADDONS: Item[] = [
-  { id: "cheese_buldak", name: "Cheese + Buldak Sauce", price: 500, group: "single" },
-  { id: "cheese", name: "Cheese Only", price: 500, group: "single" },
-  { id: "buldak", name: "Buldak Sauce Only", price: 500, group: "single" },
-];
+const SINGLE: MenuRow[] = ITEM_ORDER.filter((i) => i.group === "single");
+const COMBO: MenuRow[] = ITEM_ORDER.filter((i) => i.group === "combo");
+const ADDONS: MenuRow[] = ITEM_ORDER.filter((i) => i.group === "addon");
+
+// TODO: 실제 디컴파일러 계좌번호로 교체하세요
+const BANK_INFO = {
+  bank: "OOO은행",
+  account: "000-0000-0000-00",
+  holder: "최원석",
+};
 
 const spring = { type: "spring" as const, stiffness: 380, damping: 18 };
+
+type Stage = "cart" | "payment" | "bank-pending" | "done";
 
 export default function Order() {
   const [qty, setQty] = useState<Record<string, number>>({});
@@ -34,12 +30,14 @@ export default function Order() {
   const [noRelish, setNoRelish] = useState(false);
   const [phrase, setPhrase] = useState("");
   const [showMenu, setShowMenu] = useState(false);
-  const [submitted, setSubmitted] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
 
-  const all = [...SINGLE, ...COMBO, ...ADDONS];
+  const [stage, setStage] = useState<Stage>("cart");
+  const [submitting, setSubmitting] = useState(false);
+  const [paymentCode, setPaymentCode] = useState<string | null>(null);
+  const [orderId, setOrderId] = useState<string | null>(null);
+
   const total = useMemo(
-    () => all.reduce((s, it) => s + (qty[it.id] || 0) * it.price, 0),
+    () => ITEM_ORDER.reduce((s, it) => s + (qty[it.id] || 0) * it.price, 0),
     [qty]
   );
   const itemCount = Object.values(qty).reduce((a, b) => a + b, 0);
@@ -47,7 +45,7 @@ export default function Order() {
   const bump = (id: string, d: number) =>
     setQty((q) => ({ ...q, [id]: Math.max(0, (q[id] || 0) + d) }));
 
-  const submit = async () => {
+  const proceedToPayment = () => {
     if (!nickname.trim()) {
       toast.error("닉네임을 적어주세요!");
       return;
@@ -56,8 +54,13 @@ export default function Order() {
       toast.error("메뉴를 하나 이상 선택해주세요!");
       return;
     }
+    setStage("payment");
+  };
+
+  const submitOrder = async (method: "cash" | "transfer") => {
     setSubmitting(true);
-    const items = all
+    const code = encodeOrderCode(qty);
+    const items = ITEM_ORDER
       .filter((it) => qty[it.id])
       .map((it) => ({ id: it.id, name: it.name, qty: qty[it.id], price: it.price }));
     const { data, error } = await supabase
@@ -69,6 +72,9 @@ export default function Order() {
         is_member: isMember,
         no_relish: noRelish,
         member_phrase: isMember ? phrase.trim() || null : null,
+        payment_method: method,
+        payment_code: code,
+        paid: false,
       })
       .select("id")
       .single();
@@ -77,7 +83,20 @@ export default function Order() {
       toast.error("주문 실패. 다시 시도해주세요.");
       return;
     }
-    setSubmitted(data.id);
+    setPaymentCode(code);
+    setOrderId(data.id);
+    if (method === "cash") {
+      // For cash: mark as paid immediately so it shows on dashboard.
+      await supabase.from("orders").update({ paid: true }).eq("id", data.id);
+      setStage("done");
+    } else {
+      setStage("bank-pending");
+    }
+  };
+
+  const confirmTransferred = () => {
+    // Show QR — staff will scan to mark as paid.
+    setStage("done");
   };
 
   const reset = () => {
@@ -86,11 +105,15 @@ export default function Order() {
     setIsMember(false);
     setNoRelish(false);
     setPhrase("");
-    setSubmitted(null);
+    setStage("cart");
+    setPaymentCode(null);
+    setOrderId(null);
   };
 
-  if (submitted) {
-    const url = `${window.location.origin}/whatisorder?id=${submitted}`;
+  /* =========================================================
+     STAGE: DONE — show QR
+     ========================================================= */
+  if (stage === "done" && paymentCode) {
     return (
       <div className="min-h-screen bg-orange-50 text-stone-900 px-5 py-8 flex flex-col items-center">
         <motion.div
@@ -105,15 +128,22 @@ export default function Order() {
             아래 QR을 직원에게 보여주세요
           </p>
           <div className="bg-white p-4 rounded-2xl border-4 border-orange-400 inline-block">
-            <QRCodeSVG value={url} size={220} level="M" />
+            <QRCodeSVG value={paymentCode} size={220} level="M" />
+          </div>
+          <div className="mt-3 font-mono text-xs text-stone-500 break-all">
+            {paymentCode}
           </div>
           <div className="mt-5 text-left bg-orange-50 rounded-2xl p-4 text-sm">
             <div className="font-bold mb-1">닉네임</div>
             <div className="mb-2">{nickname}</div>
-            <div className="font-bold mb-1">주문번호</div>
-            <div className="font-mono text-xs break-all">{submitted}</div>
-            <div className="font-bold mt-2 mb-1">합계</div>
+            <div className="font-bold mb-1">합계</div>
             <div>₩{total.toLocaleString()}</div>
+            {orderId && (
+              <>
+                <div className="font-bold mt-2 mb-1">주문번호</div>
+                <div className="font-mono text-xs break-all">{orderId}</div>
+              </>
+            )}
           </div>
           <motion.button
             whileTap={{ scale: 0.92 }}
@@ -127,6 +157,9 @@ export default function Order() {
     );
   }
 
+  /* =========================================================
+     STAGE: CART — main menu / form
+     ========================================================= */
   return (
     <div className="min-h-screen bg-orange-50 text-stone-900 pb-32">
       {/* header */}
@@ -220,14 +253,14 @@ export default function Order() {
         <motion.button
           whileTap={{ scale: 0.96 }}
           disabled={submitting}
-          onClick={submit}
+          onClick={proceedToPayment}
           className="w-full bg-stone-900 text-white rounded-full py-4 font-extrabold flex items-center justify-between px-6 shadow-lg disabled:opacity-60"
         >
           <span className="flex items-center gap-2">
             <span className="bg-orange-400 text-stone-900 rounded-full px-2 py-0.5 text-xs">
               {itemCount}
             </span>
-            주문하기
+            결제하기
           </span>
           <span>₩{total.toLocaleString()}</span>
         </motion.button>
@@ -255,6 +288,124 @@ export default function Order() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* PAYMENT METHOD MODAL */}
+      <AnimatePresence>
+        {stage === "payment" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/60 flex items-end sm:items-center justify-center p-0 sm:p-4"
+            onClick={() => setStage("cart")}
+          >
+            <motion.div
+              initial={{ y: 60, opacity: 0, scale: 0.95 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              exit={{ y: 60, opacity: 0 }}
+              transition={spring}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl"
+            >
+              <div className="w-12 h-1.5 bg-stone-200 rounded-full mx-auto mb-4 sm:hidden" />
+              <h2 className="text-2xl font-extrabold mb-1">결제 방법 선택</h2>
+              <p className="text-sm text-stone-500 mb-5">
+                합계 <span className="font-bold text-orange-600">₩{total.toLocaleString()}</span>
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <motion.button
+                  whileTap={{ scale: 0.94 }}
+                  disabled={submitting}
+                  onClick={() => submitOrder("cash")}
+                  className="bg-stone-900 text-white rounded-2xl py-5 font-extrabold flex flex-col items-center gap-1 disabled:opacity-50"
+                >
+                  <span className="text-2xl">💵</span>
+                  현금 결제
+                </motion.button>
+                <motion.button
+                  whileTap={{ scale: 0.94 }}
+                  disabled={submitting}
+                  onClick={() => submitOrder("transfer")}
+                  className="bg-orange-500 text-white rounded-2xl py-5 font-extrabold flex flex-col items-center gap-1 disabled:opacity-50"
+                >
+                  <span className="text-2xl">🏦</span>
+                  입금 결제
+                </motion.button>
+              </div>
+              <button
+                onClick={() => setStage("cart")}
+                className="mt-4 w-full text-sm text-stone-500 py-2"
+              >
+                돌아가기
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* BANK TRANSFER MODAL */}
+      <AnimatePresence>
+        {stage === "bank-pending" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/70 flex items-end sm:items-center justify-center p-0 sm:p-4"
+          >
+            <motion.div
+              initial={{ y: 60, opacity: 0, scale: 0.95 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              exit={{ y: 60, opacity: 0 }}
+              transition={spring}
+              className="w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl"
+            >
+              <div className="w-12 h-1.5 bg-stone-200 rounded-full mx-auto mb-4 sm:hidden" />
+              <h2 className="text-2xl font-extrabold mb-1">🏦 계좌 입금</h2>
+              <p className="text-sm text-stone-500 mb-5">
+                아래 계좌로 입금 후 체크해주세요
+              </p>
+
+              <div className="bg-orange-50 border-2 border-orange-300 rounded-2xl p-5 space-y-3">
+                <div>
+                  <div className="text-xs font-bold text-orange-700">은행 / 계좌번호</div>
+                  <div className="font-mono font-bold text-lg select-all">
+                    {BANK_INFO.bank} {BANK_INFO.account}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-orange-700">예금주</div>
+                  <div className="font-bold text-lg">{BANK_INFO.holder}</div>
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-orange-700">입금 금액</div>
+                  <div className="font-extrabold text-2xl text-orange-600">
+                    ₩{total.toLocaleString()}
+                  </div>
+                </div>
+              </div>
+
+              <motion.button
+                whileTap={{ scale: 0.96 }}
+                onClick={confirmTransferred}
+                className="mt-5 w-full bg-stone-900 text-white rounded-full py-4 font-extrabold flex items-center justify-center gap-2"
+              >
+                <span className="w-5 h-5 rounded border-2 border-white flex items-center justify-center text-xs">
+                  ✓
+                </span>
+                입금했습니다
+              </motion.button>
+              <button
+                onClick={() => {
+                  setStage("payment");
+                }}
+                className="mt-2 w-full text-sm text-stone-500 py-2"
+              >
+                결제 방법 다시 선택
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -266,7 +417,7 @@ function Section({
   bump,
 }: {
   title: string;
-  items: Item[];
+  items: MenuRow[];
   qty: Record<string, number>;
   bump: (id: string, d: number) => void;
 }) {
