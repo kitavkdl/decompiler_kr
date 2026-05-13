@@ -57,6 +57,7 @@ export default function AdminStatsModal({
   const [orders, setOrders] = useState<OrderRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
+  const soldOut = useSoldOut();
 
   useEffect(() => {
     if (!open) {
