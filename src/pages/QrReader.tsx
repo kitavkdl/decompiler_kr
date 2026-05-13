@@ -106,7 +106,7 @@ export default function QrReader() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-900 text-stone-100 p-6 flex flex-col">
+    <div className="show-cursor min-h-screen bg-stone-900 text-stone-100 p-6 flex flex-col">
       <header className="mb-6">
         <h1 className="text-3xl font-extrabold flex items-center gap-3">
           <span className="text-4xl">📷</span> QR 리더기
