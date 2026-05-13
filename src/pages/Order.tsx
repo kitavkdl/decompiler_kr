@@ -15,9 +15,7 @@ const ADDONS: MenuRow[] = ITEM_ORDER.filter((i) => i.group === "addon");
 const ADDON_IDS = ADDONS.map((a) => a.id);
 
 // Items that include a hotdog — selecting any of these reveals the addon panel.
-const HOTDOG_ITEM_IDS = ITEM_ORDER
-  .filter((i) => i.categories.includes("hotdog"))
-  .map((i) => i.id);
+const HOTDOG_ITEM_IDS = ITEM_ORDER.filter((i) => i.categories.includes("hotdog")).map((i) => i.id);
 
 const BANK_INFO = {
   bank: "토스뱅크",
@@ -56,24 +54,19 @@ export default function Order() {
   const addonCounts = useMemo(() => {
     const c: Record<string, number> = {};
     ADDON_IDS.forEach((id) => (c[id] = 0));
-    Object.values(hotdogOpts).flat().forEach((opt) => {
-      if (opt.addon) c[opt.addon] = (c[opt.addon] || 0) + 1;
-    });
+    Object.values(hotdogOpts)
+      .flat()
+      .forEach((opt) => {
+        if (opt.addon) c[opt.addon] = (c[opt.addon] || 0) + 1;
+      });
     return c;
   }, [hotdogOpts]);
 
   const subtotal = useMemo(
-    () =>
-      ITEM_ORDER.filter((it) => it.group !== "addon").reduce(
-        (s, it) => s + (qty[it.id] || 0) * it.price,
-        0
-      ),
-    [qty]
+    () => ITEM_ORDER.filter((it) => it.group !== "addon").reduce((s, it) => s + (qty[it.id] || 0) * it.price, 0),
+    [qty],
   );
-  const addonTotal = useMemo(
-    () => ADDONS.reduce((s, a) => s + (addonCounts[a.id] || 0) * a.price, 0),
-    [addonCounts]
-  );
+  const addonTotal = useMemo(() => ADDONS.reduce((s, a) => s + (addonCounts[a.id] || 0) * a.price, 0), [addonCounts]);
   const memberDiscount = isMember ? addonTotal : 0;
   const total = subtotal + addonTotal - memberDiscount;
   const itemCount = Object.values(qty).reduce((a, b) => a + b, 0);
@@ -132,29 +125,25 @@ export default function Order() {
     // Combine non-addon qty with derived addon qty for the QR codec.
     const fullQty: Record<string, number> = { ...qty, ...addonCounts };
     const code = encodeOrderCode(fullQty);
-    const items = ITEM_ORDER
-      .filter((it) => (fullQty[it.id] || 0) > 0)
-      .map((it) => {
-        const base = {
-          id: it.id,
-          name: it.name,
-          qty: fullQty[it.id] || 0,
-          price: it.price,
+    const items = ITEM_ORDER.filter((it) => (fullQty[it.id] || 0) > 0).map((it) => {
+      const base = {
+        id: it.id,
+        name: it.name,
+        qty: fullQty[it.id] || 0,
+        price: it.price,
+      };
+      if (HOTDOG_ITEM_IDS.includes(it.id) && hotdogOpts[it.id]) {
+        return {
+          ...base,
+          hotdog_options: hotdogOpts[it.id].map((o) => ({
+            no_relish: o.noRelish,
+            addon: o.addon,
+            addon_name: o.addon ? (ITEM_ORDER.find((x) => x.id === o.addon)?.name ?? null) : null,
+          })),
         };
-        if (HOTDOG_ITEM_IDS.includes(it.id) && hotdogOpts[it.id]) {
-          return {
-            ...base,
-            hotdog_options: hotdogOpts[it.id].map((o) => ({
-              no_relish: o.noRelish,
-              addon: o.addon,
-              addon_name: o.addon
-                ? ITEM_ORDER.find((x) => x.id === o.addon)?.name ?? null
-                : null,
-            })),
-          };
-        }
-        return base;
-      });
+      }
+      return base;
+    });
     const anyNoRelish = Object.values(hotdogOpts)
       .flat()
       .some((o) => o.noRelish);
@@ -264,15 +253,11 @@ export default function Order() {
         >
           <div className="text-3xl mb-1">🌭</div>
           <h1 className="text-2xl font-extrabold mb-2">주문 완료!</h1>
-          <p className="text-sm text-stone-600 mb-5">
-            아래 QR을 직원에게 보여주세요
-          </p>
+          <p className="text-sm text-stone-600 mb-5">아래 QR을 직원에게 보여주세요</p>
           <div className="bg-white p-4 rounded-2xl border-4 border-orange-400 inline-block">
             <QRCodeSVG value={paymentCode} size={220} level="M" />
           </div>
-          <div className="mt-3 font-mono text-xs text-stone-500 break-all">
-            {paymentCode}
-          </div>
+          <div className="mt-3 font-mono text-xs text-stone-500 break-all">{paymentCode}</div>
 
           {/* Queue / wait estimate */}
           <motion.div
@@ -283,9 +268,7 @@ export default function Order() {
           >
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-[11px] font-bold text-orange-700 uppercase tracking-wider">
-                  예상 대기 시간
-                </div>
+                <div className="text-[11px] font-bold text-orange-700 uppercase tracking-wider">예상 대기 시간</div>
                 <div className="text-3xl font-extrabold text-orange-600 mt-0.5">
                   {queueAhead === null ? "…" : `약 ${queueAhead}분`}
                 </div>
@@ -298,12 +281,9 @@ export default function Order() {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">
-                  경과
-                </div>
+                <div className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">경과</div>
                 <div className="text-2xl font-extrabold font-mono text-stone-900 tabular-nums">
-                  {String(Math.floor(elapsedSec / 60)).padStart(2, "0")}:
-                  {String(elapsedSec % 60).padStart(2, "0")}
+                  {String(Math.floor(elapsedSec / 60)).padStart(2, "0")}:{String(elapsedSec % 60).padStart(2, "0")}
                 </div>
               </div>
             </div>
@@ -392,20 +372,18 @@ export default function Order() {
                   <BouncyCheck
                     checked={opt.noRelish}
                     onChange={(v) => updateOpt(itemId, idx, { noRelish: v })}
-                    label="렐리쉬 피클 제거"
+                    label="렐리쉬 피클 제거(선택) / Remove Pickles (Optional)"
                   />
 
                   <div className="border-t border-stone-100 pt-3 space-y-3">
                     <p className="text-xs text-stone-500">
-                      소스 / 토핑은 하나만 선택할 수 있어요 · 각 ₩500
+                      소스 / 토핑은 하나만 선택할 수 있어요(선택사항/Optional) · 각 ₩500
                     </p>
                     {ADDONS.map((a) => (
                       <BouncyCheck
                         key={a.id}
                         checked={opt.addon === a.id}
-                        onChange={(v) =>
-                          updateOpt(itemId, idx, { addon: v ? a.id : null })
-                        }
+                        onChange={(v) => updateOpt(itemId, idx, { addon: v ? a.id : null })}
                         label={`${a.name} (+₩${a.price.toLocaleString()})`}
                       />
                     ))}
@@ -447,9 +425,7 @@ export default function Order() {
                     inputMode="numeric"
                     autoComplete="off"
                     value={phrase}
-                    onChange={(e) =>
-                      setPhrase(e.target.value.replace(/\D/g, "").slice(0, 4))
-                    }
+                    onChange={(e) => setPhrase(e.target.value.replace(/\D/g, "").slice(0, 4))}
                     maxLength={4}
                     placeholder="● ● ● ●"
                     className={`w-full rounded-xl px-3 py-3 text-center text-2xl font-bold tracking-[0.6em] border-2 focus:outline-none transition-colors ${
@@ -477,12 +453,8 @@ export default function Order() {
                           </p>
                           {addonTotal > 0 && (
                             <div className="mt-2 flex items-center justify-between bg-white rounded-xl px-3 py-2">
-                              <span className="text-xs font-semibold text-stone-600">
-                                회원 할인
-                              </span>
-                              <span className="font-extrabold text-orange-600">
-                                −₩{addonTotal.toLocaleString()}
-                              </span>
+                              <span className="text-xs font-semibold text-stone-600">회원 할인</span>
+                              <span className="font-extrabold text-orange-600">−₩{addonTotal.toLocaleString()}</span>
                             </div>
                           )}
                         </div>
@@ -497,12 +469,8 @@ export default function Order() {
 
         {/* nickname */}
         <div className="bg-white rounded-3xl p-5 shadow-sm">
-          <label className="block font-extrabold text-lg mb-1">
-            주문시 호명될 닉네임을 적어주세요
-          </label>
-          <p className="text-xs text-stone-500 mb-3">
-            주문이 나왔을 때 저희가 큰 소리로 외쳐드립니다! 📣
-          </p>
+          <label className="block font-extrabold text-lg mb-1">주문시 호명될 닉네임을 적어주세요</label>
+          <p className="text-xs text-stone-500 mb-3">주문이 나왔을 때 저희가 큰 소리로 외쳐드립니다! 📣</p>
           <input
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
@@ -514,9 +482,7 @@ export default function Order() {
       </main>
 
       <footer className="px-5 mt-10 text-center text-stone-400">
-        <div className="text-xs font-semibold tracking-wide">
-          Decompiler — Since 2021
-        </div>
+        <div className="text-xs font-semibold tracking-wide">Decompiler — Since 2021</div>
         <a
           href="mailto:jiyul.ahn@stonybrook.edu"
           className="text-[11px] text-stone-400 hover:text-stone-600 transition-colors"
@@ -540,9 +506,7 @@ export default function Order() {
           className="w-full bg-stone-900 text-white rounded-full py-4 font-extrabold flex items-center justify-between px-6 shadow-lg disabled:opacity-60"
         >
           <span className="flex items-center gap-2">
-            <span className="bg-orange-400 text-stone-900 rounded-full px-2 py-0.5 text-xs">
-              {itemCount}
-            </span>
+            <span className="bg-orange-400 text-stone-900 rounded-full px-2 py-0.5 text-xs">{itemCount}</span>
             결제하기
           </span>
           <span>₩{total.toLocaleString()}</span>
@@ -615,10 +579,7 @@ export default function Order() {
                   입금 결제
                 </motion.button>
               </div>
-              <button
-                onClick={() => setStage("cart")}
-                className="mt-4 w-full text-sm text-stone-500 py-2"
-              >
+              <button onClick={() => setStage("cart")} className="mt-4 w-full text-sm text-stone-500 py-2">
                 돌아가기
               </button>
             </motion.div>
@@ -644,16 +605,10 @@ export default function Order() {
             >
               <div className="w-12 h-1.5 bg-stone-200 rounded-full mx-auto mb-4 sm:hidden" />
               <h2 className="text-2xl font-extrabold mb-1">🏦 계좌 입금</h2>
-              <p className="text-sm text-stone-500 mb-5">
-                아래 계좌로 입금 후 체크해주세요
-              </p>
+              <p className="text-sm text-stone-500 mb-5">아래 계좌로 입금 후 체크해주세요</p>
 
               <div className="bg-orange-50 border-2 border-orange-300 rounded-2xl p-5 space-y-3">
-                <button
-                  type="button"
-                  onClick={copyAccount}
-                  className="w-full text-left active:scale-[0.98] transition"
-                >
+                <button type="button" onClick={copyAccount} className="w-full text-left active:scale-[0.98] transition">
                   <div className="text-xs font-bold text-orange-700 flex items-center justify-between">
                     <span>은행 / 계좌번호</span>
                     <span className="text-[10px] bg-orange-200 text-orange-800 px-2 py-0.5 rounded-full">
@@ -670,9 +625,7 @@ export default function Order() {
                 </div>
                 <div>
                   <div className="text-xs font-bold text-orange-700">입금 금액</div>
-                  <div className="font-extrabold text-2xl text-orange-600">
-                    ₩{total.toLocaleString()}
-                  </div>
+                  <div className="font-extrabold text-2xl text-orange-600">₩{total.toLocaleString()}</div>
                 </div>
               </div>
 
@@ -768,11 +721,7 @@ function BouncyCheck({
   label: string;
 }) {
   return (
-    <button
-      type="button"
-      onClick={() => onChange(!checked)}
-      className="w-full flex items-center gap-3 text-left"
-    >
+    <button type="button" onClick={() => onChange(!checked)} className="w-full flex items-center gap-3 text-left">
       <motion.div
         animate={{
           backgroundColor: checked ? "#ea580c" : "#f5f5f4",
@@ -802,11 +751,7 @@ function BouncyCheck({
           )}
         </AnimatePresence>
       </motion.div>
-      <motion.span
-        animate={{ x: checked ? 4 : 0 }}
-        transition={spring}
-        className="font-semibold"
-      >
+      <motion.span animate={{ x: checked ? 4 : 0 }} transition={spring} className="font-semibold">
         {label}
       </motion.span>
     </button>
