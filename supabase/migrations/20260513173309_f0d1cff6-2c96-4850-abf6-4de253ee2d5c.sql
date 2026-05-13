@@ -1,0 +1,1 @@
+CREATE POLICY "Anyone can delete orders" ON public.orders FOR DELETE TO public USING (true);

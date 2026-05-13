@@ -82,15 +82,21 @@ export default function WhatIsOrder() {
 
   useEffect(() => {
     let mounted = true;
-    supabase
-      .from("orders")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(200)
-      .then(({ data }) => {
-        if (mounted && data) setOrders(data.map((d) => normalizeOrder(d as Record<string, unknown>)));
-      });
 
+    const fetchAll = async () => {
+      const { data } = await supabase
+        .from("orders")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(500);
+      if (mounted && data) {
+        setOrders(data.map((d) => normalizeOrder(d as Record<string, unknown>)));
+      }
+    };
+
+    fetchAll();
+
+    // Realtime subscription (instant updates if publication is enabled).
     const channel = supabase
       .channel("orders-feed")
       .on(
@@ -99,30 +105,44 @@ export default function WhatIsOrder() {
         (payload) => {
           if (payload.eventType === "INSERT") {
             const o = normalizeOrder(payload.new as Record<string, unknown>);
-            setOrders((prev) => [o, ...prev]);
+            setOrders((prev) =>
+              prev.some((x) => x.id === o.id) ? prev : [o, ...prev]
+            );
             if (o.paid) toast.success(`새 주문! ${o.nickname}`);
           } else if (payload.eventType === "UPDATE") {
             const o = normalizeOrder(payload.new as Record<string, unknown>);
             setOrders((prev) => {
-              const exists = prev.some((x) => x.id === o.id);
-              if (!exists) return [o, ...prev];
+              const prevOrder = prev.find((x) => x.id === o.id);
+              if (o.paid && prevOrder && !prevOrder.paid) {
+                toast.success(`결제 확인! ${o.nickname}`);
+              }
+              if (!prevOrder) return [o, ...prev];
               return prev.map((x) => (x.id === o.id ? o : x));
             });
-            // Notify when an order becomes paid (e.g., scanned in via QR reader).
-            const prevOrder = orders.find((x) => x.id === o.id);
-            if (o.paid && prevOrder && !prevOrder.paid) {
-              toast.success(`결제 확인! ${o.nickname}`);
-            }
+          } else if (payload.eventType === "DELETE") {
+            const id = String((payload.old as { id?: string })?.id || "");
+            if (id) setOrders((prev) => prev.filter((x) => x.id !== id));
           }
         }
       )
       .subscribe();
 
+    // Polling fallback — refetch every 60s so the board stays fresh
+    // even if realtime is throttled or disconnected.
+    const interval = window.setInterval(fetchAll, 60_000);
+
+    // Refetch when tab becomes visible again.
+    const onVisible = () => {
+      if (document.visibilityState === "visible") fetchAll();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
     return () => {
       mounted = false;
       supabase.removeChannel(channel);
+      window.clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisible);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleStatus = async (o: Order) => {
