@@ -29,12 +29,16 @@ const spring = { type: "spring" as const, stiffness: 380, damping: 18 };
 
 type Stage = "cart" | "payment" | "bank-pending" | "done";
 
+type HotdogOpt = { noRelish: boolean; addon: string | null };
+
 export default function Order() {
+  // Quantity for non-addon items only. Addon qty is derived from per-hotdog options.
   const [qty, setQty] = useState<Record<string, number>>({});
+  // Per-hotdog (per unit) options, keyed by hotdog-containing item id.
+  const [hotdogOpts, setHotdogOpts] = useState<Record<string, HotdogOpt[]>>({});
   const [nickname, setNickname] = useState("");
   const [isMember, setIsMember] = useState(false);
   const MEMBER_PHRASE = "6463";
-  const [noRelish, setNoRelish] = useState(false);
   const [phrase, setPhrase] = useState("");
   const [showMenu, setShowMenu] = useState(false);
 
@@ -43,43 +47,63 @@ export default function Order() {
   const [paymentCode, setPaymentCode] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
 
+  // Aggregate addon counts derived from per-hotdog selections.
+  const addonCounts = useMemo(() => {
+    const c: Record<string, number> = {};
+    ADDON_IDS.forEach((id) => (c[id] = 0));
+    Object.values(hotdogOpts).flat().forEach((opt) => {
+      if (opt.addon) c[opt.addon] = (c[opt.addon] || 0) + 1;
+    });
+    return c;
+  }, [hotdogOpts]);
+
   const subtotal = useMemo(
-    () => ITEM_ORDER.reduce((s, it) => s + (qty[it.id] || 0) * it.price, 0),
+    () =>
+      ITEM_ORDER.filter((it) => it.group !== "addon").reduce(
+        (s, it) => s + (qty[it.id] || 0) * it.price,
+        0
+      ),
     [qty]
   );
   const addonTotal = useMemo(
-    () => ADDONS.reduce((s, a) => s + (qty[a.id] || 0) * a.price, 0),
-    [qty]
+    () => ADDONS.reduce((s, a) => s + (addonCounts[a.id] || 0) * a.price, 0),
+    [addonCounts]
   );
   const memberDiscount = isMember ? addonTotal : 0;
-  const total = subtotal - memberDiscount;
+  const total = subtotal + addonTotal - memberDiscount;
   const itemCount = Object.values(qty).reduce((a, b) => a + b, 0);
-
-  const bump = (id: string, d: number) =>
-    setQty((q) => ({ ...q, [id]: Math.max(0, (q[id] || 0) + d) }));
-
-  // Mutually-exclusive addon picker: selecting one clears the others.
   const hotdogCount = HOTDOG_ITEM_IDS.reduce((s, id) => s + (qty[id] || 0), 0);
-  const selectedAddon = ADDON_IDS.find((id) => (qty[id] || 0) > 0) ?? null;
-  const pickAddon = (id: string | null) => {
-    setQty((q) => {
-      const next = { ...q };
-      ADDON_IDS.forEach((a) => {
-        next[a] = 0;
-      });
-      if (id) next[id] = 1;
-      return next;
-    });
+
+  const bump = (id: string, d: number) => {
+    // Block direct bumping of addons — they are picked per hotdog now.
+    if (ADDON_IDS.includes(id)) return;
+    setQty((q) => ({ ...q, [id]: Math.max(0, (q[id] || 0) + d) }));
   };
 
-  // Auto-clear addon + relish selection if no hotdog remains.
+  // Keep hotdogOpts arrays in sync with qty for hotdog-containing items.
   useEffect(() => {
-    if (hotdogCount === 0) {
-      if (selectedAddon) pickAddon(null);
-      if (noRelish) setNoRelish(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hotdogCount]);
+    setHotdogOpts((prev) => {
+      const next: Record<string, HotdogOpt[]> = {};
+      HOTDOG_ITEM_IDS.forEach((id) => {
+        const n = qty[id] || 0;
+        if (n === 0) return;
+        const existing = prev[id] || [];
+        const arr = existing.slice(0, n);
+        while (arr.length < n) arr.push({ noRelish: false, addon: null });
+        next[id] = arr;
+      });
+      return next;
+    });
+  }, [qty]);
+
+  const updateOpt = (itemId: string, idx: number, patch: Partial<HotdogOpt>) => {
+    setHotdogOpts((prev) => {
+      const arr = [...(prev[itemId] || [])];
+      if (!arr[idx]) return prev;
+      arr[idx] = { ...arr[idx], ...patch };
+      return { ...prev, [itemId]: arr };
+    });
+  };
 
   // Member status auto-derives from secret phrase.
   useEffect(() => {
