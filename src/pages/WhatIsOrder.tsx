@@ -379,6 +379,7 @@ export default function WhatIsOrder() {
           );
         })}
       </main>
+      <AdminStatsModal open={showAdmin} onClose={() => setShowAdmin(false)} />
     </div>
   );
 }
