@@ -29,12 +29,16 @@ const spring = { type: "spring" as const, stiffness: 380, damping: 18 };
 
 type Stage = "cart" | "payment" | "bank-pending" | "done";
 
+type HotdogOpt = { noRelish: boolean; addon: string | null };
+
 export default function Order() {
+  // Quantity for non-addon items only. Addon qty is derived from per-hotdog options.
   const [qty, setQty] = useState<Record<string, number>>({});
+  // Per-hotdog (per unit) options, keyed by hotdog-containing item id.
+  const [hotdogOpts, setHotdogOpts] = useState<Record<string, HotdogOpt[]>>({});
   const [nickname, setNickname] = useState("");
   const [isMember, setIsMember] = useState(false);
   const MEMBER_PHRASE = "6463";
-  const [noRelish, setNoRelish] = useState(false);
   const [phrase, setPhrase] = useState("");
   const [showMenu, setShowMenu] = useState(false);
 
@@ -43,43 +47,63 @@ export default function Order() {
   const [paymentCode, setPaymentCode] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
 
+  // Aggregate addon counts derived from per-hotdog selections.
+  const addonCounts = useMemo(() => {
+    const c: Record<string, number> = {};
+    ADDON_IDS.forEach((id) => (c[id] = 0));
+    Object.values(hotdogOpts).flat().forEach((opt) => {
+      if (opt.addon) c[opt.addon] = (c[opt.addon] || 0) + 1;
+    });
+    return c;
+  }, [hotdogOpts]);
+
   const subtotal = useMemo(
-    () => ITEM_ORDER.reduce((s, it) => s + (qty[it.id] || 0) * it.price, 0),
+    () =>
+      ITEM_ORDER.filter((it) => it.group !== "addon").reduce(
+        (s, it) => s + (qty[it.id] || 0) * it.price,
+        0
+      ),
     [qty]
   );
   const addonTotal = useMemo(
-    () => ADDONS.reduce((s, a) => s + (qty[a.id] || 0) * a.price, 0),
-    [qty]
+    () => ADDONS.reduce((s, a) => s + (addonCounts[a.id] || 0) * a.price, 0),
+    [addonCounts]
   );
   const memberDiscount = isMember ? addonTotal : 0;
-  const total = subtotal - memberDiscount;
+  const total = subtotal + addonTotal - memberDiscount;
   const itemCount = Object.values(qty).reduce((a, b) => a + b, 0);
-
-  const bump = (id: string, d: number) =>
-    setQty((q) => ({ ...q, [id]: Math.max(0, (q[id] || 0) + d) }));
-
-  // Mutually-exclusive addon picker: selecting one clears the others.
   const hotdogCount = HOTDOG_ITEM_IDS.reduce((s, id) => s + (qty[id] || 0), 0);
-  const selectedAddon = ADDON_IDS.find((id) => (qty[id] || 0) > 0) ?? null;
-  const pickAddon = (id: string | null) => {
-    setQty((q) => {
-      const next = { ...q };
-      ADDON_IDS.forEach((a) => {
-        next[a] = 0;
-      });
-      if (id) next[id] = 1;
-      return next;
-    });
+
+  const bump = (id: string, d: number) => {
+    // Block direct bumping of addons — they are picked per hotdog now.
+    if (ADDON_IDS.includes(id)) return;
+    setQty((q) => ({ ...q, [id]: Math.max(0, (q[id] || 0) + d) }));
   };
 
-  // Auto-clear addon + relish selection if no hotdog remains.
+  // Keep hotdogOpts arrays in sync with qty for hotdog-containing items.
   useEffect(() => {
-    if (hotdogCount === 0) {
-      if (selectedAddon) pickAddon(null);
-      if (noRelish) setNoRelish(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hotdogCount]);
+    setHotdogOpts((prev) => {
+      const next: Record<string, HotdogOpt[]> = {};
+      HOTDOG_ITEM_IDS.forEach((id) => {
+        const n = qty[id] || 0;
+        if (n === 0) return;
+        const existing = prev[id] || [];
+        const arr = existing.slice(0, n);
+        while (arr.length < n) arr.push({ noRelish: false, addon: null });
+        next[id] = arr;
+      });
+      return next;
+    });
+  }, [qty]);
+
+  const updateOpt = (itemId: string, idx: number, patch: Partial<HotdogOpt>) => {
+    setHotdogOpts((prev) => {
+      const arr = [...(prev[itemId] || [])];
+      if (!arr[idx]) return prev;
+      arr[idx] = { ...arr[idx], ...patch };
+      return { ...prev, [itemId]: arr };
+    });
+  };
 
   // Member status auto-derives from secret phrase.
   useEffect(() => {
@@ -100,10 +124,35 @@ export default function Order() {
 
   const submitOrder = async (method: "cash" | "transfer") => {
     setSubmitting(true);
-    const code = encodeOrderCode(qty);
+    // Combine non-addon qty with derived addon qty for the QR codec.
+    const fullQty: Record<string, number> = { ...qty, ...addonCounts };
+    const code = encodeOrderCode(fullQty);
     const items = ITEM_ORDER
-      .filter((it) => qty[it.id])
-      .map((it) => ({ id: it.id, name: it.name, qty: qty[it.id], price: it.price }));
+      .filter((it) => (fullQty[it.id] || 0) > 0)
+      .map((it) => {
+        const base = {
+          id: it.id,
+          name: it.name,
+          qty: fullQty[it.id] || 0,
+          price: it.price,
+        };
+        if (HOTDOG_ITEM_IDS.includes(it.id) && hotdogOpts[it.id]) {
+          return {
+            ...base,
+            hotdog_options: hotdogOpts[it.id].map((o) => ({
+              no_relish: o.noRelish,
+              addon: o.addon,
+              addon_name: o.addon
+                ? ITEM_ORDER.find((x) => x.id === o.addon)?.name ?? null
+                : null,
+            })),
+          };
+        }
+        return base;
+      });
+    const anyNoRelish = Object.values(hotdogOpts)
+      .flat()
+      .some((o) => o.noRelish);
     const { data, error } = await supabase
       .from("orders")
       .insert({
@@ -111,7 +160,7 @@ export default function Order() {
         items,
         total,
         is_member: isMember,
-        no_relish: noRelish,
+        no_relish: anyNoRelish,
         member_phrase: isMember ? phrase.trim() || null : null,
         payment_method: method,
         payment_code: code,
@@ -142,9 +191,9 @@ export default function Order() {
 
   const reset = () => {
     setQty({});
+    setHotdogOpts({});
     setNickname("");
     setIsMember(false);
-    setNoRelish(false);
     setPhrase("");
     setStage("cart");
     setPaymentCode(null);
@@ -221,46 +270,56 @@ export default function Order() {
         <Section title="SINGLE MENU" items={SINGLE} qty={qty} bump={bump} />
         <Section title="COMBO" items={COMBO} qty={qty} bump={bump} />
 
-        {/* Inline hotdog options panel — slides down only when a hotdog is in the cart. */}
+        {/* Per-hotdog option panels — one per unit. */}
         <AnimatePresence initial={false}>
-          {hotdogCount > 0 && (
-            <motion.div
-              key="hotdog-options-panel"
-              initial={{ opacity: 0, height: 0, y: -12, scale: 0.96 }}
-              animate={{ opacity: 1, height: "auto", y: 0, scale: 1 }}
-              exit={{ opacity: 0, height: 0, y: -12, scale: 0.96 }}
-              transition={spring}
-              className="overflow-hidden"
-            >
-              <div className="bg-white rounded-3xl p-5 shadow-sm space-y-4">
-                <div>
-                  <h2 className="font-extrabold text-lg text-orange-600">
-                    🌭 핫도그 옵션
-                  </h2>
-                  <p className="text-xs text-stone-500 mt-0.5">
-                    소스 / 토핑은 하나만 선택할 수 있어요 · 각 ₩500
-                  </p>
-                </div>
+          {HOTDOG_ITEM_IDS.flatMap((itemId) => {
+            const item = ITEM_ORDER.find((x) => x.id === itemId)!;
+            const opts = hotdogOpts[itemId] || [];
+            return opts.map((opt, idx) => (
+              <motion.div
+                key={`${itemId}-${idx}`}
+                layout
+                initial={{ opacity: 0, height: 0, y: -10, scale: 0.96 }}
+                animate={{ opacity: 1, height: "auto", y: 0, scale: 1 }}
+                exit={{ opacity: 0, height: 0, y: -10, scale: 0.96 }}
+                transition={spring}
+                className="overflow-hidden"
+              >
+                <div className="bg-white rounded-3xl p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 className="font-extrabold text-base text-orange-600">
+                      🌭 {item.name} <span className="text-stone-400">#{idx + 1}</span>
+                    </h2>
+                    <span className="text-[10px] font-mono bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">
+                      옵션
+                    </span>
+                  </div>
 
-                <BouncyCheck
-                  checked={noRelish}
-                  onChange={setNoRelish}
-                  label="렐리쉬 피클 제거"
-                />
+                  <BouncyCheck
+                    checked={opt.noRelish}
+                    onChange={(v) => updateOpt(itemId, idx, { noRelish: v })}
+                    label="렐리쉬 피클 제거"
+                  />
 
-                <div className="border-t border-stone-100 pt-3 space-y-3">
-                  {ADDONS.map((a) => (
-                    <BouncyCheck
-                      key={a.id}
-                      checked={selectedAddon === a.id}
-                      onChange={(v) => pickAddon(v ? a.id : null)}
-                      label={`${a.name} (+₩${a.price.toLocaleString()})`}
-                    />
-                  ))}
+                  <div className="border-t border-stone-100 pt-3 space-y-3">
+                    <p className="text-xs text-stone-500">
+                      소스 / 토핑은 하나만 선택할 수 있어요 · 각 ₩500
+                    </p>
+                    {ADDONS.map((a) => (
+                      <BouncyCheck
+                        key={a.id}
+                        checked={opt.addon === a.id}
+                        onChange={(v) =>
+                          updateOpt(itemId, idx, { addon: v ? a.id : null })
+                        }
+                        label={`${a.name} (+₩${a.price.toLocaleString()})`}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          )}
+              </motion.div>
+            ));
+          })}
         </AnimatePresence>
 
         {/* membership — secret phrase auto-checks */}
@@ -365,6 +424,17 @@ export default function Order() {
         </div>
       </main>
 
+      <footer className="px-5 mt-10 text-center text-stone-400">
+        <div className="text-xs font-semibold tracking-wide">
+          Decompiler — Since 2021
+        </div>
+        <a
+          href="mailto:jiyul.ahn@stonybrook.edu"
+          className="text-[11px] text-stone-400 hover:text-stone-600 transition-colors"
+        >
+          jiyul.ahn@stonybrook.edu
+        </a>
+      </footer>
       {/* sticky bar */}
       <motion.div
         initial={false}

@@ -4,7 +4,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ITEM_BY_ID, type Category } from "@/lib/orderCodec";
 
-type OrderItem = { id: string; name: string; qty: number; price: number };
+type HotdogOpt = { no_relish?: boolean; addon?: string | null; addon_name?: string | null };
+type OrderItem = {
+  id: string;
+  name: string;
+  qty: number;
+  price: number;
+  hotdog_options?: HotdogOpt[];
+};
 
 type Order = {
   id: string;
@@ -223,13 +230,43 @@ export default function WhatIsOrder() {
                           </span>
                         </div>
 
-                        <ul className="space-y-1 mb-2 text-sm">
-                          {catItems.map((it) => (
-                            <li key={it.id} className="flex justify-between font-semibold">
-                              <span className="truncate pr-2">{it.name}</span>
-                              <span className="font-mono shrink-0">x{it.qty}</span>
-                            </li>
-                          ))}
+                        <ul className="space-y-2 mb-2 text-sm">
+                          {catItems.map((it) => {
+                            const isHotdog = cat.key === "hotdog";
+                            return (
+                              <li key={it.id} className="font-semibold">
+                                <div className="flex justify-between">
+                                  <span className="truncate pr-2">{it.name}</span>
+                                  <span className="font-mono shrink-0">x{it.qty}</span>
+                                </div>
+                                {isHotdog && it.hotdog_options && it.hotdog_options.length > 0 && (
+                                  <ul className="mt-1 ml-1 space-y-0.5 text-[11px] font-normal text-stone-600">
+                                    {it.hotdog_options.map((o, i) => {
+                                      const parts: string[] = [];
+                                      if (o.no_relish) parts.push("렐리쉬 제거");
+                                      if (o.addon_name) parts.push(`+ ${o.addon_name}`);
+                                      const txt = parts.length ? parts.join(" · ") : "기본";
+                                      return (
+                                        <li key={i} className="leading-tight">
+                                          <span className="text-stone-400 mr-1">ㄴ</span>
+                                          <span className="text-stone-400">#{i + 1}</span>{" "}
+                                          <span
+                                            className={
+                                              parts.length
+                                                ? "text-orange-700 font-semibold"
+                                                : "text-stone-400"
+                                            }
+                                          >
+                                            {txt}
+                                          </span>
+                                        </li>
+                                      );
+                                    })}
+                                  </ul>
+                                )}
+                              </li>
+                            );
+                          })}
                         </ul>
 
                         {/* full order summary collapsed line */}
