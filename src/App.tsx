@@ -23,6 +23,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/order" element={<Order />} />
             <Route path="/whatisorder" element={<WhatIsOrder />} />
+            <Route path="/qrreader" element={<QrReader />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
