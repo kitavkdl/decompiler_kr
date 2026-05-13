@@ -181,7 +181,7 @@ export default function Order() {
      STAGE: CART — main menu / form
      ========================================================= */
   return (
-    <div className="min-h-screen bg-orange-50 text-stone-900 pb-32">
+    <div className="show-cursor min-h-screen bg-orange-50 text-stone-900 pb-32">
       {/* header */}
       <header className="px-5 pt-6 pb-3 flex items-center justify-between sticky top-0 bg-orange-50/90 backdrop-blur z-20">
         <div>
@@ -199,7 +199,39 @@ export default function Order() {
       <main className="px-5 space-y-6 mt-2">
         <Section title="SINGLE MENU" items={SINGLE} qty={qty} bump={bump} />
         <Section title="COMBO" items={COMBO} qty={qty} bump={bump} />
-        <Section title="ADD-ONS (₩500)" items={ADDONS} qty={qty} bump={bump} />
+
+        {/* Inline addon panel — slides down only when a hotdog is in the cart. */}
+        <AnimatePresence initial={false}>
+          {hotdogCount > 0 && (
+            <motion.div
+              key="addon-panel"
+              initial={{ opacity: 0, height: 0, y: -12, scale: 0.96 }}
+              animate={{ opacity: 1, height: "auto", y: 0, scale: 1 }}
+              exit={{ opacity: 0, height: 0, y: -12, scale: 0.96 }}
+              transition={spring}
+              className="overflow-hidden"
+            >
+              <div className="bg-white rounded-3xl p-5 shadow-sm space-y-3">
+                <div>
+                  <h2 className="font-extrabold text-lg text-orange-600">
+                    🌭 소스 / 토핑 추가하시겠어요?
+                  </h2>
+                  <p className="text-xs text-stone-500 mt-0.5">
+                    하나만 선택할 수 있어요 · 각 ₩500
+                  </p>
+                </div>
+                {ADDONS.map((a) => (
+                  <BouncyCheck
+                    key={a.id}
+                    checked={selectedAddon === a.id}
+                    onChange={(v) => pickAddon(v ? a.id : null)}
+                    label={`${a.name} (+₩${a.price.toLocaleString()})`}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* options */}
         <div className="bg-white rounded-3xl p-5 shadow-sm space-y-4">
