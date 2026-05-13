@@ -486,7 +486,7 @@ export default function Order() {
         </a>
       </footer>
 
-      <AdminStatsModal open={showAdmin} onClose={() => setShowAdmin(false)} />
+      
       {/* sticky bar */}
       <motion.div
         initial={false}
