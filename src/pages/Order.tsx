@@ -205,6 +205,49 @@ export default function Order() {
     setStage("cart");
     setPaymentCode(null);
     setOrderId(null);
+    setOrderCreatedAt(null);
+    setQueueAhead(null);
+    setElapsedSec(0);
+  };
+
+  // Compute queue position when QR is shown, and refresh every 30s.
+  useEffect(() => {
+    if (stage !== "done" || !orderCreatedAt) return;
+    let cancelled = false;
+    const fetchQueue = async () => {
+      const { count } = await supabase
+        .from("orders")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "pending")
+        .eq("paid", true)
+        .lt("created_at", orderCreatedAt);
+      if (!cancelled) setQueueAhead(count ?? 0);
+    };
+    fetchQueue();
+    const iv = window.setInterval(fetchQueue, 30000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(iv);
+    };
+  }, [stage, orderCreatedAt]);
+
+  // Elapsed timer from when order is placed.
+  useEffect(() => {
+    if (stage !== "done" || !orderCreatedAt) return;
+    const start = new Date(orderCreatedAt).getTime();
+    const tick = () => setElapsedSec(Math.max(0, Math.floor((Date.now() - start) / 1000)));
+    tick();
+    const iv = window.setInterval(tick, 1000);
+    return () => window.clearInterval(iv);
+  }, [stage, orderCreatedAt]);
+
+  const copyAccount = async () => {
+    try {
+      await navigator.clipboard.writeText(BANK_INFO.account.replace(/-/g, ""));
+      toast.success("계좌번호가 복사되었어요!");
+    } catch {
+      toast.error("복사 실패. 직접 입력해주세요.");
+    }
   };
 
   /* =========================================================
