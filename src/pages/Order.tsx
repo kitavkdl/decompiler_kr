@@ -324,60 +324,19 @@ export default function Order() {
           })}
         </AnimatePresence>
 
-        {/* membership — secret phrase auto-checks */}
+        {/* membership — checkbox opens masked phrase input */}
         <div className="bg-white rounded-3xl p-5 shadow-sm space-y-3">
-          <div className="flex items-center gap-3">
-            <motion.div
-              animate={{
-                backgroundColor: isMember ? "#ea580c" : "#f5f5f4",
-                scale: isMember ? [1, 1.25, 1] : 1,
-              }}
-              transition={spring}
-              className="w-7 h-7 rounded-lg flex items-center justify-center border-2 border-stone-300"
-            >
-              <AnimatePresence>
-                {isMember && (
-                  <motion.svg
-                    initial={{ scale: 0, rotate: -90 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    exit={{ scale: 0 }}
-                    transition={spring}
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </motion.svg>
-                )}
-              </AnimatePresence>
-            </motion.div>
-            <div className="flex-1">
-              <div className="font-extrabold">디컴파일러 회원인가요?</div>
-              <p className="text-xs text-stone-500">
-                비밀문구를 입력하면 자동으로 체크돼요
-              </p>
-            </div>
-          </div>
-
-          <input
-            value={phrase}
-            onChange={(e) => setPhrase(e.target.value)}
-            maxLength={20}
-            placeholder="비밀문구를 입력하세요"
-            className={`w-full rounded-xl px-3 py-3 text-base border-2 focus:outline-none transition-colors ${
-              isMember
-                ? "bg-orange-50 border-orange-400 text-orange-900 font-bold"
-                : "bg-stone-50 border-transparent focus:border-orange-300"
-            }`}
+          <BouncyCheck
+            checked={memberOpen}
+            onChange={(v) => {
+              setMemberOpen(v);
+              if (!v) setPhrase("");
+            }}
+            label="디컴파일러 회원인가요?"
           />
 
           <AnimatePresence initial={false}>
-            {isMember && (
+            {memberOpen && (
               <motion.div
                 initial={{ opacity: 0, height: 0, y: -8 }}
                 animate={{ opacity: 1, height: "auto", y: 0 }}
@@ -385,23 +344,59 @@ export default function Order() {
                 transition={spring}
                 className="overflow-hidden"
               >
-                <div className="bg-orange-100 rounded-2xl p-4 border border-orange-300">
-                  <p className="text-sm font-bold text-orange-900 leading-relaxed">
-                    ✅ 디컴파일러 회원 인증 완료!
+                <div className="space-y-3">
+                  <p className="text-xs text-stone-500 leading-relaxed">
+                    🔒 임원이 손님의 비밀문구를 듣고 직접 입력합니다.
+                    <br />
+                    인증되면 추가하신 모든 소스/토핑 금액이 할인돼요.
                   </p>
-                  <p className="text-xs text-orange-800 mt-1 leading-relaxed">
-                    추가하신 모든 소스 / 토핑 금액이 총 합계에서 자동 할인됩니다.
-                  </p>
-                  {addonTotal > 0 && (
-                    <div className="mt-2 flex items-center justify-between bg-white rounded-xl px-3 py-2">
-                      <span className="text-xs font-semibold text-stone-600">
-                        회원 할인
-                      </span>
-                      <span className="font-extrabold text-orange-600">
-                        −₩{addonTotal.toLocaleString()}
-                      </span>
-                    </div>
-                  )}
+                  <input
+                    type="password"
+                    inputMode="numeric"
+                    autoComplete="off"
+                    value={phrase}
+                    onChange={(e) =>
+                      setPhrase(e.target.value.replace(/\D/g, "").slice(0, 4))
+                    }
+                    maxLength={4}
+                    placeholder="● ● ● ●"
+                    className={`w-full rounded-xl px-3 py-3 text-center text-2xl font-bold tracking-[0.6em] border-2 focus:outline-none transition-colors ${
+                      isMember
+                        ? "bg-orange-50 border-orange-400 text-orange-900"
+                        : "bg-stone-50 border-transparent focus:border-orange-300"
+                    }`}
+                  />
+
+                  <AnimatePresence initial={false}>
+                    {isMember && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0, y: -8 }}
+                        animate={{ opacity: 1, height: "auto", y: 0 }}
+                        exit={{ opacity: 0, height: 0, y: -8 }}
+                        transition={spring}
+                        className="overflow-hidden"
+                      >
+                        <div className="bg-orange-100 rounded-2xl p-4 border border-orange-300">
+                          <p className="text-sm font-bold text-orange-900 leading-relaxed">
+                            ✅ 디컴파일러 회원 인증 완료!
+                          </p>
+                          <p className="text-xs text-orange-800 mt-1 leading-relaxed">
+                            추가하신 모든 소스 / 토핑 금액이 총 합계에서 자동 할인됩니다.
+                          </p>
+                          {addonTotal > 0 && (
+                            <div className="mt-2 flex items-center justify-between bg-white rounded-xl px-3 py-2">
+                              <span className="text-xs font-semibold text-stone-600">
+                                회원 할인
+                              </span>
+                              <span className="font-extrabold text-orange-600">
+                                −₩{addonTotal.toLocaleString()}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </motion.div>
             )}
