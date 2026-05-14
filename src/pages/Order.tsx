@@ -172,9 +172,8 @@ export default function Order() {
     setPaymentCode(code);
     setOrderId(data.id);
     setOrderCreatedAt(data.created_at as string);
+    // Both cash and bank: staff must scan QR to mark as paid → only then it appears on dashboard.
     if (method === "cash") {
-      // For cash: mark as paid immediately so it shows on dashboard.
-      await supabase.from("orders").update({ paid: true }).eq("id", data.id);
       setStage("done");
     } else {
       setStage("bank-pending");
