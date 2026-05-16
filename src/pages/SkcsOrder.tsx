@@ -606,8 +606,8 @@ function Section({
                 </motion.button>
                 <motion.span
                   key={n}
-                  initial={{ scale: 1.4, color: "#fbbf24" }}
-                  animate={{ scale: 1, color: "#f5f5f4" }}
+                  initial={{ scale: 1.4, color: "#0ea5e9" }}
+                  animate={{ scale: 1, color: "#0f172a" }}
                   transition={spring}
                   className="w-6 text-center font-bold tabular-nums"
                 >
