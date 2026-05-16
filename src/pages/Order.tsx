@@ -44,6 +44,7 @@ const spring = { type: "spring" as const, stiffness: 380, damping: 18 };
 type Stage = "cart" | "payment" | "bank-pending" | "done";
 
 type HotdogOpt = { noRelish: boolean; addon: string | null };
+type AdeOpt = { flavor: AdeFlavor | null };
 
 export default function Order() {
   // Quantity for non-addon items only. Addon qty is derived from per-hotdog options.
