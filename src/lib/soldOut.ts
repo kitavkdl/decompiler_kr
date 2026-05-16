@@ -1,48 +1,64 @@
 // Tiny shared "sold out" state stored in localStorage and broadcast across
 // tabs/components via a custom event. Single-device kiosk friendly.
+// Namespaced so each booth (decompiler / skcs) keeps its own list.
 import { useEffect, useState } from "react";
 
-const KEY = "decompiler.soldOut.v1";
-const EVT = "decompiler:sold-out-change";
+function makeSoldOut(namespace: string) {
+  const KEY = `${namespace}.soldOut.v1`;
+  const EVT = `${namespace}:sold-out-change`;
 
-function read(): Set<string> {
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return new Set();
-    const arr = JSON.parse(raw);
-    return new Set(Array.isArray(arr) ? arr.map(String) : []);
-  } catch {
-    return new Set();
-  }
+  const read = (): Set<string> => {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return new Set();
+      const arr = JSON.parse(raw);
+      return new Set(Array.isArray(arr) ? arr.map(String) : []);
+    } catch {
+      return new Set();
+    }
+  };
+
+  const write = (set: Set<string>) => {
+    try {
+      localStorage.setItem(KEY, JSON.stringify([...set]));
+      window.dispatchEvent(new CustomEvent(EVT));
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const setItem = (id: string, soldOut: boolean) => {
+    const s = read();
+    if (soldOut) s.add(id);
+    else s.delete(id);
+    write(s);
+  };
+
+  const useHook = () => {
+    const [ids, setIds] = useState<Set<string>>(() => read());
+    useEffect(() => {
+      const refresh = () => setIds(read());
+      window.addEventListener(EVT, refresh);
+      const onStorage = (e: StorageEvent) => {
+        if (e.key === KEY) refresh();
+      };
+      window.addEventListener("storage", onStorage);
+      return () => {
+        window.removeEventListener(EVT, refresh);
+        window.removeEventListener("storage", onStorage);
+      };
+    }, []);
+    return ids;
+  };
+
+  return { useHook, setItem };
 }
 
-function write(set: Set<string>) {
-  try {
-    localStorage.setItem(KEY, JSON.stringify([...set]));
-    window.dispatchEvent(new CustomEvent(EVT));
-  } catch {
-    /* ignore */
-  }
-}
+const decompiler = makeSoldOut("decompiler");
+const skcs = makeSoldOut("skcs");
 
-export function setSoldOut(id: string, soldOut: boolean) {
-  const s = read();
-  if (soldOut) s.add(id);
-  else s.delete(id);
-  write(s);
-}
+export const useSoldOut = decompiler.useHook;
+export const setSoldOut = decompiler.setItem;
 
-export function useSoldOut() {
-  const [ids, setIds] = useState<Set<string>>(() => read());
-  useEffect(() => {
-    const refresh = () => setIds(read());
-    window.addEventListener(EVT, refresh);
-    window.addEventListener("storage", (e) => {
-      if (e.key === KEY) refresh();
-    });
-    return () => {
-      window.removeEventListener(EVT, refresh);
-    };
-  }, []);
-  return ids;
-}
+export const useSkcsSoldOut = skcs.useHook;
+export const setSkcsSoldOut = skcs.setItem;
