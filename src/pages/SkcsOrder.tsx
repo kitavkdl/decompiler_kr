@@ -60,6 +60,8 @@ export default function SkcsOrder() {
   const [orderCreatedAt, setOrderCreatedAt] = useState<string | null>(null);
   const [queueAhead, setQueueAhead] = useState<number | null>(null);
   const [elapsedSec, setElapsedSec] = useState(0);
+  const [staffConfirmOpen, setStaffConfirmOpen] = useState(false);
+  const [orderFulfilled, setOrderFulfilled] = useState(false);
 
   const subtotal = useMemo(
     () => SKCS_ITEM_ORDER.reduce((s, it) => s + (qty[it.id] || 0) * it.price, 0),
