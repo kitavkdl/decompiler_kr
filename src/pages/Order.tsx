@@ -457,6 +457,61 @@ export default function Order() {
           })}
         </AnimatePresence>
 
+        {/* Per-ade-unit flavor selection panels — one per ade unit. */}
+        <AnimatePresence initial={false}>
+          {ADE_ITEM_IDS.flatMap((itemId) => {
+            const item = ITEM_ORDER.find((x) => x.id === itemId);
+            if (!item) return [];
+            const opts = adeOpts[itemId] || [];
+            return opts.map((opt, idx) => (
+              <motion.div
+                key={`ade-${itemId}-${idx}`}
+                layout
+                initial={{ opacity: 0, height: 0, y: -10, scale: 0.96 }}
+                animate={{ opacity: 1, height: "auto", y: 0, scale: 1 }}
+                exit={{ opacity: 0, height: 0, y: -10, scale: 0.96 }}
+                transition={spring}
+                className="overflow-hidden"
+              >
+                <div className="bg-white rounded-3xl p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 className="font-extrabold text-base text-sky-600">
+                      🥤 {item.name} <span className="text-stone-400">#{idx + 1}</span>
+                    </h2>
+                    <span className="text-[10px] font-mono bg-sky-100 text-sky-700 px-2 py-0.5 rounded-full">
+                      에이드 맛 선택
+                    </span>
+                  </div>
+                  <p className="text-xs text-stone-500">
+                    어떤 에이드를 드릴까요? (필수 / Required)
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {ADE_FLAVORS.map((f) => {
+                      const active = opt.flavor === f.id;
+                      return (
+                        <motion.button
+                          key={f.id}
+                          type="button"
+                          whileTap={{ scale: 0.94 }}
+                          onClick={() => updateAde(itemId, idx, f.id)}
+                          className={`rounded-2xl py-3 px-3 font-bold text-sm border-2 transition flex flex-col items-center gap-1 ${
+                            active
+                              ? "bg-sky-500 text-white border-sky-500 shadow"
+                              : "bg-stone-50 text-stone-700 border-transparent"
+                          }`}
+                        >
+                          <span className="text-2xl">{f.emoji}</span>
+                          {f.name}
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </motion.div>
+            ));
+          })}
+        </AnimatePresence>
+
         {/* membership — checkbox opens masked phrase input */}
         <div className="bg-white rounded-3xl p-5 shadow-sm space-y-3">
           <BouncyCheck
