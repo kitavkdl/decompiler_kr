@@ -246,14 +246,20 @@ export default function Order() {
     setOrderCreatedAt(data.created_at as string);
     // Both cash and bank: staff must scan QR to mark as paid → only then it appears on dashboard.
     if (method === "cash") {
-      setStage("done");
+      // Cash: ask user to confirm staff received cash before showing QR.
+      setStaffConfirmOpen(true);
     } else {
       setStage("bank-pending");
     }
   };
 
   const confirmTransferred = () => {
-    // Show QR — staff will scan to mark as paid.
+    // Ask user to confirm staff verified the transfer before showing QR.
+    setStaffConfirmOpen(true);
+  };
+
+  const handleStaffConfirmed = () => {
+    setStaffConfirmOpen(false);
     setStage("done");
   };
 
