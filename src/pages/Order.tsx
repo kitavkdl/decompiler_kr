@@ -229,6 +229,7 @@ export default function Order() {
         payment_method: method,
         payment_code: code,
         paid: false,
+        booth: "decompiler",
       })
       .select("id, created_at")
       .single();
