@@ -149,16 +149,16 @@ export default function SkcsWhatIsOrder() {
   const visible = paidOrders.filter((o) => (filter === "all" ? true : o.status === filter));
 
   return (
-    <div className="show-cursor min-h-screen bg-stone-950 text-stone-100 px-4 py-6 md:px-8">
+    <div className="show-cursor min-h-screen bg-sky-50 text-slate-900 px-4 py-6 md:px-8">
       <header className="max-w-7xl mx-auto mb-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="text-3xl font-extrabold text-amber-400">📋 SKCS 키링 현황판</h1>
-            <p className="text-sm text-stone-500">실시간으로 들어오는 결제 완료 주문</p>
+            <h1 className="text-3xl font-extrabold text-sky-600">📋 SKCS 키링 현황판</h1>
+            <p className="text-sm text-slate-500">실시간으로 들어오는 결제 완료 주문</p>
           </div>
           <button
             onClick={() => setShowAdmin(true)}
-            className="text-sm font-bold bg-stone-900 text-amber-400 border border-stone-700 px-4 py-2 rounded-full active:scale-95 transition"
+            className="text-sm font-bold bg-white text-sky-600 border border-sky-200 px-4 py-2 rounded-full active:scale-95 transition"
           >
             📊 관리자
           </button>
@@ -170,8 +170,8 @@ export default function SkcsWhatIsOrder() {
               onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-full text-sm font-bold transition ${
                 filter === f
-                  ? "bg-amber-500 text-stone-950"
-                  : "bg-stone-900 text-stone-400 border border-stone-700"
+                  ? "bg-sky-500 text-slate-900"
+                  : "bg-white text-slate-500 border border-sky-200"
               }`}
             >
               {f === "pending" ? "대기중" : f === "done" ? "완료" : "전체"}
@@ -180,7 +180,7 @@ export default function SkcsWhatIsOrder() {
               </span>
             </button>
           ))}
-          <div className="ml-auto text-xs text-stone-500 self-center">
+          <div className="ml-auto text-xs text-slate-500 self-center">
             미결제 대기: {orders.filter((o) => !o.paid).length}
           </div>
         </div>
@@ -191,12 +191,12 @@ export default function SkcsWhatIsOrder() {
           const ordersInCat = visible.filter((o) => itemsForCategory(o, cat.key).length > 0);
           return (
             <section key={cat.key} className="flex flex-col">
-              <div className="flex items-center justify-between mb-3 px-4 py-3 rounded-2xl bg-stone-900 border border-stone-800">
-                <h2 className="font-extrabold text-lg flex items-center gap-2 text-amber-400">
+              <div className="flex items-center justify-between mb-3 px-4 py-3 rounded-2xl bg-white border border-sky-200">
+                <h2 className="font-extrabold text-lg flex items-center gap-2 text-sky-600">
                   <span className="text-2xl">{cat.emoji}</span>
                   {cat.label}
                 </h2>
-                <span className="text-sm font-bold bg-stone-800 text-amber-300 px-2.5 py-1 rounded-full">
+                <span className="text-sm font-bold bg-sky-100 text-sky-700 px-2.5 py-1 rounded-full">
                   {ordersInCat.reduce(
                     (s, o) => s + itemsForCategory(o, cat.key).reduce((a, it) => a + it.qty, 0),
                     0
@@ -215,12 +215,12 @@ export default function SkcsWhatIsOrder() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.85 }}
                         transition={spring}
-                        className={`rounded-2xl p-4 shadow-sm bg-stone-900 border-2 ${
+                        className={`rounded-2xl p-4 shadow-sm bg-white border-2 ${
                           o.id === highlight
-                            ? "border-amber-500 ring-4 ring-amber-500/30"
+                            ? "border-sky-500 ring-4 ring-sky-500/30"
                             : o.status === "done"
                             ? "border-emerald-700/50 opacity-70"
-                            : "border-stone-800"
+                            : "border-sky-200"
                         }`}
                       >
                         <div className="flex items-start justify-between mb-2 gap-2">
@@ -228,7 +228,7 @@ export default function SkcsWhatIsOrder() {
                             <div className="text-xl font-extrabold leading-tight truncate">
                               {o.nickname}
                             </div>
-                            <div className="text-[10px] text-stone-500 font-mono">
+                            <div className="text-[10px] text-slate-500 font-mono">
                               #{o.id.slice(0, 6)} ·{" "}
                               {new Date(o.created_at).toLocaleTimeString("ko-KR", {
                                 hour: "2-digit",
@@ -239,8 +239,8 @@ export default function SkcsWhatIsOrder() {
                           <span
                             className={`text-[10px] font-bold px-2 py-1 rounded-full whitespace-nowrap ${
                               o.payment_method === "cash"
-                                ? "bg-stone-800 text-stone-300"
-                                : "bg-amber-500/20 text-amber-300"
+                                ? "bg-sky-100 text-slate-700"
+                                : "bg-sky-500/20 text-sky-700"
                             }`}
                           >
                             {o.payment_method === "cash" ? "💵 현금" : "🏦 입금"}
@@ -251,12 +251,12 @@ export default function SkcsWhatIsOrder() {
                           {catItems.map((it) => {
                             return (
                               <li key={it.id} className="font-semibold">
-                                <div className="flex justify-between items-center gap-2 bg-stone-800 rounded-xl px-3 py-2">
+                                <div className="flex justify-between items-center gap-2 bg-sky-100 rounded-xl px-3 py-2">
                                   <span className="truncate pr-2 text-lg font-extrabold leading-tight">
                                     {it.name}
                                   </span>
                                   <div className="flex items-center gap-2 shrink-0">
-                                    <span className="font-mono text-2xl font-extrabold text-amber-400 tabular-nums">
+                                    <span className="font-mono text-2xl font-extrabold text-sky-600 tabular-nums">
                                       x{it.qty}
                                     </span>
                                     {(() => {
@@ -270,7 +270,7 @@ export default function SkcsWhatIsOrder() {
                                           className={`shrink-0 w-8 h-8 rounded-md border-2 flex items-center justify-center transition active:scale-90 ${
                                             checked
                                               ? "bg-emerald-500 border-emerald-500 text-white"
-                                              : "bg-stone-900 border-stone-600 text-transparent"
+                                              : "bg-white border-sky-300 text-transparent"
                                           }`}
                                         >
                                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
@@ -283,17 +283,17 @@ export default function SkcsWhatIsOrder() {
                                 </div>
                                 {/* Customization details for keycap clickers */}
                                 {it.custom_options && it.custom_options.length > 0 && (
-                                  <ul className="mt-2 ml-1 space-y-2 text-sm font-normal text-stone-300">
+                                  <ul className="mt-2 ml-1 space-y-2 text-sm font-normal text-slate-700">
                                     {it.custom_options.map((c, i) => (
-                                      <li key={i} className="bg-stone-950/60 rounded-lg p-2 border border-stone-800">
-                                        <div className="text-[11px] text-stone-500 font-bold mb-1">
+                                      <li key={i} className="bg-sky-50/60 rounded-lg p-2 border border-sky-200">
+                                        <div className="text-[11px] text-slate-500 font-bold mb-1">
                                           #{i + 1}
                                         </div>
                                         <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-xs">
-                                          <div><span className="text-stone-500">Base:</span> <span className="font-bold text-amber-300">{c.base ?? "-"}</span></div>
-                                          <div><span className="text-stone-500">Switch:</span> <span className="font-bold text-amber-300">{c.switch_name ?? c.switch ?? "-"}</span></div>
-                                          <div><span className="text-stone-500">Ring:</span> <span className="font-bold text-amber-300">{c.ring ?? "-"}</span></div>
-                                          <div><span className="text-stone-500">Keycap:</span> <span className="font-bold text-amber-300">{c.keycaps?.join(", ") || "-"}</span></div>
+                                          <div><span className="text-slate-500">Base:</span> <span className="font-bold text-sky-700">{c.base ?? "-"}</span></div>
+                                          <div><span className="text-slate-500">Switch:</span> <span className="font-bold text-sky-700">{c.switch_name ?? c.switch ?? "-"}</span></div>
+                                          <div><span className="text-slate-500">Ring:</span> <span className="font-bold text-sky-700">{c.ring ?? "-"}</span></div>
+                                          <div><span className="text-slate-500">Keycap:</span> <span className="font-bold text-sky-700">{c.keycaps?.join(", ") || "-"}</span></div>
                                         </div>
                                       </li>
                                     ))}
@@ -305,7 +305,7 @@ export default function SkcsWhatIsOrder() {
                         </ul>
 
                         {o.items.length > catItems.length && (
-                          <div className="text-[11px] text-stone-500 mb-2 truncate">
+                          <div className="text-[11px] text-slate-500 mb-2 truncate">
                             전체 주문: {o.items.map((it) => `${it.name} x${it.qty}`).join(", ")}
                           </div>
                         )}
@@ -314,8 +314,8 @@ export default function SkcsWhatIsOrder() {
                           onClick={() => toggleStatus(o)}
                           className={`w-full py-1.5 rounded-full font-bold text-xs transition active:scale-95 ${
                             o.status === "done"
-                              ? "bg-stone-800 text-stone-400"
-                              : "bg-amber-500 text-stone-950"
+                              ? "bg-sky-100 text-slate-500"
+                              : "bg-sky-500 text-slate-900"
                           }`}
                         >
                           {o.status === "done" ? "↩ 대기로" : "✅ 제공 완료"}
@@ -325,7 +325,7 @@ export default function SkcsWhatIsOrder() {
                   })}
                 </AnimatePresence>
                 {ordersInCat.length === 0 && (
-                  <div className="text-center text-stone-600 text-sm py-10 bg-stone-900/50 rounded-2xl border border-dashed border-stone-800">
+                  <div className="text-center text-slate-400 text-sm py-10 bg-white/50 rounded-2xl border border-dashed border-sky-200">
                     주문 없음
                   </div>
                 )}
