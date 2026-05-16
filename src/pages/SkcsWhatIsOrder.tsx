@@ -190,7 +190,7 @@ export default function SkcsWhatIsOrder() {
         {CATEGORIES.map((cat) => {
           const ordersInCat = visible.filter((o) => itemsForCategory(o, cat.key).length > 0);
           return (
-            <section key={cat.key} className="flex flex-col">
+            <section key={cat.key} className="flex flex-col min-w-0">
               <div className="flex items-center justify-between mb-3 px-4 py-3 rounded-2xl bg-white border border-sky-200">
                 <h2 className="font-extrabold text-lg flex items-center gap-2 text-sky-600">
                   <span className="text-2xl">{cat.emoji}</span>
