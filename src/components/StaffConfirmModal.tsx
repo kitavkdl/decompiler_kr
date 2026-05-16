@@ -12,6 +12,7 @@ interface Props {
   onCancel: () => void;
   theme?: StaffConfirmTheme;
   lockSeconds?: number;
+  confirmLockSeconds?: number;
 }
 
 const THEMES = {
