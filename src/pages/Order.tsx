@@ -51,6 +51,8 @@ export default function Order() {
   const [qty, setQty] = useState<Record<string, number>>({});
   // Per-hotdog (per unit) options, keyed by hotdog-containing item id.
   const [hotdogOpts, setHotdogOpts] = useState<Record<string, HotdogOpt[]>>({});
+  // Per-ade-unit flavor selections, keyed by ade-containing item id.
+  const [adeOpts, setAdeOpts] = useState<Record<string, AdeOpt[]>>({});
   const [nickname, setNickname] = useState("");
   const [isMember, setIsMember] = useState(false);
   const MEMBER_PHRASE = "6463";
