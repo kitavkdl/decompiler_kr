@@ -252,11 +252,11 @@ export default function SkcsWhatIsOrder() {
                             return (
                               <li key={it.id} className="font-semibold">
                                 <div className="flex justify-between items-center gap-2 bg-sky-100 rounded-xl px-3 py-2">
-                                  <span className="truncate pr-2 text-lg font-extrabold leading-tight">
+                                  <span className="min-w-0 flex-1 pr-2 text-base sm:text-lg font-extrabold leading-tight break-words">
                                     {it.name}
                                   </span>
                                   <div className="flex items-center gap-2 shrink-0">
-                                    <span className="font-mono text-2xl font-extrabold text-sky-600 tabular-nums">
+                                    <span className="font-mono text-xl sm:text-2xl font-extrabold text-sky-600 tabular-nums">
                                       x{it.qty}
                                     </span>
                                     {(() => {
