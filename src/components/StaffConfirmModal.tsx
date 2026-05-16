@@ -12,6 +12,7 @@ interface Props {
   onCancel: () => void;
   theme?: StaffConfirmTheme;
   lockSeconds?: number;
+  confirmLockSeconds?: number;
 }
 
 const THEMES = {
@@ -37,20 +38,25 @@ export default function StaffConfirmModal({
   onCancel,
   theme = "decompiler",
   lockSeconds = 10,
+  confirmLockSeconds = 5,
 }: Props) {
   const [remaining, setRemaining] = useState(lockSeconds);
+  const [confirmRemaining, setConfirmRemaining] = useState(confirmLockSeconds);
   const t = THEMES[theme];
 
   useEffect(() => {
     if (!open) return;
     setRemaining(lockSeconds);
+    setConfirmRemaining(confirmLockSeconds);
     const iv = window.setInterval(() => {
       setRemaining((r) => (r <= 1 ? 0 : r - 1));
+      setConfirmRemaining((r) => (r <= 1 ? 0 : r - 1));
     }, 1000);
     return () => window.clearInterval(iv);
-  }, [open, lockSeconds]);
+  }, [open, lockSeconds, confirmLockSeconds]);
 
   const locked = remaining > 0;
+  const confirmLocked = confirmRemaining > 0;
 
   return (
     <AnimatePresence>
@@ -101,14 +107,19 @@ export default function StaffConfirmModal({
             </div>
 
             <motion.button
-              whileTap={{ scale: 0.96 }}
+              whileTap={{ scale: confirmLocked ? 1 : 0.96 }}
               onClick={onConfirm}
-              className={`w-full rounded-full py-4 font-extrabold flex items-center justify-center gap-2 ${t.accent}`}
+              disabled={confirmLocked}
+              className={`w-full rounded-full py-4 font-extrabold flex items-center justify-center gap-2 transition ${
+                confirmLocked ? "bg-stone-300 text-stone-500 cursor-not-allowed" : t.accent
+              }`}
             >
-              <span className="w-5 h-5 rounded-full border-2 border-white flex items-center justify-center text-xs">
+              <span className="w-5 h-5 rounded-full border-2 border-current flex items-center justify-center text-xs">
                 ✓
               </span>
-              네, 직원에게 확인받았습니다
+              {confirmLocked
+                ? `${confirmRemaining}초 후 활성화`
+                : "네, 직원에게 확인받았습니다"}
             </motion.button>
           </motion.div>
         </motion.div>

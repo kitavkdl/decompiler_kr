@@ -288,6 +288,7 @@ export default function Order() {
       const { count } = await supabase
         .from("orders")
         .select("id", { count: "exact", head: true })
+        .eq("booth", "decompiler")
         .eq("status", "pending")
         .eq("paid", true)
         .lt("created_at", orderCreatedAt);
