@@ -177,11 +177,11 @@ export default function SkcsAdminStatsModal({
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h2 className="text-2xl font-extrabold text-sky-600">📊 SKCS 관리자</h2>
-                <p className="text-xs text-slate-500">통계 · 주문 삭제 · 전체 리셋</p>
+                <p className="text-xs text-slate-900">통계 · 주문 삭제 · 전체 리셋</p>
               </div>
               <button
                 onClick={onClose}
-                className="text-slate-500 hover:text-slate-800 text-2xl leading-none"
+                className="text-slate-900 hover:text-slate-800 text-2xl leading-none"
               >
                 ×
               </button>
@@ -189,7 +189,7 @@ export default function SkcsAdminStatsModal({
 
             {!unlocked ? (
               <div className="space-y-3 py-4">
-                <p className="text-sm text-slate-700">🔒 관리자 비밀번호를 입력하세요</p>
+                <p className="text-sm text-slate-900">🔒 관리자 비밀번호를 입력하세요</p>
                 <input
                   type="password"
                   inputMode="numeric"
@@ -216,7 +216,7 @@ export default function SkcsAdminStatsModal({
                 <div className="grid grid-cols-2 gap-2">
                   <StatCard label="총 매출" value={`₩${stats.totalRevenue.toLocaleString()}`} color="bg-sky-500/20 text-sky-700 border-sky-500/30" />
                   <StatCard label="결제 완료 주문" value={`${stats.totalOrders}건`} color="bg-sky-100 text-slate-800 border-sky-200" />
-                  <StatCard label="고유 닉네임" value={`${stats.uniqueCustomers}명`} color="bg-sky-500/20 text-sky-300 border-sky-500/30" />
+                  <StatCard label="고유 닉네임" value={`${stats.uniqueCustomers}명`} color="bg-sky-500/20 text-slate-900 border-sky-500/30" />
                   <StatCard label="제공 / 대기" value={`${stats.doneCount} / ${stats.pendingCount}`} color="bg-emerald-500/20 text-emerald-300 border-emerald-500/30" />
                   <StatCard label="현금 / 입금" value={`${stats.cash} / ${stats.transfer}`} color="bg-yellow-500/20 text-yellow-300 border-yellow-500/30" />
                   <StatCard label="미결제 대기" value={`${stats.unpaid}건`} color="bg-red-500/20 text-red-300 border-red-500/30" />
@@ -226,17 +226,17 @@ export default function SkcsAdminStatsModal({
                   <h3 className="font-extrabold mb-2 text-sm text-sky-600">🏆 메뉴 판매 순위</h3>
                   <div className="bg-sky-100 rounded-2xl divide-y divide-sky-200 border border-sky-200">
                     {stats.leaderboard.length === 0 && (
-                      <div className="p-4 text-center text-xs text-slate-500">결제 완료된 주문이 없어요</div>
+                      <div className="p-4 text-center text-xs text-slate-900">결제 완료된 주문이 없어요</div>
                     )}
                     {stats.leaderboard.map((row, i) => (
                       <div key={row.name + i} className="flex items-center justify-between px-3 py-2 text-sm">
                         <span className="flex items-center gap-2 min-w-0">
-                          <span className="font-mono text-xs text-slate-500 w-5 shrink-0">{i + 1}.</span>
+                          <span className="font-mono text-xs text-slate-900 w-5 shrink-0">{i + 1}.</span>
                           <span className="truncate">{row.name}</span>
                         </span>
                         <span className="flex items-center gap-3 shrink-0 text-xs">
                           <span className="font-bold">x{row.qty}</span>
-                          <span className="text-slate-500">₩{row.revenue.toLocaleString()}</span>
+                          <span className="text-slate-900">₩{row.revenue.toLocaleString()}</span>
                         </span>
                       </div>
                     ))}
@@ -246,7 +246,7 @@ export default function SkcsAdminStatsModal({
                 <div>
                   <h3 className="font-extrabold mb-2 text-sm text-sky-600">
                     🚫 품절 관리{" "}
-                    <span className="text-[10px] font-normal text-slate-500">탭하여 토글 · 주문 화면에 즉시 반영</span>
+                    <span className="text-[10px] font-normal text-slate-900">탭하여 토글 · 주문 화면에 즉시 반영</span>
                   </h3>
                   <div className="bg-sky-100 rounded-2xl divide-y divide-sky-200 border border-sky-200">
                     {SKCS_ITEM_ORDER.map((it) => {
@@ -258,7 +258,7 @@ export default function SkcsAdminStatsModal({
                           onClick={() => setSkcsSoldOut(it.id, !out)}
                           className="w-full flex items-center justify-between gap-2 px-3 py-2 text-sm text-left active:scale-[0.99] transition"
                         >
-                          <span className={`min-w-0 truncate ${out ? "text-slate-500 line-through" : "text-slate-800"}`}>
+                          <span className={`min-w-0 truncate ${out ? "text-slate-900 line-through" : "text-slate-800"}`}>
                             {it.name}
                           </span>
                           <span
@@ -287,16 +287,16 @@ export default function SkcsAdminStatsModal({
                   </div>
                   <div className="bg-sky-100 rounded-2xl max-h-64 overflow-y-auto divide-y divide-sky-200 border border-sky-200">
                     {orders.length === 0 && (
-                      <div className="p-4 text-center text-xs text-slate-500">주문이 없습니다</div>
+                      <div className="p-4 text-center text-xs text-slate-900">주문이 없습니다</div>
                     )}
                     {orders.map((o) => (
                       <div key={o.id} className="flex items-center justify-between gap-2 px-3 py-2 text-xs">
                         <div className="min-w-0 flex-1">
                           <div className="font-bold truncate">
                             {o.nickname}{" "}
-                            <span className="text-slate-500 font-normal">₩{o.total.toLocaleString()}</span>
+                            <span className="text-slate-900 font-normal">₩{o.total.toLocaleString()}</span>
                           </div>
-                          <div className="text-[10px] text-slate-500 font-mono truncate">
+                          <div className="text-[10px] text-slate-900 font-mono truncate">
                             #{o.id.slice(0, 6)} ·{" "}
                             {new Date(o.created_at).toLocaleString("ko-KR", {
                               month: "2-digit",
