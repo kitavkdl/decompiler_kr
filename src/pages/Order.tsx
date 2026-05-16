@@ -256,6 +256,7 @@ export default function Order() {
   const reset = () => {
     setQty({});
     setHotdogOpts({});
+    setAdeOpts({});
     setNickname("");
     setIsMember(false);
     setPhrase("");
