@@ -799,6 +799,13 @@ export default function Order() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <StaffConfirmModal
+        open={staffConfirmOpen}
+        onConfirm={handleStaffConfirmed}
+        onCancel={() => setStaffConfirmOpen(false)}
+        theme="decompiler"
+      />
     </div>
   );
 }
