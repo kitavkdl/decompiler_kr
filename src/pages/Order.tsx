@@ -193,6 +193,23 @@ export default function Order() {
             addon: o.addon,
             addon_name: o.addon ? (ITEM_ORDER.find((x) => x.id === o.addon)?.name ?? null) : null,
           })),
+          ...(adeOpts[it.id]
+            ? {
+                ade_options: adeOpts[it.id].map((a) => ({
+                  flavor: a.flavor,
+                  flavor_name: a.flavor ? ADE_FLAVORS.find((f) => f.id === a.flavor)?.name : null,
+                })),
+              }
+            : {}),
+        };
+      }
+      if (adeOpts[it.id]) {
+        return {
+          ...base,
+          ade_options: adeOpts[it.id].map((a) => ({
+            flavor: a.flavor,
+            flavor_name: a.flavor ? ADE_FLAVORS.find((f) => f.id === a.flavor)?.name : null,
+          })),
         };
       }
       return base;
