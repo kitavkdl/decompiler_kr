@@ -114,11 +114,36 @@ export default function Order() {
     });
   }, [qty]);
 
+  // Keep adeOpts arrays in sync with qty for ade-containing items.
+  useEffect(() => {
+    setAdeOpts((prev) => {
+      const next: Record<string, AdeOpt[]> = {};
+      ADE_ITEM_IDS.forEach((id) => {
+        const n = qty[id] || 0;
+        if (n === 0) return;
+        const existing = prev[id] || [];
+        const arr = existing.slice(0, n);
+        while (arr.length < n) arr.push({ flavor: ADE_DEFAULT[id] ?? null });
+        next[id] = arr;
+      });
+      return next;
+    });
+  }, [qty]);
+
   const updateOpt = (itemId: string, idx: number, patch: Partial<HotdogOpt>) => {
     setHotdogOpts((prev) => {
       const arr = [...(prev[itemId] || [])];
       if (!arr[idx]) return prev;
       arr[idx] = { ...arr[idx], ...patch };
+      return { ...prev, [itemId]: arr };
+    });
+  };
+
+  const updateAde = (itemId: string, idx: number, flavor: AdeFlavor) => {
+    setAdeOpts((prev) => {
+      const arr = [...(prev[itemId] || [])];
+      if (!arr[idx]) return prev;
+      arr[idx] = { flavor };
       return { ...prev, [itemId]: arr };
     });
   };
