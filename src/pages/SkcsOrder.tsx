@@ -16,6 +16,7 @@ import {
   type SkcsRing,
 } from "@/lib/skcsCodec";
 import { useSkcsSoldOut } from "@/lib/soldOut";
+import StaffConfirmModal from "@/components/StaffConfirmModal";
 
 const BANK_INFO = {
   bank: "토스뱅크",
