@@ -18,6 +18,21 @@ const ADDON_IDS = ADDONS.map((a) => a.id);
 // Items that include a hotdog — selecting any of these reveals the addon panel.
 const HOTDOG_ITEM_IDS = ITEM_ORDER.filter((i) => i.categories.includes("hotdog")).map((i) => i.id);
 
+// Items where the customer must pick which ade flavor (lemon vs green grape).
+// setB is "Ade + Hotdog" without a specific flavor — the staff needs to know which.
+// grape / lemon singles are explicit already but the user wants the same per-unit popup for consistency.
+const ADE_ITEM_IDS = ["grape", "lemon", "setB"] as const;
+type AdeFlavor = "grape" | "lemon";
+const ADE_FLAVORS: { id: AdeFlavor; name: string; emoji: string }[] = [
+  { id: "grape", name: "청포도 에이드", emoji: "🍇" },
+  { id: "lemon", name: "레몬 에이드", emoji: "🍋" },
+];
+const ADE_DEFAULT: Record<string, AdeFlavor | null> = {
+  grape: "grape",
+  lemon: "lemon",
+  setB: null,
+};
+
 const BANK_INFO = {
   bank: "토스뱅크",
   account: "1002-4730-0262",
@@ -29,12 +44,15 @@ const spring = { type: "spring" as const, stiffness: 380, damping: 18 };
 type Stage = "cart" | "payment" | "bank-pending" | "done";
 
 type HotdogOpt = { noRelish: boolean; addon: string | null };
+type AdeOpt = { flavor: AdeFlavor | null };
 
 export default function Order() {
   // Quantity for non-addon items only. Addon qty is derived from per-hotdog options.
   const [qty, setQty] = useState<Record<string, number>>({});
   // Per-hotdog (per unit) options, keyed by hotdog-containing item id.
   const [hotdogOpts, setHotdogOpts] = useState<Record<string, HotdogOpt[]>>({});
+  // Per-ade-unit flavor selections, keyed by ade-containing item id.
+  const [adeOpts, setAdeOpts] = useState<Record<string, AdeOpt[]>>({});
   const [nickname, setNickname] = useState("");
   const [isMember, setIsMember] = useState(false);
   const MEMBER_PHRASE = "6463";
@@ -96,11 +114,36 @@ export default function Order() {
     });
   }, [qty]);
 
+  // Keep adeOpts arrays in sync with qty for ade-containing items.
+  useEffect(() => {
+    setAdeOpts((prev) => {
+      const next: Record<string, AdeOpt[]> = {};
+      ADE_ITEM_IDS.forEach((id) => {
+        const n = qty[id] || 0;
+        if (n === 0) return;
+        const existing = prev[id] || [];
+        const arr = existing.slice(0, n);
+        while (arr.length < n) arr.push({ flavor: ADE_DEFAULT[id] ?? null });
+        next[id] = arr;
+      });
+      return next;
+    });
+  }, [qty]);
+
   const updateOpt = (itemId: string, idx: number, patch: Partial<HotdogOpt>) => {
     setHotdogOpts((prev) => {
       const arr = [...(prev[itemId] || [])];
       if (!arr[idx]) return prev;
       arr[idx] = { ...arr[idx], ...patch };
+      return { ...prev, [itemId]: arr };
+    });
+  };
+
+  const updateAde = (itemId: string, idx: number, flavor: AdeFlavor) => {
+    setAdeOpts((prev) => {
+      const arr = [...(prev[itemId] || [])];
+      if (!arr[idx]) return prev;
+      arr[idx] = { flavor };
       return { ...prev, [itemId]: arr };
     });
   };
@@ -118,6 +161,14 @@ export default function Order() {
     if (itemCount === 0) {
       toast.error("메뉴를 하나 이상 선택해주세요!");
       return;
+    }
+    // Require an ade flavor for every ade unit.
+    for (const id of ADE_ITEM_IDS) {
+      const arr = adeOpts[id] || [];
+      if (arr.some((a) => !a.flavor)) {
+        toast.error("에이드 맛(레몬/청포도)을 선택해주세요!");
+        return;
+      }
     }
     setStage("payment");
   };
@@ -141,6 +192,23 @@ export default function Order() {
             no_relish: o.noRelish,
             addon: o.addon,
             addon_name: o.addon ? (ITEM_ORDER.find((x) => x.id === o.addon)?.name ?? null) : null,
+          })),
+          ...(adeOpts[it.id]
+            ? {
+                ade_options: adeOpts[it.id].map((a) => ({
+                  flavor: a.flavor,
+                  flavor_name: a.flavor ? ADE_FLAVORS.find((f) => f.id === a.flavor)?.name : null,
+                })),
+              }
+            : {}),
+        };
+      }
+      if (adeOpts[it.id]) {
+        return {
+          ...base,
+          ade_options: adeOpts[it.id].map((a) => ({
+            flavor: a.flavor,
+            flavor_name: a.flavor ? ADE_FLAVORS.find((f) => f.id === a.flavor)?.name : null,
           })),
         };
       }
@@ -188,6 +256,7 @@ export default function Order() {
   const reset = () => {
     setQty({});
     setHotdogOpts({});
+    setAdeOpts({});
     setNickname("");
     setIsMember(false);
     setPhrase("");
@@ -381,6 +450,61 @@ export default function Order() {
                         label={`${a.name} (+₩${a.price.toLocaleString()})`}
                       />
                     ))}
+                  </div>
+                </div>
+              </motion.div>
+            ));
+          })}
+        </AnimatePresence>
+
+        {/* Per-ade-unit flavor selection panels — one per ade unit. */}
+        <AnimatePresence initial={false}>
+          {ADE_ITEM_IDS.flatMap((itemId) => {
+            const item = ITEM_ORDER.find((x) => x.id === itemId);
+            if (!item) return [];
+            const opts = adeOpts[itemId] || [];
+            return opts.map((opt, idx) => (
+              <motion.div
+                key={`ade-${itemId}-${idx}`}
+                layout
+                initial={{ opacity: 0, height: 0, y: -10, scale: 0.96 }}
+                animate={{ opacity: 1, height: "auto", y: 0, scale: 1 }}
+                exit={{ opacity: 0, height: 0, y: -10, scale: 0.96 }}
+                transition={spring}
+                className="overflow-hidden"
+              >
+                <div className="bg-white rounded-3xl p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 className="font-extrabold text-base text-sky-600">
+                      🥤 {item.name} <span className="text-stone-400">#{idx + 1}</span>
+                    </h2>
+                    <span className="text-[10px] font-mono bg-sky-100 text-sky-700 px-2 py-0.5 rounded-full">
+                      에이드 맛 선택
+                    </span>
+                  </div>
+                  <p className="text-xs text-stone-500">
+                    어떤 에이드를 드릴까요? (필수 / Required)
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {ADE_FLAVORS.map((f) => {
+                      const active = opt.flavor === f.id;
+                      return (
+                        <motion.button
+                          key={f.id}
+                          type="button"
+                          whileTap={{ scale: 0.94 }}
+                          onClick={() => updateAde(itemId, idx, f.id)}
+                          className={`rounded-2xl py-3 px-3 font-bold text-sm border-2 transition flex flex-col items-center gap-1 ${
+                            active
+                              ? "bg-sky-500 text-white border-sky-500 shadow"
+                              : "bg-stone-50 text-stone-700 border-transparent"
+                          }`}
+                        >
+                          <span className="text-2xl">{f.emoji}</span>
+                          {f.name}
+                        </motion.button>
+                      );
+                    })}
                   </div>
                 </div>
               </motion.div>

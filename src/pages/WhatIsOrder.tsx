@@ -6,12 +6,14 @@ import { ITEM_BY_ID, type Category } from "@/lib/orderCodec";
 import AdminStatsModal from "@/components/AdminStatsModal";
 
 type HotdogOpt = { no_relish?: boolean; addon?: string | null; addon_name?: string | null };
+type AdeOpt = { flavor?: "grape" | "lemon" | null; flavor_name?: string | null };
 type OrderItem = {
   id: string;
   name: string;
   qty: number;
   price: number;
   hotdog_options?: HotdogOpt[];
+  ade_options?: AdeOpt[];
 };
 
 type Order = {
@@ -80,6 +82,16 @@ export default function WhatIsOrder() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [filter, setFilter] = useState<"pending" | "done" | "all">("pending");
   const [showAdmin, setShowAdmin] = useState(false);
+  // Local-only "prepared" check marks per (orderId:cat:itemId). Resets on refresh — visual aid only.
+  const [readyChecks, setReadyChecks] = useState<Set<string>>(new Set());
+  const toggleReady = (key: string) => {
+    setReadyChecks((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
   const highlight = new URLSearchParams(window.location.search).get("id");
 
   useEffect(() => {
@@ -273,7 +285,7 @@ export default function WhatIsOrder() {
                             return (
                               <li key={it.id} className="font-semibold">
                                 <div
-                                  className={`flex justify-between items-baseline gap-2 ${
+                                  className={`flex justify-between items-center gap-2 ${
                                     big
                                       ? "bg-stone-50 rounded-xl px-3 py-2"
                                       : ""
@@ -287,16 +299,56 @@ export default function WhatIsOrder() {
                                     }`}
                                   >
                                     {displayName}
+                                    {isDrink && it.ade_options && it.ade_options.length > 0 && (
+                                      <span className={big ? "block text-base font-bold text-sky-700 mt-0.5" : "ml-1 text-sky-700"}>
+                                        ({it.ade_options
+                                          .map((a) => a.flavor_name || (a.flavor === "grape" ? "청포도" : a.flavor === "lemon" ? "레몬" : "?"))
+                                          .join(", ")})
+                                      </span>
+                                    )}
                                   </span>
-                                  <span
-                                    className={`font-mono shrink-0 ${
-                                      big
-                                        ? "text-3xl font-extrabold text-orange-600 tabular-nums"
-                                        : "text-sm"
-                                    }`}
-                                  >
-                                    x{it.qty}
-                                  </span>
+                                  <div className="flex items-center gap-2 shrink-0">
+                                    <span
+                                      className={`font-mono ${
+                                        big
+                                          ? "text-3xl font-extrabold text-orange-600 tabular-nums"
+                                          : "text-sm"
+                                      }`}
+                                    >
+                                      x{it.qty}
+                                    </span>
+                                    {(() => {
+                                      const key = `${o.id}:${cat.key}:${it.id}`;
+                                      const checked = readyChecks.has(key);
+                                      return (
+                                        <button
+                                          type="button"
+                                          onClick={() => toggleReady(key)}
+                                          aria-label="준비 완료 체크"
+                                          className={`shrink-0 rounded-md border-2 flex items-center justify-center transition active:scale-90 ${
+                                            big ? "w-8 h-8" : "w-6 h-6"
+                                          } ${
+                                            checked
+                                              ? "bg-green-500 border-green-500 text-white"
+                                              : "bg-white border-stone-300 text-transparent"
+                                          }`}
+                                        >
+                                          <svg
+                                            width={big ? "20" : "14"}
+                                            height={big ? "20" : "14"}
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="4"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                          >
+                                            <polyline points="20 6 9 17 4 12" />
+                                          </svg>
+                                        </button>
+                                      );
+                                    })()}
+                                  </div>
                                 </div>
                                 {isHotdog && it.hotdog_options && it.hotdog_options.length > 0 && (
                                   <ul className="mt-1.5 ml-1 space-y-1 text-sm font-normal text-stone-700">
