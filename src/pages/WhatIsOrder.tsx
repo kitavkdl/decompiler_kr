@@ -297,15 +297,15 @@ export default function WhatIsOrder() {
                                   }`}
                                 >
                                   <span
-                                    className={`truncate pr-2 ${
+                                    className={`min-w-0 flex-1 pr-2 ${
                                       big
-                                        ? "text-2xl font-extrabold leading-tight"
-                                        : "text-sm"
+                                        ? "text-xl sm:text-2xl font-extrabold leading-tight break-words"
+                                        : "text-sm break-words"
                                     }`}
                                   >
                                     {displayName}
                                     {isDrink && it.ade_options && it.ade_options.length > 0 && (
-                                      <span className={big ? "block text-base font-bold text-sky-700 mt-0.5" : "ml-1 text-sky-700"}>
+                                      <span className={big ? "block text-sm sm:text-base font-bold text-sky-700 mt-0.5" : "ml-1 text-sky-700"}>
                                         ({it.ade_options
                                           .map((a) => a.flavor_name || (a.flavor === "grape" ? "청포도" : a.flavor === "lemon" ? "레몬" : "?"))
                                           .join(", ")})
