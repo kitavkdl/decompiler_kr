@@ -101,6 +101,7 @@ export default function WhatIsOrder() {
       const { data } = await supabase
         .from("orders")
         .select("*")
+        .eq("booth", "decompiler")
         .order("created_at", { ascending: false })
         .limit(500);
       if (mounted && data) {
