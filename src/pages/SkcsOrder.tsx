@@ -214,22 +214,32 @@ export default function SkcsOrder() {
         .lt("created_at", orderCreatedAt);
       if (!cancelled) setQueueAhead(count ?? 0);
     };
+    const fetchOwnStatus = async () => {
+      if (!orderId) return;
+      const { data } = await supabase.from("orders").select("status").eq("id", orderId).maybeSingle();
+      if (!cancelled && data?.status === "done") setOrderFulfilled(true);
+    };
     fetchQueue();
-    const iv = window.setInterval(fetchQueue, 30000);
+    fetchOwnStatus();
+    const iv = window.setInterval(() => {
+      fetchQueue();
+      fetchOwnStatus();
+    }, 15000);
     return () => {
       cancelled = true;
       window.clearInterval(iv);
     };
-  }, [stage, orderCreatedAt]);
+  }, [stage, orderCreatedAt, orderId]);
 
   useEffect(() => {
     if (stage !== "done" || !orderCreatedAt) return;
     const start = new Date(orderCreatedAt).getTime();
     const tick = () => setElapsedSec(Math.max(0, Math.floor((Date.now() - start) / 1000)));
     tick();
+    if (orderFulfilled) return;
     const iv = window.setInterval(tick, 1000);
     return () => window.clearInterval(iv);
-  }, [stage, orderCreatedAt]);
+  }, [stage, orderCreatedAt, orderFulfilled]);
 
   const copyAccount = async () => {
     try {
