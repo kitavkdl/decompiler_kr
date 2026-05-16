@@ -316,7 +316,7 @@ export default function WhatIsOrder() {
                                     <span
                                       className={`font-mono ${
                                         big
-                                          ? "text-3xl font-extrabold text-orange-600 tabular-nums"
+                                          ? "text-2xl sm:text-3xl font-extrabold text-orange-600 tabular-nums"
                                           : "text-sm"
                                       }`}
                                     >
