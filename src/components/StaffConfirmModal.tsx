@@ -107,14 +107,19 @@ export default function StaffConfirmModal({
             </div>
 
             <motion.button
-              whileTap={{ scale: 0.96 }}
+              whileTap={{ scale: confirmLocked ? 1 : 0.96 }}
               onClick={onConfirm}
-              className={`w-full rounded-full py-4 font-extrabold flex items-center justify-center gap-2 ${t.accent}`}
+              disabled={confirmLocked}
+              className={`w-full rounded-full py-4 font-extrabold flex items-center justify-center gap-2 transition ${
+                confirmLocked ? "bg-stone-300 text-stone-500 cursor-not-allowed" : t.accent
+              }`}
             >
-              <span className="w-5 h-5 rounded-full border-2 border-white flex items-center justify-center text-xs">
+              <span className="w-5 h-5 rounded-full border-2 border-current flex items-center justify-center text-xs">
                 ✓
               </span>
-              네, 직원에게 확인받았습니다
+              {confirmLocked
+                ? `${confirmRemaining}초 후 활성화`
+                : "네, 직원에게 확인받았습니다"}
             </motion.button>
           </motion.div>
         </motion.div>
