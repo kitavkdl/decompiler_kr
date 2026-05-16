@@ -43,7 +43,7 @@ export const SKCS_SWITCH_OPTIONS = [
   { id: "blue", name: "Blue (Clicky)" },
   { id: "red", name: "Red (Quiet)" },
 ] as const;
-export const SKCS_KEYCAP_OPTIONS = ["Black", "White", "Red", "Blue", "Pink"] as const;
+export const SKCS_KEYCAP_OPTIONS = ["Black", "White", "Red", "Blue"] as const;
 export const SKCS_RING_OPTIONS = ["Silver", "Black", "Gold", "Rose Gold", "Copper"] as const;
 
 export type SkcsBase = (typeof SKCS_BASE_OPTIONS)[number];
