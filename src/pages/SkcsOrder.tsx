@@ -234,34 +234,34 @@ export default function SkcsOrder() {
   /* DONE — show QR */
   if (stage === "done" && paymentCode) {
     return (
-      <div className="show-cursor min-h-screen bg-stone-950 text-stone-100 px-5 py-8 flex flex-col items-center">
+      <div className="show-cursor min-h-screen bg-sky-50 text-slate-900 px-5 py-8 flex flex-col items-center">
         <motion.div
           initial={{ scale: 0.6, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={spring}
-          className="w-full max-w-md bg-stone-900 border border-stone-800 rounded-3xl shadow-xl p-6 text-center"
+          className="w-full max-w-md bg-white border border-sky-200 rounded-3xl shadow-xl p-6 text-center"
         >
           <div className="text-3xl mb-1">🔑</div>
-          <h1 className="text-2xl font-extrabold mb-2 text-amber-400">주문 완료!</h1>
-          <p className="text-sm text-stone-400 mb-5">아래 QR을 직원에게 보여주세요</p>
-          <div className="bg-white p-4 rounded-2xl border-4 border-amber-500 inline-block">
+          <h1 className="text-2xl font-extrabold mb-2 text-sky-600">주문 완료!</h1>
+          <p className="text-sm text-slate-500 mb-5">아래 QR을 직원에게 보여주세요</p>
+          <div className="bg-white p-4 rounded-2xl border-4 border-sky-500 inline-block">
             <QRCodeSVG value={paymentCode} size={220} level="M" />
           </div>
-          <div className="mt-3 font-mono text-xs text-stone-500 break-all">{paymentCode}</div>
+          <div className="mt-3 font-mono text-xs text-slate-500 break-all">{paymentCode}</div>
 
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={spring}
-            className="mt-5 bg-amber-500/10 border-2 border-amber-500/40 rounded-2xl p-4 text-left"
+            className="mt-5 bg-sky-500/10 border-2 border-sky-500/40 rounded-2xl p-4 text-left"
           >
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-[11px] font-bold text-amber-400 uppercase tracking-wider">예상 대기 시간</div>
-                <div className="text-3xl font-extrabold text-amber-300 mt-0.5">
+                <div className="text-[11px] font-bold text-sky-600 uppercase tracking-wider">예상 대기 시간</div>
+                <div className="text-3xl font-extrabold text-sky-700 mt-0.5">
                   {queueAhead === null ? "…" : `약 ${queueAhead * 2}분`}
                 </div>
-                <div className="text-xs text-stone-400 mt-1">
+                <div className="text-xs text-slate-500 mt-1">
                   {queueAhead === null
                     ? "대기열을 확인하는 중…"
                     : queueAhead === 0
@@ -270,21 +270,21 @@ export default function SkcsOrder() {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">경과</div>
-                <div className="text-2xl font-extrabold font-mono text-stone-100 tabular-nums">
+                <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">경과</div>
+                <div className="text-2xl font-extrabold font-mono text-slate-900 tabular-nums">
                   {String(Math.floor(elapsedSec / 60)).padStart(2, "0")}:{String(elapsedSec % 60).padStart(2, "0")}
                 </div>
               </div>
             </div>
           </motion.div>
-          <div className="mt-5 text-left bg-stone-800 rounded-2xl p-4 text-sm">
-            <div className="font-bold mb-1 text-stone-400">닉네임</div>
+          <div className="mt-5 text-left bg-sky-100 rounded-2xl p-4 text-sm">
+            <div className="font-bold mb-1 text-slate-500">닉네임</div>
             <div className="mb-2">{nickname}</div>
-            <div className="font-bold mb-1 text-stone-400">합계</div>
-            <div className="text-amber-300 font-extrabold">₩{total.toLocaleString()}</div>
+            <div className="font-bold mb-1 text-slate-500">합계</div>
+            <div className="text-sky-700 font-extrabold">₩{total.toLocaleString()}</div>
             {orderId && (
               <>
-                <div className="font-bold mt-2 mb-1 text-stone-400">주문번호</div>
+                <div className="font-bold mt-2 mb-1 text-slate-500">주문번호</div>
                 <div className="font-mono text-xs break-all">{orderId}</div>
               </>
             )}
@@ -292,7 +292,7 @@ export default function SkcsOrder() {
           <motion.button
             whileTap={{ scale: 0.92 }}
             onClick={reset}
-            className="mt-5 w-full bg-amber-500 text-stone-900 font-bold py-3 rounded-full"
+            className="mt-5 w-full bg-sky-500 text-white font-bold py-3 rounded-full"
           >
             새 주문
           </motion.button>
@@ -303,10 +303,10 @@ export default function SkcsOrder() {
 
   /* CART */
   return (
-    <div className="show-cursor min-h-screen bg-stone-950 text-stone-100 pb-32">
-      <header className="px-5 pt-6 pb-3 sticky top-0 bg-stone-950/90 backdrop-blur z-20 border-b border-stone-900">
-        <h1 className="text-2xl font-extrabold tracking-tight text-amber-400">SKCS · KEYRING SHOP</h1>
-        <p className="text-xs text-stone-500">Custom Mechanical Keyrings · 무료 커스터마이징</p>
+    <div className="show-cursor min-h-screen bg-sky-50 text-slate-900 pb-32">
+      <header className="px-5 pt-6 pb-3 sticky top-0 bg-sky-50/90 backdrop-blur z-20 border-b border-sky-200">
+        <h1 className="text-2xl font-extrabold tracking-tight text-sky-600">SKCS · KEYRING SHOP</h1>
+        <p className="text-xs text-slate-500">Custom Mechanical Keyrings · 무료 커스터마이징</p>
       </header>
 
       <main className="px-5 space-y-6 mt-4">
@@ -350,12 +350,12 @@ export default function SkcsOrder() {
                 transition={spring}
                 className="overflow-hidden"
               >
-                <div className="bg-stone-900 border border-stone-800 rounded-3xl p-5 shadow-sm space-y-4">
+                <div className="bg-white border border-sky-200 rounded-3xl p-5 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
-                    <h2 className="font-extrabold text-base text-amber-400">
-                      🔑 {item.name} <span className="text-stone-500">#{idx + 1}</span>
+                    <h2 className="font-extrabold text-base text-sky-600">
+                      🔑 {item.name} <span className="text-slate-500">#{idx + 1}</span>
                     </h2>
-                    <span className="text-[10px] font-mono bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-mono bg-sky-500/20 text-sky-700 px-2 py-0.5 rounded-full">
                       커스터마이징
                     </span>
                   </div>
@@ -381,13 +381,13 @@ export default function SkcsOrder() {
                   />
 
                   <div className="space-y-2">
-                    <div className="text-xs font-bold text-stone-400 uppercase tracking-wider">
+                    <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                       Keycap{item.keyCount > 1 ? `s (${item.keyCount}개)` : ""}
                     </div>
                     {opt.keycaps.map((kc, ki) => (
                       <div key={ki}>
                         {item.keyCount > 1 && (
-                          <div className="text-[10px] text-stone-500 mb-1">키 #{ki + 1}</div>
+                          <div className="text-[10px] text-slate-500 mb-1">키 #{ki + 1}</div>
                         )}
                         <OptionRow
                           options={SKCS_KEYCAP_OPTIONS as readonly string[]}
@@ -404,20 +404,20 @@ export default function SkcsOrder() {
         </AnimatePresence>
 
         {/* nickname */}
-        <div className="bg-stone-900 border border-stone-800 rounded-3xl p-5 shadow-sm">
+        <div className="bg-white border border-sky-200 rounded-3xl p-5 shadow-sm">
           <label className="block font-extrabold text-lg mb-1">주문시 호명될 닉네임을 적어주세요</label>
-          <p className="text-xs text-stone-500 mb-3">주문이 나왔을 때 큰 소리로 외쳐드립니다! 📣</p>
+          <p className="text-xs text-slate-500 mb-3">주문이 나왔을 때 큰 소리로 외쳐드립니다! 📣</p>
           <input
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
             maxLength={30}
             placeholder="예: 키링장인"
-            className="w-full bg-stone-800 rounded-2xl px-4 py-3 text-base border-2 border-transparent focus:outline-none focus:border-amber-500"
+            className="w-full bg-sky-100 rounded-2xl px-4 py-3 text-base border-2 border-transparent focus:outline-none focus:border-sky-500"
           />
         </div>
       </main>
 
-      <footer className="px-5 mt-10 text-center text-stone-600">
+      <footer className="px-5 mt-10 text-center text-slate-400">
         <div className="text-xs font-semibold tracking-wide">SKCS · Decompiler 2026</div>
       </footer>
 
@@ -426,16 +426,16 @@ export default function SkcsOrder() {
         initial={false}
         animate={{ y: itemCount > 0 ? 0 : 100 }}
         transition={spring}
-        className="fixed bottom-0 inset-x-0 px-4 pb-5 pt-3 bg-gradient-to-t from-stone-950 via-stone-950/95 to-transparent z-30"
+        className="fixed bottom-0 inset-x-0 px-4 pb-5 pt-3 bg-gradient-to-t from-sky-50 via-sky-50/95 to-transparent z-30"
       >
         <motion.button
           whileTap={{ scale: 0.96 }}
           disabled={submitting}
           onClick={proceedToPayment}
-          className="w-full bg-amber-500 text-stone-950 rounded-full py-4 font-extrabold flex items-center justify-between px-6 shadow-lg disabled:opacity-60"
+          className="w-full bg-sky-500 text-slate-900 rounded-full py-4 font-extrabold flex items-center justify-between px-6 shadow-lg disabled:opacity-60"
         >
           <span className="flex items-center gap-2">
-            <span className="bg-stone-950 text-amber-400 rounded-full px-2 py-0.5 text-xs">{itemCount}</span>
+            <span className="bg-sky-50 text-sky-600 rounded-full px-2 py-0.5 text-xs">{itemCount}</span>
             결제하기
           </span>
           <span>₩{total.toLocaleString()}</span>
@@ -458,19 +458,19 @@ export default function SkcsOrder() {
               exit={{ y: 60, opacity: 0 }}
               transition={spring}
               onClick={(e) => e.stopPropagation()}
-              className="w-full sm:max-w-md bg-stone-900 border border-stone-800 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl"
+              className="w-full sm:max-w-md bg-white border border-sky-200 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl"
             >
-              <div className="w-12 h-1.5 bg-stone-700 rounded-full mx-auto mb-4 sm:hidden" />
+              <div className="w-12 h-1.5 bg-sky-200 rounded-full mx-auto mb-4 sm:hidden" />
               <h2 className="text-2xl font-extrabold mb-1">결제 방법 선택</h2>
-              <p className="text-sm text-stone-400 mb-5">
-                합계 <span className="font-bold text-amber-400">₩{total.toLocaleString()}</span>
+              <p className="text-sm text-slate-500 mb-5">
+                합계 <span className="font-bold text-sky-600">₩{total.toLocaleString()}</span>
               </p>
               <div className="grid grid-cols-2 gap-3">
                 <motion.button
                   whileTap={{ scale: 0.94 }}
                   disabled={submitting}
                   onClick={() => submitOrder("cash")}
-                  className="bg-stone-800 text-stone-100 rounded-2xl py-5 font-extrabold flex flex-col items-center gap-1 disabled:opacity-50 border border-stone-700"
+                  className="bg-sky-100 text-slate-900 rounded-2xl py-5 font-extrabold flex flex-col items-center gap-1 disabled:opacity-50 border border-sky-200"
                 >
                   <span className="text-2xl">💵</span>
                   현금 결제
@@ -479,13 +479,13 @@ export default function SkcsOrder() {
                   whileTap={{ scale: 0.94 }}
                   disabled={submitting}
                   onClick={() => submitOrder("transfer")}
-                  className="bg-amber-500 text-stone-950 rounded-2xl py-5 font-extrabold flex flex-col items-center gap-1 disabled:opacity-50"
+                  className="bg-sky-500 text-slate-900 rounded-2xl py-5 font-extrabold flex flex-col items-center gap-1 disabled:opacity-50"
                 >
                   <span className="text-2xl">🏦</span>
                   입금 결제
                 </motion.button>
               </div>
-              <button onClick={() => setStage("cart")} className="mt-4 w-full text-sm text-stone-400 py-2">
+              <button onClick={() => setStage("cart")} className="mt-4 w-full text-sm text-slate-500 py-2">
                 돌아가기
               </button>
             </motion.div>
@@ -507,38 +507,38 @@ export default function SkcsOrder() {
               animate={{ y: 0, opacity: 1, scale: 1 }}
               exit={{ y: 60, opacity: 0 }}
               transition={spring}
-              className="w-full sm:max-w-md bg-stone-900 border border-stone-800 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl"
+              className="w-full sm:max-w-md bg-white border border-sky-200 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl"
             >
-              <div className="w-12 h-1.5 bg-stone-700 rounded-full mx-auto mb-4 sm:hidden" />
+              <div className="w-12 h-1.5 bg-sky-200 rounded-full mx-auto mb-4 sm:hidden" />
               <h2 className="text-2xl font-extrabold mb-1">🏦 계좌 입금</h2>
-              <p className="text-sm text-stone-400 mb-5">아래 계좌로 입금 후 체크해주세요</p>
+              <p className="text-sm text-slate-500 mb-5">아래 계좌로 입금 후 체크해주세요</p>
 
-              <div className="bg-amber-500/10 border-2 border-amber-500/40 rounded-2xl p-5 space-y-3">
+              <div className="bg-sky-500/10 border-2 border-sky-500/40 rounded-2xl p-5 space-y-3">
                 <button type="button" onClick={copyAccount} className="w-full text-left active:scale-[0.98] transition">
-                  <div className="text-xs font-bold text-amber-400 flex items-center justify-between">
+                  <div className="text-xs font-bold text-sky-600 flex items-center justify-between">
                     <span>은행 / 계좌번호</span>
-                    <span className="text-[10px] bg-amber-500/30 text-amber-200 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] bg-sky-500/30 text-amber-200 px-2 py-0.5 rounded-full">
                       탭하여 복사 📋
                     </span>
                   </div>
-                  <div className="font-mono font-bold text-lg select-all break-all text-stone-100">
+                  <div className="font-mono font-bold text-lg select-all break-all text-slate-900">
                     {BANK_INFO.bank} {BANK_INFO.account}
                   </div>
                 </button>
                 <div>
-                  <div className="text-xs font-bold text-amber-400">예금주</div>
+                  <div className="text-xs font-bold text-sky-600">예금주</div>
                   <div className="font-bold text-lg">{BANK_INFO.holder}</div>
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-amber-400">입금 금액</div>
-                  <div className="font-extrabold text-2xl text-amber-300">₩{total.toLocaleString()}</div>
+                  <div className="text-xs font-bold text-sky-600">입금 금액</div>
+                  <div className="font-extrabold text-2xl text-sky-700">₩{total.toLocaleString()}</div>
                 </div>
               </div>
 
               <motion.button
                 whileTap={{ scale: 0.96 }}
                 onClick={confirmTransferred}
-                className="mt-5 w-full bg-amber-500 text-stone-950 rounded-full py-4 font-extrabold flex items-center justify-center gap-2"
+                className="mt-5 w-full bg-sky-500 text-slate-900 rounded-full py-4 font-extrabold flex items-center justify-center gap-2"
               >
                 <span className="w-5 h-5 rounded border-2 border-stone-950 flex items-center justify-center text-xs">
                   ✓
@@ -547,7 +547,7 @@ export default function SkcsOrder() {
               </motion.button>
               <button
                 onClick={() => setStage("payment")}
-                className="mt-2 w-full text-sm text-stone-400 py-2"
+                className="mt-2 w-full text-sm text-slate-500 py-2"
               >
                 결제 방법 다시 선택
               </button>
@@ -575,9 +575,9 @@ function Section({
   soldOut: Set<string>;
 }) {
   return (
-    <section className="bg-stone-900 border border-stone-800 rounded-3xl p-5 shadow-sm">
-      <h2 className="font-extrabold text-lg text-amber-400">{title}</h2>
-      {subtitle && <p className="text-xs text-stone-500 mb-3">{subtitle}</p>}
+    <section className="bg-white border border-sky-200 rounded-3xl p-5 shadow-sm">
+      <h2 className="font-extrabold text-lg text-sky-600">{title}</h2>
+      {subtitle && <p className="text-xs text-slate-500 mb-3">{subtitle}</p>}
       <ul className="divide-y divide-stone-800">
         {items.map((it) => {
           const n = qty[it.id] || 0;
@@ -593,14 +593,14 @@ function Section({
                     </span>
                   )}
                 </div>
-                <div className="text-xs text-stone-500">₩{it.price.toLocaleString()}</div>
+                <div className="text-xs text-slate-500">₩{it.price.toLocaleString()}</div>
               </div>
               <div className="flex items-center gap-2">
                 <motion.button
                   whileTap={{ scale: 0.8 }}
                   onClick={() => bump(it.id, -1)}
                   disabled={out}
-                  className="w-9 h-9 rounded-full bg-stone-800 font-bold text-lg active:bg-stone-700 disabled:opacity-40"
+                  className="w-9 h-9 rounded-full bg-sky-100 font-bold text-lg active:bg-sky-200 disabled:opacity-40"
                 >
                   −
                 </motion.button>
@@ -617,7 +617,7 @@ function Section({
                   whileTap={{ scale: 0.8 }}
                   onClick={() => !out && bump(it.id, 1)}
                   disabled={out}
-                  className="w-9 h-9 rounded-full bg-amber-500 text-stone-950 font-bold text-lg shadow active:bg-amber-600 disabled:bg-stone-700 disabled:cursor-not-allowed"
+                  className="w-9 h-9 rounded-full bg-sky-500 text-slate-900 font-bold text-lg shadow active:bg-amber-600 disabled:bg-sky-200 disabled:cursor-not-allowed"
                 >
                   +
                 </motion.button>
@@ -645,7 +645,7 @@ function OptionGroup({
 }) {
   return (
     <div>
-      <div className="text-xs font-bold text-stone-400 uppercase tracking-wider mb-1.5">{label}</div>
+      <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">{label}</div>
       <OptionRow options={options} labels={labels} value={value} onChange={onChange} />
     </div>
   );
@@ -673,8 +673,8 @@ function OptionRow({
             onClick={() => onChange(opt)}
             className={`px-3 py-1.5 rounded-full text-xs font-bold border-2 transition active:scale-95 ${
               active
-                ? "bg-amber-500 text-stone-950 border-amber-500"
-                : "bg-stone-800 text-stone-300 border-stone-700"
+                ? "bg-sky-500 text-slate-900 border-sky-500"
+                : "bg-sky-100 text-slate-700 border-sky-200"
             }`}
           >
             {labels?.[i] ?? opt}

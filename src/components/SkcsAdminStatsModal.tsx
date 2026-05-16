@@ -170,18 +170,18 @@ export default function SkcsAdminStatsModal({
             exit={{ y: 60, opacity: 0 }}
             transition={spring}
             onClick={(e) => e.stopPropagation()}
-            className="w-full sm:max-w-2xl max-h-[92vh] overflow-y-auto bg-stone-900 text-stone-100 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl border border-stone-700"
+            className="w-full sm:max-w-2xl max-h-[92vh] overflow-y-auto bg-white text-slate-900 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl border border-sky-200"
           >
-            <div className="w-12 h-1.5 bg-stone-700 rounded-full mx-auto mb-4 sm:hidden" />
+            <div className="w-12 h-1.5 bg-sky-200 rounded-full mx-auto mb-4 sm:hidden" />
 
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h2 className="text-2xl font-extrabold text-amber-400">📊 SKCS 관리자</h2>
-                <p className="text-xs text-stone-400">통계 · 주문 삭제 · 전체 리셋</p>
+                <h2 className="text-2xl font-extrabold text-sky-600">📊 SKCS 관리자</h2>
+                <p className="text-xs text-slate-500">통계 · 주문 삭제 · 전체 리셋</p>
               </div>
               <button
                 onClick={onClose}
-                className="text-stone-500 hover:text-stone-200 text-2xl leading-none"
+                className="text-slate-500 hover:text-slate-800 text-2xl leading-none"
               >
                 ×
               </button>
@@ -189,7 +189,7 @@ export default function SkcsAdminStatsModal({
 
             {!unlocked ? (
               <div className="space-y-3 py-4">
-                <p className="text-sm text-stone-300">🔒 관리자 비밀번호를 입력하세요</p>
+                <p className="text-sm text-slate-700">🔒 관리자 비밀번호를 입력하세요</p>
                 <input
                   type="password"
                   inputMode="numeric"
@@ -202,11 +202,11 @@ export default function SkcsAdminStatsModal({
                     if (e.key === "Enter") tryUnlock();
                   }}
                   placeholder="● ● ● ●"
-                  className="w-full rounded-xl px-3 py-3 text-center text-2xl font-bold tracking-[0.6em] border-2 border-stone-700 focus:outline-none focus:border-amber-500 bg-stone-800"
+                  className="w-full rounded-xl px-3 py-3 text-center text-2xl font-bold tracking-[0.6em] border-2 border-sky-200 focus:outline-none focus:border-sky-500 bg-sky-100"
                 />
                 <button
                   onClick={tryUnlock}
-                  className="w-full bg-amber-500 text-stone-900 font-bold py-3 rounded-full active:scale-95 transition"
+                  className="w-full bg-sky-500 text-white font-bold py-3 rounded-full active:scale-95 transition"
                 >
                   잠금 해제
                 </button>
@@ -214,8 +214,8 @@ export default function SkcsAdminStatsModal({
             ) : (
               <div className="space-y-5">
                 <div className="grid grid-cols-2 gap-2">
-                  <StatCard label="총 매출" value={`₩${stats.totalRevenue.toLocaleString()}`} color="bg-amber-500/20 text-amber-300 border-amber-500/30" />
-                  <StatCard label="결제 완료 주문" value={`${stats.totalOrders}건`} color="bg-stone-800 text-stone-200 border-stone-700" />
+                  <StatCard label="총 매출" value={`₩${stats.totalRevenue.toLocaleString()}`} color="bg-sky-500/20 text-sky-700 border-sky-500/30" />
+                  <StatCard label="결제 완료 주문" value={`${stats.totalOrders}건`} color="bg-sky-100 text-slate-800 border-sky-200" />
                   <StatCard label="고유 닉네임" value={`${stats.uniqueCustomers}명`} color="bg-sky-500/20 text-sky-300 border-sky-500/30" />
                   <StatCard label="제공 / 대기" value={`${stats.doneCount} / ${stats.pendingCount}`} color="bg-emerald-500/20 text-emerald-300 border-emerald-500/30" />
                   <StatCard label="현금 / 입금" value={`${stats.cash} / ${stats.transfer}`} color="bg-yellow-500/20 text-yellow-300 border-yellow-500/30" />
@@ -223,20 +223,20 @@ export default function SkcsAdminStatsModal({
                 </div>
 
                 <div>
-                  <h3 className="font-extrabold mb-2 text-sm text-amber-400">🏆 메뉴 판매 순위</h3>
-                  <div className="bg-stone-800 rounded-2xl divide-y divide-stone-700 border border-stone-700">
+                  <h3 className="font-extrabold mb-2 text-sm text-sky-600">🏆 메뉴 판매 순위</h3>
+                  <div className="bg-sky-100 rounded-2xl divide-y divide-sky-200 border border-sky-200">
                     {stats.leaderboard.length === 0 && (
-                      <div className="p-4 text-center text-xs text-stone-500">결제 완료된 주문이 없어요</div>
+                      <div className="p-4 text-center text-xs text-slate-500">결제 완료된 주문이 없어요</div>
                     )}
                     {stats.leaderboard.map((row, i) => (
                       <div key={row.name + i} className="flex items-center justify-between px-3 py-2 text-sm">
                         <span className="flex items-center gap-2 min-w-0">
-                          <span className="font-mono text-xs text-stone-500 w-5 shrink-0">{i + 1}.</span>
+                          <span className="font-mono text-xs text-slate-500 w-5 shrink-0">{i + 1}.</span>
                           <span className="truncate">{row.name}</span>
                         </span>
                         <span className="flex items-center gap-3 shrink-0 text-xs">
                           <span className="font-bold">x{row.qty}</span>
-                          <span className="text-stone-400">₩{row.revenue.toLocaleString()}</span>
+                          <span className="text-slate-500">₩{row.revenue.toLocaleString()}</span>
                         </span>
                       </div>
                     ))}
@@ -244,11 +244,11 @@ export default function SkcsAdminStatsModal({
                 </div>
 
                 <div>
-                  <h3 className="font-extrabold mb-2 text-sm text-amber-400">
+                  <h3 className="font-extrabold mb-2 text-sm text-sky-600">
                     🚫 품절 관리{" "}
-                    <span className="text-[10px] font-normal text-stone-500">탭하여 토글 · 주문 화면에 즉시 반영</span>
+                    <span className="text-[10px] font-normal text-slate-500">탭하여 토글 · 주문 화면에 즉시 반영</span>
                   </h3>
-                  <div className="bg-stone-800 rounded-2xl divide-y divide-stone-700 border border-stone-700">
+                  <div className="bg-sky-100 rounded-2xl divide-y divide-sky-200 border border-sky-200">
                     {SKCS_ITEM_ORDER.map((it) => {
                       const out = soldOut.has(it.id);
                       return (
@@ -258,7 +258,7 @@ export default function SkcsAdminStatsModal({
                           onClick={() => setSkcsSoldOut(it.id, !out)}
                           className="w-full flex items-center justify-between gap-2 px-3 py-2 text-sm text-left active:scale-[0.99] transition"
                         >
-                          <span className={`min-w-0 truncate ${out ? "text-stone-500 line-through" : "text-stone-200"}`}>
+                          <span className={`min-w-0 truncate ${out ? "text-slate-500 line-through" : "text-slate-800"}`}>
                             {it.name}
                           </span>
                           <span
@@ -276,27 +276,27 @@ export default function SkcsAdminStatsModal({
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-extrabold text-sm text-amber-400">🗂️ 주문 목록 ({orders.length})</h3>
+                    <h3 className="font-extrabold text-sm text-sky-600">🗂️ 주문 목록 ({orders.length})</h3>
                     <button
                       onClick={fetchAll}
                       disabled={loading}
-                      className="text-xs font-bold text-amber-400 hover:text-amber-300 disabled:opacity-50"
+                      className="text-xs font-bold text-sky-600 hover:text-sky-700 disabled:opacity-50"
                     >
                       ↻ 새로고침
                     </button>
                   </div>
-                  <div className="bg-stone-800 rounded-2xl max-h-64 overflow-y-auto divide-y divide-stone-700 border border-stone-700">
+                  <div className="bg-sky-100 rounded-2xl max-h-64 overflow-y-auto divide-y divide-sky-200 border border-sky-200">
                     {orders.length === 0 && (
-                      <div className="p-4 text-center text-xs text-stone-500">주문이 없습니다</div>
+                      <div className="p-4 text-center text-xs text-slate-500">주문이 없습니다</div>
                     )}
                     {orders.map((o) => (
                       <div key={o.id} className="flex items-center justify-between gap-2 px-3 py-2 text-xs">
                         <div className="min-w-0 flex-1">
                           <div className="font-bold truncate">
                             {o.nickname}{" "}
-                            <span className="text-stone-500 font-normal">₩{o.total.toLocaleString()}</span>
+                            <span className="text-slate-500 font-normal">₩{o.total.toLocaleString()}</span>
                           </div>
-                          <div className="text-[10px] text-stone-500 font-mono truncate">
+                          <div className="text-[10px] text-slate-500 font-mono truncate">
                             #{o.id.slice(0, 6)} ·{" "}
                             {new Date(o.created_at).toLocaleString("ko-KR", {
                               month: "2-digit",
@@ -327,7 +327,7 @@ export default function SkcsAdminStatsModal({
                   {!confirmReset ? (
                     <button
                       onClick={() => setConfirmReset(true)}
-                      className="w-full bg-stone-900 border-2 border-red-700 text-red-300 font-bold py-2 rounded-xl active:scale-95 transition"
+                      className="w-full bg-white border-2 border-red-700 text-red-300 font-bold py-2 rounded-xl active:scale-95 transition"
                     >
                       모든 주문 리셋
                     </button>
@@ -335,7 +335,7 @@ export default function SkcsAdminStatsModal({
                     <div className="flex gap-2">
                       <button
                         onClick={() => setConfirmReset(false)}
-                        className="flex-1 bg-stone-800 border border-stone-600 text-stone-200 font-bold py-2 rounded-xl"
+                        className="flex-1 bg-sky-100 border border-sky-300 text-slate-800 font-bold py-2 rounded-xl"
                       >
                         취소
                       </button>
