@@ -274,27 +274,36 @@ export default function SkcsOrder() {
             transition={spring}
             className="mt-5 bg-sky-500/10 border-2 border-sky-500/40 rounded-2xl p-4 text-left"
           >
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-[11px] font-bold text-sky-600 uppercase tracking-wider">예상 대기 시간</div>
-                <div className="text-3xl font-extrabold text-sky-700 mt-0.5">
-                  {queueAhead === null ? "…" : `약 ${queueAhead * 2}분`}
+            {orderFulfilled ? (
+              <div className="text-center py-1">
+                <div className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">제공 완료</div>
+                <div className="text-2xl font-extrabold text-emerald-600 mt-0.5">🎉 픽업 완료!</div>
+                <div className="text-xs text-slate-900 mt-1">맛있게 사용하세요 :)</div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-[11px] font-bold text-sky-600 uppercase tracking-wider">예상 대기 시간</div>
+                  <div className="text-3xl font-extrabold text-sky-700 mt-0.5">
+                    {queueAhead === null ? "…" : `약 ${queueAhead * 2}분`}
+                  </div>
+                  <div className="text-xs text-slate-900 mt-1">
+                    {queueAhead === null
+                      ? "대기열을 확인하는 중…"
+                      : queueAhead === 0
+                        ? "지금 바로 만들고 있어요!"
+                        : `앞에 ${queueAhead}건 대기 중 · 1건당 약 2분`}
+                  </div>
                 </div>
-                <div className="text-xs text-slate-900 mt-1">
-                  {queueAhead === null
-                    ? "대기열을 확인하는 중…"
-                    : queueAhead === 0
-                      ? "지금 바로 만들고 있어요!"
-                      : `앞에 ${queueAhead}건 대기 중 · 1건당 약 2분`}
+                <div className="text-right">
+                  <div className="text-[11px] font-bold text-slate-900 uppercase tracking-wider">경과</div>
+                  <div className="text-2xl font-extrabold font-mono text-slate-900 tabular-nums">
+                    {String(Math.floor(elapsedSec / 60)).padStart(2, "0")}:
+                    {String(elapsedSec % 60).padStart(2, "0")}
+                  </div>
                 </div>
               </div>
-              <div className="text-right">
-                <div className="text-[11px] font-bold text-slate-900 uppercase tracking-wider">경과</div>
-                <div className="text-2xl font-extrabold font-mono text-slate-900 tabular-nums">
-                  {String(Math.floor(elapsedSec / 60)).padStart(2, "0")}:{String(elapsedSec % 60).padStart(2, "0")}
-                </div>
-              </div>
-            </div>
+            )}
           </motion.div>
           <div className="mt-5 text-left bg-sky-100 rounded-2xl p-4 text-sm">
             <div className="font-bold mb-1 text-slate-900">닉네임</div>
