@@ -319,7 +319,7 @@ export default function Order() {
     if (orderFulfilled) return; // freeze
     const iv = window.setInterval(tick, 1000);
     return () => window.clearInterval(iv);
-  }, [stage, orderCreatedAt]);
+  }, [stage, orderCreatedAt, orderFulfilled]);
 
   const copyAccount = async () => {
     try {
