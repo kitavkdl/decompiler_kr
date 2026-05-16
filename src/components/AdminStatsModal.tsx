@@ -152,7 +152,7 @@ export default function AdminStatsModal({
     const { error } = await supabase
       .from("orders")
       .delete()
-      .gte("created_at", "1970-01-01");
+      .eq("booth", "decompiler");
     if (error) {
       toast.error("리셋 실패");
       return;
