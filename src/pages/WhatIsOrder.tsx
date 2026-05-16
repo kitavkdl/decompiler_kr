@@ -179,16 +179,16 @@ export default function WhatIsOrder() {
   );
 
   return (
-    <div className="show-cursor min-h-screen bg-stone-50 text-stone-900 px-4 py-6 md:px-8">
+    <div className="show-cursor min-h-screen overflow-x-hidden bg-stone-50 text-stone-900 px-3 py-5 sm:px-4 sm:py-6 md:px-8">
       <header className="max-w-7xl mx-auto mb-5">
         <div className="flex items-start justify-between gap-3">
-          <div>
-            <h1 className="text-3xl font-extrabold">📋 주문 현황판</h1>
-            <p className="text-sm text-stone-500">실시간으로 들어오는 결제 완료 주문</p>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl sm:text-3xl font-extrabold break-keep">📋 주문 현황판</h1>
+            <p className="text-xs sm:text-sm text-stone-500">실시간으로 들어오는 결제 완료 주문</p>
           </div>
           <button
             onClick={() => setShowAdmin(true)}
-            className="text-sm font-bold bg-white text-stone-900 border border-stone-200 px-4 py-2 rounded-full active:scale-95 transition"
+            className="shrink-0 whitespace-nowrap text-xs sm:text-sm font-bold bg-white text-stone-900 border border-stone-200 px-3 sm:px-4 py-2 rounded-full active:scale-95 transition"
             aria-label="관리자 통계"
           >
             📊 관리자
@@ -221,7 +221,7 @@ export default function WhatIsOrder() {
         {CATEGORIES.map((cat) => {
           const ordersInCat = visible.filter((o) => itemsForCategory(o, cat.key).length > 0);
           return (
-            <section key={cat.key} className="flex flex-col">
+            <section key={cat.key} className="flex flex-col min-w-0">
               <div
                 className={`flex items-center justify-between mb-3 px-4 py-3 rounded-2xl border ${cat.style.headerBg} ${cat.style.headerBorder}`}
               >
@@ -297,15 +297,15 @@ export default function WhatIsOrder() {
                                   }`}
                                 >
                                   <span
-                                    className={`truncate pr-2 ${
+                                    className={`min-w-0 flex-1 pr-2 ${
                                       big
-                                        ? "text-2xl font-extrabold leading-tight"
-                                        : "text-sm"
+                                        ? "text-xl sm:text-2xl font-extrabold leading-tight break-words"
+                                        : "text-sm break-words"
                                     }`}
                                   >
                                     {displayName}
                                     {isDrink && it.ade_options && it.ade_options.length > 0 && (
-                                      <span className={big ? "block text-base font-bold text-sky-700 mt-0.5" : "ml-1 text-sky-700"}>
+                                      <span className={big ? "block text-sm sm:text-base font-bold text-sky-700 mt-0.5" : "ml-1 text-sky-700"}>
                                         ({it.ade_options
                                           .map((a) => a.flavor_name || (a.flavor === "grape" ? "청포도" : a.flavor === "lemon" ? "레몬" : "?"))
                                           .join(", ")})
@@ -316,7 +316,7 @@ export default function WhatIsOrder() {
                                     <span
                                       className={`font-mono ${
                                         big
-                                          ? "text-3xl font-extrabold text-orange-600 tabular-nums"
+                                          ? "text-2xl sm:text-3xl font-extrabold text-orange-600 tabular-nums"
                                           : "text-sm"
                                       }`}
                                     >

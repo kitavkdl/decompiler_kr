@@ -149,16 +149,16 @@ export default function SkcsWhatIsOrder() {
   const visible = paidOrders.filter((o) => (filter === "all" ? true : o.status === filter));
 
   return (
-    <div className="show-cursor min-h-screen bg-sky-50 text-slate-900 px-4 py-6 md:px-8">
+    <div className="show-cursor min-h-screen overflow-x-hidden bg-sky-50 text-slate-900 px-3 py-5 sm:px-4 sm:py-6 md:px-8">
       <header className="max-w-7xl mx-auto mb-5">
         <div className="flex items-start justify-between gap-3">
-          <div>
-            <h1 className="text-3xl font-extrabold text-sky-600">📋 SKCS 키링 현황판</h1>
-            <p className="text-sm text-slate-900">실시간으로 들어오는 결제 완료 주문</p>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-sky-600 break-keep">📋 SKCS 키링 현황판</h1>
+            <p className="text-xs sm:text-sm text-slate-900">실시간으로 들어오는 결제 완료 주문</p>
           </div>
           <button
             onClick={() => setShowAdmin(true)}
-            className="text-sm font-bold bg-white text-sky-600 border border-sky-200 px-4 py-2 rounded-full active:scale-95 transition"
+            className="shrink-0 whitespace-nowrap text-xs sm:text-sm font-bold bg-white text-sky-600 border border-sky-200 px-3 sm:px-4 py-2 rounded-full active:scale-95 transition"
           >
             📊 관리자
           </button>
@@ -190,7 +190,7 @@ export default function SkcsWhatIsOrder() {
         {CATEGORIES.map((cat) => {
           const ordersInCat = visible.filter((o) => itemsForCategory(o, cat.key).length > 0);
           return (
-            <section key={cat.key} className="flex flex-col">
+            <section key={cat.key} className="flex flex-col min-w-0">
               <div className="flex items-center justify-between mb-3 px-4 py-3 rounded-2xl bg-white border border-sky-200">
                 <h2 className="font-extrabold text-lg flex items-center gap-2 text-sky-600">
                   <span className="text-2xl">{cat.emoji}</span>
@@ -252,11 +252,11 @@ export default function SkcsWhatIsOrder() {
                             return (
                               <li key={it.id} className="font-semibold">
                                 <div className="flex justify-between items-center gap-2 bg-sky-100 rounded-xl px-3 py-2">
-                                  <span className="truncate pr-2 text-lg font-extrabold leading-tight">
+                                  <span className="min-w-0 flex-1 pr-2 text-base sm:text-lg font-extrabold leading-tight break-words">
                                     {it.name}
                                   </span>
                                   <div className="flex items-center gap-2 shrink-0">
-                                    <span className="font-mono text-2xl font-extrabold text-sky-600 tabular-nums">
+                                    <span className="font-mono text-xl sm:text-2xl font-extrabold text-sky-600 tabular-nums">
                                       x{it.qty}
                                     </span>
                                     {(() => {
