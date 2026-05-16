@@ -432,7 +432,7 @@ export default function SkcsOrder() {
           whileTap={{ scale: 0.96 }}
           disabled={submitting}
           onClick={proceedToPayment}
-          className="w-full bg-sky-500 text-slate-900 rounded-full py-4 font-extrabold flex items-center justify-between px-6 shadow-lg disabled:opacity-60"
+          className="w-full bg-sky-500 text-white rounded-full py-4 font-extrabold flex items-center justify-between px-6 shadow-lg disabled:opacity-60"
         >
           <span className="flex items-center gap-2">
             <span className="bg-sky-50 text-sky-600 rounded-full px-2 py-0.5 text-xs">{itemCount}</span>
@@ -479,7 +479,7 @@ export default function SkcsOrder() {
                   whileTap={{ scale: 0.94 }}
                   disabled={submitting}
                   onClick={() => submitOrder("transfer")}
-                  className="bg-sky-500 text-slate-900 rounded-2xl py-5 font-extrabold flex flex-col items-center gap-1 disabled:opacity-50"
+                  className="bg-sky-500 text-white rounded-2xl py-5 font-extrabold flex flex-col items-center gap-1 disabled:opacity-50"
                 >
                   <span className="text-2xl">🏦</span>
                   입금 결제
@@ -517,7 +517,7 @@ export default function SkcsOrder() {
                 <button type="button" onClick={copyAccount} className="w-full text-left active:scale-[0.98] transition">
                   <div className="text-xs font-bold text-sky-600 flex items-center justify-between">
                     <span>은행 / 계좌번호</span>
-                    <span className="text-[10px] bg-sky-500/30 text-amber-200 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] bg-sky-500/30 text-sky-700 px-2 py-0.5 rounded-full">
                       탭하여 복사 📋
                     </span>
                   </div>
@@ -538,9 +538,9 @@ export default function SkcsOrder() {
               <motion.button
                 whileTap={{ scale: 0.96 }}
                 onClick={confirmTransferred}
-                className="mt-5 w-full bg-sky-500 text-slate-900 rounded-full py-4 font-extrabold flex items-center justify-center gap-2"
+                className="mt-5 w-full bg-sky-500 text-white rounded-full py-4 font-extrabold flex items-center justify-center gap-2"
               >
-                <span className="w-5 h-5 rounded border-2 border-stone-950 flex items-center justify-center text-xs">
+                <span className="w-5 h-5 rounded border-2 border-sky-300 flex items-center justify-center text-xs">
                   ✓
                 </span>
                 입금했습니다
@@ -578,7 +578,7 @@ function Section({
     <section className="bg-white border border-sky-200 rounded-3xl p-5 shadow-sm">
       <h2 className="font-extrabold text-lg text-sky-600">{title}</h2>
       {subtitle && <p className="text-xs text-slate-500 mb-3">{subtitle}</p>}
-      <ul className="divide-y divide-stone-800">
+      <ul className="divide-y divide-sky-200">
         {items.map((it) => {
           const n = qty[it.id] || 0;
           const out = soldOut.has(it.id);
@@ -617,7 +617,7 @@ function Section({
                   whileTap={{ scale: 0.8 }}
                   onClick={() => !out && bump(it.id, 1)}
                   disabled={out}
-                  className="w-9 h-9 rounded-full bg-sky-500 text-slate-900 font-bold text-lg shadow active:bg-amber-600 disabled:bg-sky-200 disabled:cursor-not-allowed"
+                  className="w-9 h-9 rounded-full bg-sky-500 text-white font-bold text-lg shadow active:bg-sky-600 disabled:bg-sky-200 disabled:cursor-not-allowed"
                 >
                   +
                 </motion.button>
@@ -673,7 +673,7 @@ function OptionRow({
             onClick={() => onChange(opt)}
             className={`px-3 py-1.5 rounded-full text-xs font-bold border-2 transition active:scale-95 ${
               active
-                ? "bg-sky-500 text-slate-900 border-sky-500"
+                ? "bg-sky-500 text-white border-sky-500"
                 : "bg-sky-100 text-slate-700 border-sky-200"
             }`}
           >
