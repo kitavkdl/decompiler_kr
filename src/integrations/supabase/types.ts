@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       orders: {
         Row: {
+          booth: string
           created_at: string
           id: string
           is_member: boolean
@@ -30,6 +31,7 @@ export type Database = {
           total: number
         }
         Insert: {
+          booth?: string
           created_at?: string
           id?: string
           is_member?: boolean
@@ -44,6 +46,7 @@ export type Database = {
           total?: number
         }
         Update: {
+          booth?: string
           created_at?: string
           id?: string
           is_member?: boolean

@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import Order from "./pages/Order";
 import WhatIsOrder from "./pages/WhatIsOrder";
 import QrReader from "./pages/QrReader";
+import SkcsOrder from "./pages/SkcsOrder";
+import SkcsWhatIsOrder from "./pages/SkcsWhatIsOrder";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +26,8 @@ const App = () => (
             <Route path="/order" element={<Order />} />
             <Route path="/whatisorder" element={<WhatIsOrder />} />
             <Route path="/qrreader" element={<QrReader />} />
+            <Route path="/skcs/order" element={<SkcsOrder />} />
+            <Route path="/skcs/whatisorder" element={<SkcsWhatIsOrder />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

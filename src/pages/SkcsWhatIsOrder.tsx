@@ -2,18 +2,22 @@ import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ITEM_BY_ID, type Category } from "@/lib/orderCodec";
-import AdminStatsModal from "@/components/AdminStatsModal";
+import { SKCS_ITEM_BY_ID, type SkcsCategory } from "@/lib/skcsCodec";
+import SkcsAdminStatsModal from "@/components/SkcsAdminStatsModal";
 
-type HotdogOpt = { no_relish?: boolean; addon?: string | null; addon_name?: string | null };
-type AdeOpt = { flavor?: "grape" | "lemon" | null; flavor_name?: string | null };
+type CustomOpt = {
+  base?: string;
+  switch?: string;
+  switch_name?: string;
+  ring?: string;
+  keycaps?: string[];
+};
 type OrderItem = {
   id: string;
   name: string;
   qty: number;
   price: number;
-  hotdog_options?: HotdogOpt[];
-  ade_options?: AdeOpt[];
+  custom_options?: CustomOpt[];
 };
 
 type Order = {
@@ -21,9 +25,6 @@ type Order = {
   nickname: string;
   items: OrderItem[];
   total: number;
-  is_member: boolean;
-  no_relish: boolean;
-  member_phrase: string | null;
   status: string;
   paid: boolean;
   payment_method: string | null;
@@ -33,26 +34,10 @@ type Order = {
 
 const spring = { type: "spring" as const, stiffness: 320, damping: 22 };
 
-type CatStyle = { headerBg: string; headerBorder: string; headerText: string };
-const CATEGORIES: { key: Category; label: string; emoji: string; style: CatStyle }[] = [
-  {
-    key: "hotdog",
-    label: "핫도그",
-    emoji: "🌭",
-    style: { headerBg: "bg-orange-100", headerBorder: "border-orange-200", headerText: "text-orange-700" },
-  },
-  {
-    key: "drink",
-    label: "음료",
-    emoji: "🥤",
-    style: { headerBg: "bg-sky-100", headerBorder: "border-sky-200", headerText: "text-sky-700" },
-  },
-  {
-    key: "popcorn",
-    label: "팝콘",
-    emoji: "🍿",
-    style: { headerBg: "bg-yellow-100", headerBorder: "border-yellow-200", headerText: "text-yellow-700" },
-  },
+const CATEGORIES: { key: SkcsCategory; label: string; emoji: string; color: string }[] = [
+  { key: "keycap",    label: "키캡 클리커",   emoji: "🔑", color: "amber" },
+  { key: "clicker67", label: "67 클리커",     emoji: "6️⃣", color: "sky" },
+  { key: "nfc",       label: "NFC 오레오",    emoji: "🍪", color: "rose" },
 ];
 
 function normalizeOrder(row: Record<string, unknown>): Order {
@@ -63,9 +48,6 @@ function normalizeOrder(row: Record<string, unknown>): Order {
     nickname: String(row.nickname),
     items,
     total: Number(row.total) || 0,
-    is_member: Boolean(row.is_member),
-    no_relish: Boolean(row.no_relish),
-    member_phrase: (row.member_phrase as string | null) ?? null,
     status: String(row.status ?? "pending"),
     paid: Boolean(row.paid),
     payment_method: (row.payment_method as string | null) ?? null,
@@ -74,15 +56,14 @@ function normalizeOrder(row: Record<string, unknown>): Order {
   };
 }
 
-function itemsForCategory(o: Order, cat: Category): OrderItem[] {
-  return o.items.filter((it) => ITEM_BY_ID[it.id]?.categories.includes(cat));
+function itemsForCategory(o: Order, cat: SkcsCategory): OrderItem[] {
+  return o.items.filter((it) => SKCS_ITEM_BY_ID[it.id]?.category === cat);
 }
 
-export default function WhatIsOrder() {
+export default function SkcsWhatIsOrder() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [filter, setFilter] = useState<"pending" | "done" | "all">("pending");
   const [showAdmin, setShowAdmin] = useState(false);
-  // Local-only "prepared" check marks per (orderId:cat:itemId). Resets on refresh — visual aid only.
   const [readyChecks, setReadyChecks] = useState<Set<string>>(new Set());
   const toggleReady = (key: string) => {
     setReadyChecks((prev) => {
@@ -101,7 +82,7 @@ export default function WhatIsOrder() {
       const { data } = await supabase
         .from("orders")
         .select("*")
-        .eq("booth", "decompiler")
+        .eq("booth", "skcs")
         .order("created_at", { ascending: false })
         .limit(500);
       if (mounted && data) {
@@ -111,21 +92,18 @@ export default function WhatIsOrder() {
 
     fetchAll();
 
-    // Realtime subscription (instant updates if publication is enabled).
     const channel = supabase
-      .channel("orders-feed")
+      .channel("skcs-orders-feed")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "orders" },
         (payload) => {
           const isMine = (row: Record<string, unknown> | null | undefined) =>
-            !row || (row.booth ?? "decompiler") === "decompiler";
+            row && row.booth === "skcs";
           if (payload.eventType === "INSERT") {
             if (!isMine(payload.new as Record<string, unknown>)) return;
             const o = normalizeOrder(payload.new as Record<string, unknown>);
-            setOrders((prev) =>
-              prev.some((x) => x.id === o.id) ? prev : [o, ...prev]
-            );
+            setOrders((prev) => (prev.some((x) => x.id === o.id) ? prev : [o, ...prev]));
             if (o.paid) toast.success(`새 주문! ${o.nickname}`);
           } else if (payload.eventType === "UPDATE") {
             if (!isMine(payload.new as Record<string, unknown>)) return;
@@ -146,11 +124,7 @@ export default function WhatIsOrder() {
       )
       .subscribe();
 
-    // Polling fallback — refetch every 60s so the board stays fresh
-    // even if realtime is throttled or disconnected.
     const interval = window.setInterval(fetchAll, 60_000);
-
-    // Refetch when tab becomes visible again.
     const onVisible = () => {
       if (document.visibilityState === "visible") fetchAll();
     };
@@ -171,25 +145,20 @@ export default function WhatIsOrder() {
     if (error) toast.error("상태 변경 실패");
   };
 
-  // Only paid orders show on the dashboard.
   const paidOrders = useMemo(() => orders.filter((o) => o.paid), [orders]);
-
-  const visible = paidOrders.filter((o) =>
-    filter === "all" ? true : o.status === filter
-  );
+  const visible = paidOrders.filter((o) => (filter === "all" ? true : o.status === filter));
 
   return (
-    <div className="show-cursor min-h-screen bg-stone-50 text-stone-900 px-4 py-6 md:px-8">
+    <div className="show-cursor min-h-screen bg-stone-950 text-stone-100 px-4 py-6 md:px-8">
       <header className="max-w-7xl mx-auto mb-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="text-3xl font-extrabold">📋 주문 현황판</h1>
+            <h1 className="text-3xl font-extrabold text-amber-400">📋 SKCS 키링 현황판</h1>
             <p className="text-sm text-stone-500">실시간으로 들어오는 결제 완료 주문</p>
           </div>
           <button
             onClick={() => setShowAdmin(true)}
-            className="text-sm font-bold bg-white text-stone-900 border border-stone-200 px-4 py-2 rounded-full active:scale-95 transition"
-            aria-label="관리자 통계"
+            className="text-sm font-bold bg-stone-900 text-amber-400 border border-stone-700 px-4 py-2 rounded-full active:scale-95 transition"
           >
             📊 관리자
           </button>
@@ -201,8 +170,8 @@ export default function WhatIsOrder() {
               onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-full text-sm font-bold transition ${
                 filter === f
-                  ? "bg-stone-900 text-white"
-                  : "bg-white text-stone-600 border border-stone-200"
+                  ? "bg-amber-500 text-stone-950"
+                  : "bg-stone-900 text-stone-400 border border-stone-700"
               }`}
             >
               {f === "pending" ? "대기중" : f === "done" ? "완료" : "전체"}
@@ -211,7 +180,7 @@ export default function WhatIsOrder() {
               </span>
             </button>
           ))}
-          <div className="ml-auto text-xs text-stone-400 self-center">
+          <div className="ml-auto text-xs text-stone-500 self-center">
             미결제 대기: {orders.filter((o) => !o.paid).length}
           </div>
         </div>
@@ -222,14 +191,12 @@ export default function WhatIsOrder() {
           const ordersInCat = visible.filter((o) => itemsForCategory(o, cat.key).length > 0);
           return (
             <section key={cat.key} className="flex flex-col">
-              <div
-                className={`flex items-center justify-between mb-3 px-4 py-3 rounded-2xl border ${cat.style.headerBg} ${cat.style.headerBorder}`}
-              >
-                <h2 className={`font-extrabold text-lg flex items-center gap-2 ${cat.style.headerText}`}>
+              <div className="flex items-center justify-between mb-3 px-4 py-3 rounded-2xl bg-stone-900 border border-stone-800">
+                <h2 className="font-extrabold text-lg flex items-center gap-2 text-amber-400">
                   <span className="text-2xl">{cat.emoji}</span>
                   {cat.label}
                 </h2>
-                <span className={`text-sm font-bold bg-white px-2.5 py-1 rounded-full ${cat.style.headerText}`}>
+                <span className="text-sm font-bold bg-stone-800 text-amber-300 px-2.5 py-1 rounded-full">
                   {ordersInCat.reduce(
                     (s, o) => s + itemsForCategory(o, cat.key).reduce((a, it) => a + it.qty, 0),
                     0
@@ -248,12 +215,12 @@ export default function WhatIsOrder() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.85 }}
                         transition={spring}
-                        className={`rounded-2xl p-4 shadow-sm bg-white border-2 ${
+                        className={`rounded-2xl p-4 shadow-sm bg-stone-900 border-2 ${
                           o.id === highlight
-                            ? "border-orange-500 ring-4 ring-orange-200"
+                            ? "border-amber-500 ring-4 ring-amber-500/30"
                             : o.status === "done"
-                            ? "border-green-200 opacity-70"
-                            : "border-stone-100"
+                            ? "border-emerald-700/50 opacity-70"
+                            : "border-stone-800"
                         }`}
                       >
                         <div className="flex items-start justify-between mb-2 gap-2">
@@ -261,7 +228,7 @@ export default function WhatIsOrder() {
                             <div className="text-xl font-extrabold leading-tight truncate">
                               {o.nickname}
                             </div>
-                            <div className="text-[10px] text-stone-400 font-mono">
+                            <div className="text-[10px] text-stone-500 font-mono">
                               #{o.id.slice(0, 6)} ·{" "}
                               {new Date(o.created_at).toLocaleTimeString("ko-KR", {
                                 hour: "2-digit",
@@ -272,8 +239,8 @@ export default function WhatIsOrder() {
                           <span
                             className={`text-[10px] font-bold px-2 py-1 rounded-full whitespace-nowrap ${
                               o.payment_method === "cash"
-                                ? "bg-stone-100 text-stone-700"
-                                : "bg-orange-100 text-orange-700"
+                                ? "bg-stone-800 text-stone-300"
+                                : "bg-amber-500/20 text-amber-300"
                             }`}
                           >
                             {o.payment_method === "cash" ? "💵 현금" : "🏦 입금"}
@@ -282,44 +249,14 @@ export default function WhatIsOrder() {
 
                         <ul className="space-y-2 mb-2">
                           {catItems.map((it) => {
-                            const isHotdog = cat.key === "hotdog";
-                            const isDrink = cat.key === "drink";
-                            const big = isHotdog || isDrink;
-                            const displayName =
-                              ITEM_BY_ID[it.id]?.displayByCategory?.[cat.key] ?? it.name;
                             return (
                               <li key={it.id} className="font-semibold">
-                                <div
-                                  className={`flex justify-between items-center gap-2 ${
-                                    big
-                                      ? "bg-stone-50 rounded-xl px-3 py-2"
-                                      : ""
-                                  }`}
-                                >
-                                  <span
-                                    className={`truncate pr-2 ${
-                                      big
-                                        ? "text-2xl font-extrabold leading-tight"
-                                        : "text-sm"
-                                    }`}
-                                  >
-                                    {displayName}
-                                    {isDrink && it.ade_options && it.ade_options.length > 0 && (
-                                      <span className={big ? "block text-base font-bold text-sky-700 mt-0.5" : "ml-1 text-sky-700"}>
-                                        ({it.ade_options
-                                          .map((a) => a.flavor_name || (a.flavor === "grape" ? "청포도" : a.flavor === "lemon" ? "레몬" : "?"))
-                                          .join(", ")})
-                                      </span>
-                                    )}
+                                <div className="flex justify-between items-center gap-2 bg-stone-800 rounded-xl px-3 py-2">
+                                  <span className="truncate pr-2 text-lg font-extrabold leading-tight">
+                                    {it.name}
                                   </span>
                                   <div className="flex items-center gap-2 shrink-0">
-                                    <span
-                                      className={`font-mono ${
-                                        big
-                                          ? "text-3xl font-extrabold text-orange-600 tabular-nums"
-                                          : "text-sm"
-                                      }`}
-                                    >
+                                    <span className="font-mono text-2xl font-extrabold text-amber-400 tabular-nums">
                                       x{it.qty}
                                     </span>
                                     {(() => {
@@ -330,24 +267,13 @@ export default function WhatIsOrder() {
                                           type="button"
                                           onClick={() => toggleReady(key)}
                                           aria-label="준비 완료 체크"
-                                          className={`shrink-0 rounded-md border-2 flex items-center justify-center transition active:scale-90 ${
-                                            big ? "w-8 h-8" : "w-6 h-6"
-                                          } ${
+                                          className={`shrink-0 w-8 h-8 rounded-md border-2 flex items-center justify-center transition active:scale-90 ${
                                             checked
-                                              ? "bg-green-500 border-green-500 text-white"
-                                              : "bg-white border-stone-300 text-transparent"
+                                              ? "bg-emerald-500 border-emerald-500 text-white"
+                                              : "bg-stone-900 border-stone-600 text-transparent"
                                           }`}
                                         >
-                                          <svg
-                                            width={big ? "20" : "14"}
-                                            height={big ? "20" : "14"}
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="4"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                          >
+                                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
                                             <polyline points="20 6 9 17 4 12" />
                                           </svg>
                                         </button>
@@ -355,29 +281,22 @@ export default function WhatIsOrder() {
                                     })()}
                                   </div>
                                 </div>
-                                {isHotdog && it.hotdog_options && it.hotdog_options.length > 0 && (
-                                  <ul className="mt-1.5 ml-1 space-y-1 text-sm font-normal text-stone-700">
-                                    {it.hotdog_options.map((o, i) => {
-                                      const parts: string[] = [];
-                                      if (o.no_relish) parts.push("렐리쉬 제거");
-                                      if (o.addon_name) parts.push(`+ ${o.addon_name}`);
-                                      const txt = parts.length ? parts.join(" · ") : "기본";
-                                      return (
-                                        <li key={i} className="leading-tight">
-                                          <span className="text-stone-400 mr-1">ㄴ</span>
-                                          <span className="text-stone-400">#{i + 1}</span>{" "}
-                                          <span
-                                            className={
-                                              parts.length
-                                                ? "text-orange-700 font-bold"
-                                                : "text-stone-400"
-                                            }
-                                          >
-                                            {txt}
-                                          </span>
-                                        </li>
-                                      );
-                                    })}
+                                {/* Customization details for keycap clickers */}
+                                {it.custom_options && it.custom_options.length > 0 && (
+                                  <ul className="mt-2 ml-1 space-y-2 text-sm font-normal text-stone-300">
+                                    {it.custom_options.map((c, i) => (
+                                      <li key={i} className="bg-stone-950/60 rounded-lg p-2 border border-stone-800">
+                                        <div className="text-[11px] text-stone-500 font-bold mb-1">
+                                          #{i + 1}
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-xs">
+                                          <div><span className="text-stone-500">Base:</span> <span className="font-bold text-amber-300">{c.base ?? "-"}</span></div>
+                                          <div><span className="text-stone-500">Switch:</span> <span className="font-bold text-amber-300">{c.switch_name ?? c.switch ?? "-"}</span></div>
+                                          <div><span className="text-stone-500">Ring:</span> <span className="font-bold text-amber-300">{c.ring ?? "-"}</span></div>
+                                          <div><span className="text-stone-500">Keycap:</span> <span className="font-bold text-amber-300">{c.keycaps?.join(", ") || "-"}</span></div>
+                                        </div>
+                                      </li>
+                                    ))}
                                   </ul>
                                 )}
                               </li>
@@ -385,30 +304,9 @@ export default function WhatIsOrder() {
                           })}
                         </ul>
 
-                        {/* full order summary collapsed line */}
                         {o.items.length > catItems.length && (
-                          <div className="text-[11px] text-stone-400 mb-2 truncate">
-                            전체 주문:{" "}
-                            {o.items.map((it) => `${it.name} x${it.qty}`).join(", ")}
-                          </div>
-                        )}
-
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {cat.key === "hotdog" && o.no_relish && (
-                            <span className="bg-red-100 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                              🥒 렐리쉬 제거
-                            </span>
-                          )}
-                          {cat.key === "hotdog" && o.is_member && (
-                            <span className="bg-orange-100 text-orange-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                              ⭐ 회원 (불닭+치즈 무료)
-                            </span>
-                          )}
-                        </div>
-
-                        {cat.key === "hotdog" && o.is_member && o.member_phrase && (
-                          <div className="bg-orange-50 border border-orange-200 rounded-lg p-2 text-[11px] mb-2">
-                            <span className="font-bold">비밀문구:</span> {o.member_phrase}
+                          <div className="text-[11px] text-stone-500 mb-2 truncate">
+                            전체 주문: {o.items.map((it) => `${it.name} x${it.qty}`).join(", ")}
                           </div>
                         )}
 
@@ -416,8 +314,8 @@ export default function WhatIsOrder() {
                           onClick={() => toggleStatus(o)}
                           className={`w-full py-1.5 rounded-full font-bold text-xs transition active:scale-95 ${
                             o.status === "done"
-                              ? "bg-stone-200 text-stone-600"
-                              : "bg-stone-900 text-white"
+                              ? "bg-stone-800 text-stone-400"
+                              : "bg-amber-500 text-stone-950"
                           }`}
                         >
                           {o.status === "done" ? "↩ 대기로" : "✅ 제공 완료"}
@@ -427,7 +325,7 @@ export default function WhatIsOrder() {
                   })}
                 </AnimatePresence>
                 {ordersInCat.length === 0 && (
-                  <div className="text-center text-stone-400 text-sm py-10 bg-white/50 rounded-2xl border border-dashed border-stone-200">
+                  <div className="text-center text-stone-600 text-sm py-10 bg-stone-900/50 rounded-2xl border border-dashed border-stone-800">
                     주문 없음
                   </div>
                 )}
@@ -436,7 +334,7 @@ export default function WhatIsOrder() {
           );
         })}
       </main>
-      <AdminStatsModal open={showAdmin} onClose={() => setShowAdmin(false)} />
+      <SkcsAdminStatsModal open={showAdmin} onClose={() => setShowAdmin(false)} />
     </div>
   );
 }

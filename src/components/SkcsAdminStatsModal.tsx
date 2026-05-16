@@ -2,23 +2,17 @@ import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ITEM_BY_ID, ITEM_ORDER } from "@/lib/orderCodec";
-import { useSoldOut, setSoldOut } from "@/lib/soldOut";
+import { SKCS_ITEM_BY_ID, SKCS_ITEM_ORDER } from "@/lib/skcsCodec";
+import { useSkcsSoldOut, setSkcsSoldOut } from "@/lib/soldOut";
 
 const ADMIN_PASSWORD = "1029";
 const spring = { type: "spring" as const, stiffness: 320, damping: 22 };
 
-type HotdogOpt = {
-  no_relish?: boolean;
-  addon?: string | null;
-  addon_name?: string | null;
-};
 type OrderItem = {
   id: string;
   name: string;
   qty: number;
   price: number;
-  hotdog_options?: HotdogOpt[];
 };
 type OrderRow = {
   id: string;
@@ -45,7 +39,7 @@ function normalize(row: Record<string, unknown>): OrderRow {
   };
 }
 
-export default function AdminStatsModal({
+export default function SkcsAdminStatsModal({
   open,
   onClose,
 }: {
@@ -57,7 +51,7 @@ export default function AdminStatsModal({
   const [orders, setOrders] = useState<OrderRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
-  const soldOut = useSoldOut();
+  const soldOut = useSkcsSoldOut();
 
   useEffect(() => {
     if (!open) {
@@ -72,7 +66,7 @@ export default function AdminStatsModal({
     const { data, error } = await supabase
       .from("orders")
       .select("*")
-      .eq("booth", "decompiler")
+      .eq("booth", "skcs")
       .order("created_at", { ascending: false })
       .limit(1000);
     setLoading(false);
@@ -100,13 +94,11 @@ export default function AdminStatsModal({
     const pendingCount = paid.filter((o) => o.status !== "done").length;
     const unpaid = orders.length - paid.length;
 
-    // Item leaderboard.
-    const counts: Record<string, { name: string; qty: number; revenue: number }> =
-      {};
+    const counts: Record<string, { name: string; qty: number; revenue: number }> = {};
     for (const o of paid) {
       for (const it of o.items) {
         const key = it.id;
-        const name = ITEM_BY_ID[key]?.name ?? it.name ?? key;
+        const name = SKCS_ITEM_BY_ID[key]?.name ?? it.name ?? key;
         if (!counts[key]) counts[key] = { name, qty: 0, revenue: 0 };
         counts[key].qty += it.qty;
         counts[key].revenue += (it.price || 0) * it.qty;
@@ -152,14 +144,14 @@ export default function AdminStatsModal({
     const { error } = await supabase
       .from("orders")
       .delete()
-      .eq("booth", "decompiler");
+      .eq("booth", "skcs");
     if (error) {
       toast.error("리셋 실패");
       return;
     }
     setOrders([]);
     setConfirmReset(false);
-    toast.success("모든 주문이 리셋되었습니다");
+    toast.success("SKCS 부스 주문이 모두 리셋되었습니다");
   };
 
   return (
@@ -170,7 +162,7 @@ export default function AdminStatsModal({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 z-[60] bg-black/70 flex items-end sm:items-center justify-center p-0 sm:p-4"
+          className="fixed inset-0 z-[60] bg-black/80 flex items-end sm:items-center justify-center p-0 sm:p-4"
         >
           <motion.div
             initial={{ y: 60, opacity: 0, scale: 0.95 }}
@@ -178,20 +170,18 @@ export default function AdminStatsModal({
             exit={{ y: 60, opacity: 0 }}
             transition={spring}
             onClick={(e) => e.stopPropagation()}
-            className="w-full sm:max-w-2xl max-h-[92vh] overflow-y-auto bg-white rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl"
+            className="w-full sm:max-w-2xl max-h-[92vh] overflow-y-auto bg-stone-900 text-stone-100 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl border border-stone-700"
           >
-            <div className="w-12 h-1.5 bg-stone-200 rounded-full mx-auto mb-4 sm:hidden" />
+            <div className="w-12 h-1.5 bg-stone-700 rounded-full mx-auto mb-4 sm:hidden" />
 
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h2 className="text-2xl font-extrabold">📊 관리자</h2>
-                <p className="text-xs text-stone-500">
-                  통계 · 주문 삭제 · 전체 리셋
-                </p>
+                <h2 className="text-2xl font-extrabold text-amber-400">📊 SKCS 관리자</h2>
+                <p className="text-xs text-stone-400">통계 · 주문 삭제 · 전체 리셋</p>
               </div>
               <button
                 onClick={onClose}
-                className="text-stone-400 hover:text-stone-700 text-2xl leading-none"
+                className="text-stone-500 hover:text-stone-200 text-2xl leading-none"
               >
                 ×
               </button>
@@ -199,9 +189,7 @@ export default function AdminStatsModal({
 
             {!unlocked ? (
               <div className="space-y-3 py-4">
-                <p className="text-sm text-stone-600">
-                  🔒 관리자 비밀번호를 입력하세요
-                </p>
+                <p className="text-sm text-stone-300">🔒 관리자 비밀번호를 입력하세요</p>
                 <input
                   type="password"
                   inputMode="numeric"
@@ -214,108 +202,68 @@ export default function AdminStatsModal({
                     if (e.key === "Enter") tryUnlock();
                   }}
                   placeholder="● ● ● ●"
-                  className="w-full rounded-xl px-3 py-3 text-center text-2xl font-bold tracking-[0.6em] border-2 border-stone-200 focus:outline-none focus:border-orange-400 bg-stone-50"
+                  className="w-full rounded-xl px-3 py-3 text-center text-2xl font-bold tracking-[0.6em] border-2 border-stone-700 focus:outline-none focus:border-amber-500 bg-stone-800"
                 />
                 <button
                   onClick={tryUnlock}
-                  className="w-full bg-stone-900 text-white font-bold py-3 rounded-full active:scale-95 transition"
+                  className="w-full bg-amber-500 text-stone-900 font-bold py-3 rounded-full active:scale-95 transition"
                 >
                   잠금 해제
                 </button>
               </div>
             ) : (
               <div className="space-y-5">
-                {/* Stat cards */}
                 <div className="grid grid-cols-2 gap-2">
-                  <StatCard
-                    label="총 매출"
-                    value={`₩${stats.totalRevenue.toLocaleString()}`}
-                    color="bg-orange-100 text-orange-800"
-                  />
-                  <StatCard
-                    label="결제 완료 주문"
-                    value={`${stats.totalOrders}건`}
-                    color="bg-stone-100 text-stone-800"
-                  />
-                  <StatCard
-                    label="고유 닉네임"
-                    value={`${stats.uniqueCustomers}명`}
-                    color="bg-sky-100 text-sky-800"
-                  />
-                  <StatCard
-                    label="제공 완료 / 대기"
-                    value={`${stats.doneCount} / ${stats.pendingCount}`}
-                    color="bg-green-100 text-green-800"
-                  />
-                  <StatCard
-                    label="현금 / 입금"
-                    value={`${stats.cash} / ${stats.transfer}`}
-                    color="bg-yellow-100 text-yellow-800"
-                  />
-                  <StatCard
-                    label="미결제 대기"
-                    value={`${stats.unpaid}건`}
-                    color="bg-red-100 text-red-800"
-                  />
+                  <StatCard label="총 매출" value={`₩${stats.totalRevenue.toLocaleString()}`} color="bg-amber-500/20 text-amber-300 border-amber-500/30" />
+                  <StatCard label="결제 완료 주문" value={`${stats.totalOrders}건`} color="bg-stone-800 text-stone-200 border-stone-700" />
+                  <StatCard label="고유 닉네임" value={`${stats.uniqueCustomers}명`} color="bg-sky-500/20 text-sky-300 border-sky-500/30" />
+                  <StatCard label="제공 / 대기" value={`${stats.doneCount} / ${stats.pendingCount}`} color="bg-emerald-500/20 text-emerald-300 border-emerald-500/30" />
+                  <StatCard label="현금 / 입금" value={`${stats.cash} / ${stats.transfer}`} color="bg-yellow-500/20 text-yellow-300 border-yellow-500/30" />
+                  <StatCard label="미결제 대기" value={`${stats.unpaid}건`} color="bg-red-500/20 text-red-300 border-red-500/30" />
                 </div>
 
-                {/* Leaderboard */}
                 <div>
-                  <h3 className="font-extrabold mb-2 text-sm">🏆 메뉴 판매 순위</h3>
-                  <div className="bg-stone-50 rounded-2xl divide-y divide-stone-200">
+                  <h3 className="font-extrabold mb-2 text-sm text-amber-400">🏆 메뉴 판매 순위</h3>
+                  <div className="bg-stone-800 rounded-2xl divide-y divide-stone-700 border border-stone-700">
                     {stats.leaderboard.length === 0 && (
-                      <div className="p-4 text-center text-xs text-stone-400">
-                        결제 완료된 주문이 없어요
-                      </div>
+                      <div className="p-4 text-center text-xs text-stone-500">결제 완료된 주문이 없어요</div>
                     )}
                     {stats.leaderboard.map((row, i) => (
-                      <div
-                        key={row.name + i}
-                        className="flex items-center justify-between px-3 py-2 text-sm"
-                      >
+                      <div key={row.name + i} className="flex items-center justify-between px-3 py-2 text-sm">
                         <span className="flex items-center gap-2 min-w-0">
-                          <span className="font-mono text-xs text-stone-400 w-5 shrink-0">
-                            {i + 1}.
-                          </span>
+                          <span className="font-mono text-xs text-stone-500 w-5 shrink-0">{i + 1}.</span>
                           <span className="truncate">{row.name}</span>
                         </span>
                         <span className="flex items-center gap-3 shrink-0 text-xs">
                           <span className="font-bold">x{row.qty}</span>
-                          <span className="text-stone-500">
-                            ₩{row.revenue.toLocaleString()}
-                          </span>
+                          <span className="text-stone-400">₩{row.revenue.toLocaleString()}</span>
                         </span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Sold-out toggles */}
                 <div>
-                  <h3 className="font-extrabold mb-2 text-sm">
+                  <h3 className="font-extrabold mb-2 text-sm text-amber-400">
                     🚫 품절 관리{" "}
-                    <span className="text-[10px] font-normal text-stone-400">
-                      탭하여 토글 · 주문 화면에 즉시 반영
-                    </span>
+                    <span className="text-[10px] font-normal text-stone-500">탭하여 토글 · 주문 화면에 즉시 반영</span>
                   </h3>
-                  <div className="bg-stone-50 rounded-2xl divide-y divide-stone-200">
-                    {ITEM_ORDER.filter((it) => it.group !== "addon").map((it) => {
+                  <div className="bg-stone-800 rounded-2xl divide-y divide-stone-700 border border-stone-700">
+                    {SKCS_ITEM_ORDER.map((it) => {
                       const out = soldOut.has(it.id);
                       return (
                         <button
                           key={it.id}
                           type="button"
-                          onClick={() => setSoldOut(it.id, !out)}
+                          onClick={() => setSkcsSoldOut(it.id, !out)}
                           className="w-full flex items-center justify-between gap-2 px-3 py-2 text-sm text-left active:scale-[0.99] transition"
                         >
-                          <span
-                            className={`min-w-0 truncate ${out ? "text-stone-400 line-through" : "text-stone-800"}`}
-                          >
+                          <span className={`min-w-0 truncate ${out ? "text-stone-500 line-through" : "text-stone-200"}`}>
                             {it.name}
                           </span>
                           <span
                             className={`text-[11px] font-bold px-2 py-1 rounded-full whitespace-nowrap ${
-                              out ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
+                              out ? "bg-red-500/30 text-red-200" : "bg-emerald-500/30 text-emerald-200"
                             }`}
                           >
                             {out ? "🚫 품절" : "✅ 판매중"}
@@ -326,39 +274,29 @@ export default function AdminStatsModal({
                   </div>
                 </div>
 
-                {/* Order list with delete */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-extrabold text-sm">
-                      🗂️ 주문 목록 ({orders.length})
-                    </h3>
+                    <h3 className="font-extrabold text-sm text-amber-400">🗂️ 주문 목록 ({orders.length})</h3>
                     <button
                       onClick={fetchAll}
                       disabled={loading}
-                      className="text-xs font-bold text-orange-600 hover:text-orange-700 disabled:opacity-50"
+                      className="text-xs font-bold text-amber-400 hover:text-amber-300 disabled:opacity-50"
                     >
                       ↻ 새로고침
                     </button>
                   </div>
-                  <div className="bg-stone-50 rounded-2xl max-h-64 overflow-y-auto divide-y divide-stone-200">
+                  <div className="bg-stone-800 rounded-2xl max-h-64 overflow-y-auto divide-y divide-stone-700 border border-stone-700">
                     {orders.length === 0 && (
-                      <div className="p-4 text-center text-xs text-stone-400">
-                        주문이 없습니다
-                      </div>
+                      <div className="p-4 text-center text-xs text-stone-500">주문이 없습니다</div>
                     )}
                     {orders.map((o) => (
-                      <div
-                        key={o.id}
-                        className="flex items-center justify-between gap-2 px-3 py-2 text-xs"
-                      >
+                      <div key={o.id} className="flex items-center justify-between gap-2 px-3 py-2 text-xs">
                         <div className="min-w-0 flex-1">
                           <div className="font-bold truncate">
                             {o.nickname}{" "}
-                            <span className="text-stone-400 font-normal">
-                              ₩{o.total.toLocaleString()}
-                            </span>
+                            <span className="text-stone-500 font-normal">₩{o.total.toLocaleString()}</span>
                           </div>
-                          <div className="text-[10px] text-stone-400 font-mono truncate">
+                          <div className="text-[10px] text-stone-500 font-mono truncate">
                             #{o.id.slice(0, 6)} ·{" "}
                             {new Date(o.created_at).toLocaleString("ko-KR", {
                               month: "2-digit",
@@ -367,16 +305,12 @@ export default function AdminStatsModal({
                               minute: "2-digit",
                             })}{" "}
                             ·{" "}
-                            {o.paid
-                              ? o.status === "done"
-                                ? "✅ 제공"
-                                : "⏳ 대기"
-                              : "💤 미결제"}
+                            {o.paid ? (o.status === "done" ? "✅ 제공" : "⏳ 대기") : "💤 미결제"}
                           </div>
                         </div>
                         <button
                           onClick={() => deleteOne(o.id, o.nickname)}
-                          className="text-[11px] font-bold text-red-600 hover:text-white hover:bg-red-600 px-2 py-1 rounded-md border border-red-200 transition"
+                          className="text-[11px] font-bold text-red-400 hover:text-white hover:bg-red-600 px-2 py-1 rounded-md border border-red-500/40 transition"
                         >
                           삭제
                         </button>
@@ -385,18 +319,15 @@ export default function AdminStatsModal({
                   </div>
                 </div>
 
-                {/* Reset all */}
-                <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-4">
-                  <h3 className="font-extrabold text-red-700 text-sm mb-1">
-                    ⚠️ 전체 주문 리셋
-                  </h3>
-                  <p className="text-xs text-red-700/80 leading-relaxed mb-3">
-                    모든 주문 데이터가 영구 삭제됩니다. 되돌릴 수 없어요.
+                <div className="bg-red-950/40 border-2 border-red-800 rounded-2xl p-4">
+                  <h3 className="font-extrabold text-red-300 text-sm mb-1">⚠️ SKCS 부스 전체 주문 리셋</h3>
+                  <p className="text-xs text-red-300/80 leading-relaxed mb-3">
+                    SKCS 부스의 모든 주문이 영구 삭제됩니다. (Decompiler 부스 주문은 유지)
                   </p>
                   {!confirmReset ? (
                     <button
                       onClick={() => setConfirmReset(true)}
-                      className="w-full bg-white border-2 border-red-300 text-red-700 font-bold py-2 rounded-xl active:scale-95 transition"
+                      className="w-full bg-stone-900 border-2 border-red-700 text-red-300 font-bold py-2 rounded-xl active:scale-95 transition"
                     >
                       모든 주문 리셋
                     </button>
@@ -404,7 +335,7 @@ export default function AdminStatsModal({
                     <div className="flex gap-2">
                       <button
                         onClick={() => setConfirmReset(false)}
-                        className="flex-1 bg-white border border-stone-300 text-stone-700 font-bold py-2 rounded-xl"
+                        className="flex-1 bg-stone-800 border border-stone-600 text-stone-200 font-bold py-2 rounded-xl"
                       >
                         취소
                       </button>
@@ -426,18 +357,10 @@ export default function AdminStatsModal({
   );
 }
 
-function StatCard({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: string;
-  color: string;
-}) {
+function StatCard({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div className={`rounded-2xl p-3 ${color}`}>
-      <div className="text-[10px] font-bold opacity-70">{label}</div>
+    <div className={`rounded-2xl p-3 border ${color}`}>
+      <div className="text-[10px] font-bold opacity-80">{label}</div>
       <div className="text-lg font-extrabold leading-tight mt-0.5">{value}</div>
     </div>
   );
