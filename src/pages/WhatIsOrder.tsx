@@ -221,7 +221,7 @@ export default function WhatIsOrder() {
         {CATEGORIES.map((cat) => {
           const ordersInCat = visible.filter((o) => itemsForCategory(o, cat.key).length > 0);
           return (
-            <section key={cat.key} className="flex flex-col">
+            <section key={cat.key} className="flex flex-col min-w-0">
               <div
                 className={`flex items-center justify-between mb-3 px-4 py-3 rounded-2xl border ${cat.style.headerBg} ${cat.style.headerBorder}`}
               >
