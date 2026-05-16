@@ -174,13 +174,18 @@ export default function SkcsOrder() {
     setOrderId(data.id);
     setOrderCreatedAt(data.created_at as string);
     if (method === "cash") {
-      setStage("done");
+      setStaffConfirmOpen(true);
     } else {
       setStage("bank-pending");
     }
   };
 
-  const confirmTransferred = () => setStage("done");
+  const confirmTransferred = () => setStaffConfirmOpen(true);
+
+  const handleStaffConfirmed = () => {
+    setStaffConfirmOpen(false);
+    setStage("done");
+  };
 
   const reset = () => {
     setQty({});
@@ -192,9 +197,10 @@ export default function SkcsOrder() {
     setOrderCreatedAt(null);
     setQueueAhead(null);
     setElapsedSec(0);
+    setOrderFulfilled(false);
   };
 
-  // Queue position (only count SKCS booth orders ahead).
+  // Queue position + own status (only count SKCS booth orders ahead).
   useEffect(() => {
     if (stage !== "done" || !orderCreatedAt) return;
     let cancelled = false;
