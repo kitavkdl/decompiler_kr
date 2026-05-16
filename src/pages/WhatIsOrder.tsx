@@ -118,13 +118,17 @@ export default function WhatIsOrder() {
         "postgres_changes",
         { event: "*", schema: "public", table: "orders" },
         (payload) => {
+          const isMine = (row: Record<string, unknown> | null | undefined) =>
+            !row || (row.booth ?? "decompiler") === "decompiler";
           if (payload.eventType === "INSERT") {
+            if (!isMine(payload.new as Record<string, unknown>)) return;
             const o = normalizeOrder(payload.new as Record<string, unknown>);
             setOrders((prev) =>
               prev.some((x) => x.id === o.id) ? prev : [o, ...prev]
             );
             if (o.paid) toast.success(`새 주문! ${o.nickname}`);
           } else if (payload.eventType === "UPDATE") {
+            if (!isMine(payload.new as Record<string, unknown>)) return;
             const o = normalizeOrder(payload.new as Record<string, unknown>);
             setOrders((prev) => {
               const prevOrder = prev.find((x) => x.id === o.id);
