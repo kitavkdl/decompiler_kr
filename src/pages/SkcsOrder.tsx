@@ -16,6 +16,7 @@ import {
   type SkcsRing,
 } from "@/lib/skcsCodec";
 import { useSkcsSoldOut } from "@/lib/soldOut";
+import StaffConfirmModal from "@/components/StaffConfirmModal";
 
 const BANK_INFO = {
   bank: "토스뱅크",
@@ -59,6 +60,8 @@ export default function SkcsOrder() {
   const [orderCreatedAt, setOrderCreatedAt] = useState<string | null>(null);
   const [queueAhead, setQueueAhead] = useState<number | null>(null);
   const [elapsedSec, setElapsedSec] = useState(0);
+  const [staffConfirmOpen, setStaffConfirmOpen] = useState(false);
+  const [orderFulfilled, setOrderFulfilled] = useState(false);
 
   const subtotal = useMemo(
     () => SKCS_ITEM_ORDER.reduce((s, it) => s + (qty[it.id] || 0) * it.price, 0),
@@ -171,13 +174,18 @@ export default function SkcsOrder() {
     setOrderId(data.id);
     setOrderCreatedAt(data.created_at as string);
     if (method === "cash") {
-      setStage("done");
+      setStaffConfirmOpen(true);
     } else {
       setStage("bank-pending");
     }
   };
 
-  const confirmTransferred = () => setStage("done");
+  const confirmTransferred = () => setStaffConfirmOpen(true);
+
+  const handleStaffConfirmed = () => {
+    setStaffConfirmOpen(false);
+    setStage("done");
+  };
 
   const reset = () => {
     setQty({});
@@ -189,9 +197,10 @@ export default function SkcsOrder() {
     setOrderCreatedAt(null);
     setQueueAhead(null);
     setElapsedSec(0);
+    setOrderFulfilled(false);
   };
 
-  // Queue position (only count SKCS booth orders ahead).
+  // Queue position + own status (only count SKCS booth orders ahead).
   useEffect(() => {
     if (stage !== "done" || !orderCreatedAt) return;
     let cancelled = false;
@@ -205,22 +214,32 @@ export default function SkcsOrder() {
         .lt("created_at", orderCreatedAt);
       if (!cancelled) setQueueAhead(count ?? 0);
     };
+    const fetchOwnStatus = async () => {
+      if (!orderId) return;
+      const { data } = await supabase.from("orders").select("status").eq("id", orderId).maybeSingle();
+      if (!cancelled && data?.status === "done") setOrderFulfilled(true);
+    };
     fetchQueue();
-    const iv = window.setInterval(fetchQueue, 30000);
+    fetchOwnStatus();
+    const iv = window.setInterval(() => {
+      fetchQueue();
+      fetchOwnStatus();
+    }, 15000);
     return () => {
       cancelled = true;
       window.clearInterval(iv);
     };
-  }, [stage, orderCreatedAt]);
+  }, [stage, orderCreatedAt, orderId]);
 
   useEffect(() => {
     if (stage !== "done" || !orderCreatedAt) return;
     const start = new Date(orderCreatedAt).getTime();
     const tick = () => setElapsedSec(Math.max(0, Math.floor((Date.now() - start) / 1000)));
     tick();
+    if (orderFulfilled) return;
     const iv = window.setInterval(tick, 1000);
     return () => window.clearInterval(iv);
-  }, [stage, orderCreatedAt]);
+  }, [stage, orderCreatedAt, orderFulfilled]);
 
   const copyAccount = async () => {
     try {
@@ -255,27 +274,36 @@ export default function SkcsOrder() {
             transition={spring}
             className="mt-5 bg-sky-500/10 border-2 border-sky-500/40 rounded-2xl p-4 text-left"
           >
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-[11px] font-bold text-sky-600 uppercase tracking-wider">예상 대기 시간</div>
-                <div className="text-3xl font-extrabold text-sky-700 mt-0.5">
-                  {queueAhead === null ? "…" : `약 ${queueAhead * 2}분`}
+            {orderFulfilled ? (
+              <div className="text-center py-1">
+                <div className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">제공 완료</div>
+                <div className="text-2xl font-extrabold text-emerald-600 mt-0.5">🎉 픽업 완료!</div>
+                <div className="text-xs text-slate-900 mt-1">맛있게 사용하세요 :)</div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-[11px] font-bold text-sky-600 uppercase tracking-wider">예상 대기 시간</div>
+                  <div className="text-3xl font-extrabold text-sky-700 mt-0.5">
+                    {queueAhead === null ? "…" : `약 ${queueAhead * 2}분`}
+                  </div>
+                  <div className="text-xs text-slate-900 mt-1">
+                    {queueAhead === null
+                      ? "대기열을 확인하는 중…"
+                      : queueAhead === 0
+                        ? "지금 바로 만들고 있어요!"
+                        : `앞에 ${queueAhead}건 대기 중 · 1건당 약 2분`}
+                  </div>
                 </div>
-                <div className="text-xs text-slate-900 mt-1">
-                  {queueAhead === null
-                    ? "대기열을 확인하는 중…"
-                    : queueAhead === 0
-                      ? "지금 바로 만들고 있어요!"
-                      : `앞에 ${queueAhead}건 대기 중 · 1건당 약 2분`}
+                <div className="text-right">
+                  <div className="text-[11px] font-bold text-slate-900 uppercase tracking-wider">경과</div>
+                  <div className="text-2xl font-extrabold font-mono text-slate-900 tabular-nums">
+                    {String(Math.floor(elapsedSec / 60)).padStart(2, "0")}:
+                    {String(elapsedSec % 60).padStart(2, "0")}
+                  </div>
                 </div>
               </div>
-              <div className="text-right">
-                <div className="text-[11px] font-bold text-slate-900 uppercase tracking-wider">경과</div>
-                <div className="text-2xl font-extrabold font-mono text-slate-900 tabular-nums">
-                  {String(Math.floor(elapsedSec / 60)).padStart(2, "0")}:{String(elapsedSec % 60).padStart(2, "0")}
-                </div>
-              </div>
-            </div>
+            )}
           </motion.div>
           <div className="mt-5 text-left bg-sky-100 rounded-2xl p-4 text-sm">
             <div className="font-bold mb-1 text-slate-900">닉네임</div>
@@ -555,6 +583,13 @@ export default function SkcsOrder() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <StaffConfirmModal
+        open={staffConfirmOpen}
+        onConfirm={handleStaffConfirmed}
+        onCancel={() => setStaffConfirmOpen(false)}
+        theme="skcs"
+      />
     </div>
   );
 }

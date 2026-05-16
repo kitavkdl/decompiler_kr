@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import menuImg from "@/assets/menu.png";
 import { ITEM_ORDER, encodeOrderCode } from "@/lib/orderCodec";
+import StaffConfirmModal from "@/components/StaffConfirmModal";
 
 import { useSoldOut } from "@/lib/soldOut";
 
@@ -69,6 +70,8 @@ export default function Order() {
   const [orderCreatedAt, setOrderCreatedAt] = useState<string | null>(null);
   const [queueAhead, setQueueAhead] = useState<number | null>(null);
   const [elapsedSec, setElapsedSec] = useState(0);
+  const [staffConfirmOpen, setStaffConfirmOpen] = useState(false);
+  const [orderFulfilled, setOrderFulfilled] = useState(false);
 
   // Aggregate addon counts derived from per-hotdog selections.
   const addonCounts = useMemo(() => {
@@ -243,14 +246,20 @@ export default function Order() {
     setOrderCreatedAt(data.created_at as string);
     // Both cash and bank: staff must scan QR to mark as paid → only then it appears on dashboard.
     if (method === "cash") {
-      setStage("done");
+      // Cash: ask user to confirm staff received cash before showing QR.
+      setStaffConfirmOpen(true);
     } else {
       setStage("bank-pending");
     }
   };
 
   const confirmTransferred = () => {
-    // Show QR — staff will scan to mark as paid.
+    // Ask user to confirm staff verified the transfer before showing QR.
+    setStaffConfirmOpen(true);
+  };
+
+  const handleStaffConfirmed = () => {
+    setStaffConfirmOpen(false);
     setStage("done");
   };
 
@@ -268,9 +277,10 @@ export default function Order() {
     setOrderCreatedAt(null);
     setQueueAhead(null);
     setElapsedSec(0);
+    setOrderFulfilled(false);
   };
 
-  // Compute queue position when QR is shown, and refresh every 30s.
+  // Compute queue position + own status when QR is shown, refresh every 15s.
   useEffect(() => {
     if (stage !== "done" || !orderCreatedAt) return;
     let cancelled = false;
@@ -283,23 +293,33 @@ export default function Order() {
         .lt("created_at", orderCreatedAt);
       if (!cancelled) setQueueAhead(count ?? 0);
     };
+    const fetchOwnStatus = async () => {
+      if (!orderId) return;
+      const { data } = await supabase.from("orders").select("status").eq("id", orderId).maybeSingle();
+      if (!cancelled && data?.status === "done") setOrderFulfilled(true);
+    };
     fetchQueue();
-    const iv = window.setInterval(fetchQueue, 30000);
+    fetchOwnStatus();
+    const iv = window.setInterval(() => {
+      fetchQueue();
+      fetchOwnStatus();
+    }, 15000);
     return () => {
       cancelled = true;
       window.clearInterval(iv);
     };
-  }, [stage, orderCreatedAt]);
+  }, [stage, orderCreatedAt, orderId]);
 
-  // Elapsed timer from when order is placed.
+  // Elapsed timer from when order is placed. Stops once the order is fulfilled.
   useEffect(() => {
     if (stage !== "done" || !orderCreatedAt) return;
     const start = new Date(orderCreatedAt).getTime();
     const tick = () => setElapsedSec(Math.max(0, Math.floor((Date.now() - start) / 1000)));
     tick();
+    if (orderFulfilled) return; // freeze
     const iv = window.setInterval(tick, 1000);
     return () => window.clearInterval(iv);
-  }, [stage, orderCreatedAt]);
+  }, [stage, orderCreatedAt, orderFulfilled]);
 
   const copyAccount = async () => {
     try {
@@ -337,27 +357,36 @@ export default function Order() {
             transition={spring}
             className="mt-5 bg-gradient-to-br from-orange-100 to-amber-100 border-2 border-orange-300 rounded-2xl p-4 text-left"
           >
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-[11px] font-bold text-orange-700 uppercase tracking-wider">예상 대기 시간</div>
-                <div className="text-3xl font-extrabold text-orange-600 mt-0.5">
-                  {queueAhead === null ? "…" : `약 ${queueAhead}분`}
+            {orderFulfilled ? (
+              <div className="text-center py-1">
+                <div className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">제공 완료</div>
+                <div className="text-2xl font-extrabold text-emerald-600 mt-0.5">🎉 픽업 완료!</div>
+                <div className="text-xs text-stone-600 mt-1">맛있게 드세요 :)</div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-[11px] font-bold text-orange-700 uppercase tracking-wider">예상 대기 시간</div>
+                  <div className="text-3xl font-extrabold text-orange-600 mt-0.5">
+                    {queueAhead === null ? "…" : `약 ${queueAhead}분`}
+                  </div>
+                  <div className="text-xs text-stone-600 mt-1">
+                    {queueAhead === null
+                      ? "대기열을 확인하는 중…"
+                      : queueAhead === 0
+                        ? "지금 바로 만들고 있어요!"
+                        : `앞에 ${queueAhead}건 대기 중 · 1건당 약 1분`}
+                  </div>
                 </div>
-                <div className="text-xs text-stone-600 mt-1">
-                  {queueAhead === null
-                    ? "대기열을 확인하는 중…"
-                    : queueAhead === 0
-                      ? "지금 바로 만들고 있어요!"
-                      : `앞에 ${queueAhead}건 대기 중 · 1건당 약 1분`}
+                <div className="text-right">
+                  <div className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">경과</div>
+                  <div className="text-2xl font-extrabold font-mono text-stone-900 tabular-nums">
+                    {String(Math.floor(elapsedSec / 60)).padStart(2, "0")}:
+                    {String(elapsedSec % 60).padStart(2, "0")}
+                  </div>
                 </div>
               </div>
-              <div className="text-right">
-                <div className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">경과</div>
-                <div className="text-2xl font-extrabold font-mono text-stone-900 tabular-nums">
-                  {String(Math.floor(elapsedSec / 60)).padStart(2, "0")}:{String(elapsedSec % 60).padStart(2, "0")}
-                </div>
-              </div>
-            </div>
+            )}
           </motion.div>
           <div className="mt-5 text-left bg-orange-50 rounded-2xl p-4 text-sm">
             <div className="font-bold mb-1">닉네임</div>
@@ -770,6 +799,13 @@ export default function Order() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <StaffConfirmModal
+        open={staffConfirmOpen}
+        onConfirm={handleStaffConfirmed}
+        onCancel={() => setStaffConfirmOpen(false)}
+        theme="decompiler"
+      />
     </div>
   );
 }
