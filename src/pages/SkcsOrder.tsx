@@ -583,6 +583,13 @@ export default function SkcsOrder() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <StaffConfirmModal
+        open={staffConfirmOpen}
+        onConfirm={handleStaffConfirmed}
+        onCancel={() => setStaffConfirmOpen(false)}
+        theme="skcs"
+      />
     </div>
   );
 }
