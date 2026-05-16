@@ -82,6 +82,16 @@ export default function WhatIsOrder() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [filter, setFilter] = useState<"pending" | "done" | "all">("pending");
   const [showAdmin, setShowAdmin] = useState(false);
+  // Local-only "prepared" check marks per (orderId:cat:itemId). Resets on refresh — visual aid only.
+  const [readyChecks, setReadyChecks] = useState<Set<string>>(new Set());
+  const toggleReady = (key: string) => {
+    setReadyChecks((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
   const highlight = new URLSearchParams(window.location.search).get("id");
 
   useEffect(() => {
