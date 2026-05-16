@@ -38,20 +38,25 @@ export default function StaffConfirmModal({
   onCancel,
   theme = "decompiler",
   lockSeconds = 10,
+  confirmLockSeconds = 5,
 }: Props) {
   const [remaining, setRemaining] = useState(lockSeconds);
+  const [confirmRemaining, setConfirmRemaining] = useState(confirmLockSeconds);
   const t = THEMES[theme];
 
   useEffect(() => {
     if (!open) return;
     setRemaining(lockSeconds);
+    setConfirmRemaining(confirmLockSeconds);
     const iv = window.setInterval(() => {
       setRemaining((r) => (r <= 1 ? 0 : r - 1));
+      setConfirmRemaining((r) => (r <= 1 ? 0 : r - 1));
     }, 1000);
     return () => window.clearInterval(iv);
-  }, [open, lockSeconds]);
+  }, [open, lockSeconds, confirmLockSeconds]);
 
   const locked = remaining > 0;
+  const confirmLocked = confirmRemaining > 0;
 
   return (
     <AnimatePresence>
