@@ -162,6 +162,14 @@ export default function Order() {
       toast.error("메뉴를 하나 이상 선택해주세요!");
       return;
     }
+    // Require an ade flavor for every ade unit.
+    for (const id of ADE_ITEM_IDS) {
+      const arr = adeOpts[id] || [];
+      if (arr.some((a) => !a.flavor)) {
+        toast.error("에이드 맛(레몬/청포도)을 선택해주세요!");
+        return;
+      }
+    }
     setStage("payment");
   };
 
