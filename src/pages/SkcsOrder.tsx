@@ -243,11 +243,11 @@ export default function SkcsOrder() {
         >
           <div className="text-3xl mb-1">🔑</div>
           <h1 className="text-2xl font-extrabold mb-2 text-sky-600">주문 완료!</h1>
-          <p className="text-sm text-slate-500 mb-5">아래 QR을 직원에게 보여주세요</p>
+          <p className="text-sm text-slate-900 mb-5">아래 QR을 직원에게 보여주세요</p>
           <div className="bg-white p-4 rounded-2xl border-4 border-sky-500 inline-block">
             <QRCodeSVG value={paymentCode} size={220} level="M" />
           </div>
-          <div className="mt-3 font-mono text-xs text-slate-500 break-all">{paymentCode}</div>
+          <div className="mt-3 font-mono text-xs text-slate-900 break-all">{paymentCode}</div>
 
           <motion.div
             initial={{ opacity: 0, y: 8 }}
@@ -261,7 +261,7 @@ export default function SkcsOrder() {
                 <div className="text-3xl font-extrabold text-sky-700 mt-0.5">
                   {queueAhead === null ? "…" : `약 ${queueAhead * 2}분`}
                 </div>
-                <div className="text-xs text-slate-500 mt-1">
+                <div className="text-xs text-slate-900 mt-1">
                   {queueAhead === null
                     ? "대기열을 확인하는 중…"
                     : queueAhead === 0
@@ -270,7 +270,7 @@ export default function SkcsOrder() {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">경과</div>
+                <div className="text-[11px] font-bold text-slate-900 uppercase tracking-wider">경과</div>
                 <div className="text-2xl font-extrabold font-mono text-slate-900 tabular-nums">
                   {String(Math.floor(elapsedSec / 60)).padStart(2, "0")}:{String(elapsedSec % 60).padStart(2, "0")}
                 </div>
@@ -278,13 +278,13 @@ export default function SkcsOrder() {
             </div>
           </motion.div>
           <div className="mt-5 text-left bg-sky-100 rounded-2xl p-4 text-sm">
-            <div className="font-bold mb-1 text-slate-500">닉네임</div>
+            <div className="font-bold mb-1 text-slate-900">닉네임</div>
             <div className="mb-2">{nickname}</div>
-            <div className="font-bold mb-1 text-slate-500">합계</div>
+            <div className="font-bold mb-1 text-slate-900">합계</div>
             <div className="text-sky-700 font-extrabold">₩{total.toLocaleString()}</div>
             {orderId && (
               <>
-                <div className="font-bold mt-2 mb-1 text-slate-500">주문번호</div>
+                <div className="font-bold mt-2 mb-1 text-slate-900">주문번호</div>
                 <div className="font-mono text-xs break-all">{orderId}</div>
               </>
             )}
@@ -306,7 +306,7 @@ export default function SkcsOrder() {
     <div className="show-cursor min-h-screen bg-sky-50 text-slate-900 pb-32">
       <header className="px-5 pt-6 pb-3 sticky top-0 bg-sky-50/90 backdrop-blur z-20 border-b border-sky-200">
         <h1 className="text-2xl font-extrabold tracking-tight text-sky-600">SKCS · KEYRING SHOP</h1>
-        <p className="text-xs text-slate-500">Custom Mechanical Keyrings · 무료 커스터마이징</p>
+        <p className="text-xs text-slate-900">Custom Mechanical Keyrings · 무료 커스터마이징</p>
       </header>
 
       <main className="px-5 space-y-6 mt-4">
@@ -353,7 +353,7 @@ export default function SkcsOrder() {
                 <div className="bg-white border border-sky-200 rounded-3xl p-5 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 className="font-extrabold text-base text-sky-600">
-                      🔑 {item.name} <span className="text-slate-500">#{idx + 1}</span>
+                      🔑 {item.name} <span className="text-slate-900">#{idx + 1}</span>
                     </h2>
                     <span className="text-[10px] font-mono bg-sky-500/20 text-sky-700 px-2 py-0.5 rounded-full">
                       커스터마이징
@@ -381,13 +381,13 @@ export default function SkcsOrder() {
                   />
 
                   <div className="space-y-2">
-                    <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                    <div className="text-xs font-bold text-slate-900 uppercase tracking-wider">
                       Keycap{item.keyCount > 1 ? `s (${item.keyCount}개)` : ""}
                     </div>
                     {opt.keycaps.map((kc, ki) => (
                       <div key={ki}>
                         {item.keyCount > 1 && (
-                          <div className="text-[10px] text-slate-500 mb-1">키 #{ki + 1}</div>
+                          <div className="text-[10px] text-slate-900 mb-1">키 #{ki + 1}</div>
                         )}
                         <OptionRow
                           options={SKCS_KEYCAP_OPTIONS as readonly string[]}
@@ -406,7 +406,7 @@ export default function SkcsOrder() {
         {/* nickname */}
         <div className="bg-white border border-sky-200 rounded-3xl p-5 shadow-sm">
           <label className="block font-extrabold text-lg mb-1">주문시 호명될 닉네임을 적어주세요</label>
-          <p className="text-xs text-slate-500 mb-3">주문이 나왔을 때 큰 소리로 외쳐드립니다! 📣</p>
+          <p className="text-xs text-slate-900 mb-3">주문이 나왔을 때 큰 소리로 외쳐드립니다! 📣</p>
           <input
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
@@ -417,7 +417,7 @@ export default function SkcsOrder() {
         </div>
       </main>
 
-      <footer className="px-5 mt-10 text-center text-slate-400">
+      <footer className="px-5 mt-10 text-center text-slate-900">
         <div className="text-xs font-semibold tracking-wide">SKCS · Decompiler 2026</div>
       </footer>
 
@@ -462,7 +462,7 @@ export default function SkcsOrder() {
             >
               <div className="w-12 h-1.5 bg-sky-200 rounded-full mx-auto mb-4 sm:hidden" />
               <h2 className="text-2xl font-extrabold mb-1">결제 방법 선택</h2>
-              <p className="text-sm text-slate-500 mb-5">
+              <p className="text-sm text-slate-900 mb-5">
                 합계 <span className="font-bold text-sky-600">₩{total.toLocaleString()}</span>
               </p>
               <div className="grid grid-cols-2 gap-3">
@@ -485,7 +485,7 @@ export default function SkcsOrder() {
                   입금 결제
                 </motion.button>
               </div>
-              <button onClick={() => setStage("cart")} className="mt-4 w-full text-sm text-slate-500 py-2">
+              <button onClick={() => setStage("cart")} className="mt-4 w-full text-sm text-slate-900 py-2">
                 돌아가기
               </button>
             </motion.div>
@@ -511,7 +511,7 @@ export default function SkcsOrder() {
             >
               <div className="w-12 h-1.5 bg-sky-200 rounded-full mx-auto mb-4 sm:hidden" />
               <h2 className="text-2xl font-extrabold mb-1">🏦 계좌 입금</h2>
-              <p className="text-sm text-slate-500 mb-5">아래 계좌로 입금 후 체크해주세요</p>
+              <p className="text-sm text-slate-900 mb-5">아래 계좌로 입금 후 체크해주세요</p>
 
               <div className="bg-sky-500/10 border-2 border-sky-500/40 rounded-2xl p-5 space-y-3">
                 <button type="button" onClick={copyAccount} className="w-full text-left active:scale-[0.98] transition">
@@ -547,7 +547,7 @@ export default function SkcsOrder() {
               </motion.button>
               <button
                 onClick={() => setStage("payment")}
-                className="mt-2 w-full text-sm text-slate-500 py-2"
+                className="mt-2 w-full text-sm text-slate-900 py-2"
               >
                 결제 방법 다시 선택
               </button>
@@ -577,7 +577,7 @@ function Section({
   return (
     <section className="bg-white border border-sky-200 rounded-3xl p-5 shadow-sm">
       <h2 className="font-extrabold text-lg text-sky-600">{title}</h2>
-      {subtitle && <p className="text-xs text-slate-500 mb-3">{subtitle}</p>}
+      {subtitle && <p className="text-xs text-slate-900 mb-3">{subtitle}</p>}
       <ul className="divide-y divide-sky-200">
         {items.map((it) => {
           const n = qty[it.id] || 0;
@@ -593,7 +593,7 @@ function Section({
                     </span>
                   )}
                 </div>
-                <div className="text-xs text-slate-500">₩{it.price.toLocaleString()}</div>
+                <div className="text-xs text-slate-900">₩{it.price.toLocaleString()}</div>
               </div>
               <div className="flex items-center gap-2">
                 <motion.button
@@ -606,8 +606,8 @@ function Section({
                 </motion.button>
                 <motion.span
                   key={n}
-                  initial={{ scale: 1.4, color: "#fbbf24" }}
-                  animate={{ scale: 1, color: "#f5f5f4" }}
+                  initial={{ scale: 1.4, color: "#0ea5e9" }}
+                  animate={{ scale: 1, color: "#0f172a" }}
                   transition={spring}
                   className="w-6 text-center font-bold tabular-nums"
                 >
@@ -645,7 +645,7 @@ function OptionGroup({
 }) {
   return (
     <div>
-      <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">{label}</div>
+      <div className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">{label}</div>
       <OptionRow options={options} labels={labels} value={value} onChange={onChange} />
     </div>
   );
@@ -674,7 +674,7 @@ function OptionRow({
             className={`px-3 py-1.5 rounded-full text-xs font-bold border-2 transition active:scale-95 ${
               active
                 ? "bg-sky-500 text-white border-sky-500"
-                : "bg-sky-100 text-slate-700 border-sky-200"
+                : "bg-sky-100 text-slate-900 border-sky-200"
             }`}
           >
             {labels?.[i] ?? opt}
