@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import Order from "./pages/Order";
 import WhatIsOrder from "./pages/WhatIsOrder";
 import QrReader from "./pages/QrReader";
+import SkcsOrder from "./pages/SkcsOrder";
+import SkcsWhatIsOrder from "./pages/SkcsWhatIsOrder";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
