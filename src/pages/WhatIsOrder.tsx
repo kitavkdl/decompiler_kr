@@ -6,12 +6,14 @@ import { ITEM_BY_ID, type Category } from "@/lib/orderCodec";
 import AdminStatsModal from "@/components/AdminStatsModal";
 
 type HotdogOpt = { no_relish?: boolean; addon?: string | null; addon_name?: string | null };
+type AdeOpt = { flavor?: "grape" | "lemon" | null; flavor_name?: string | null };
 type OrderItem = {
   id: string;
   name: string;
   qty: number;
   price: number;
   hotdog_options?: HotdogOpt[];
+  ade_options?: AdeOpt[];
 };
 
 type Order = {
