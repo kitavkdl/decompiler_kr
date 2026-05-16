@@ -72,6 +72,7 @@ export default function AdminStatsModal({
     const { data, error } = await supabase
       .from("orders")
       .select("*")
+      .eq("booth", "decompiler")
       .order("created_at", { ascending: false })
       .limit(1000);
     setLoading(false);
