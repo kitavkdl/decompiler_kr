@@ -18,6 +18,21 @@ const ADDON_IDS = ADDONS.map((a) => a.id);
 // Items that include a hotdog — selecting any of these reveals the addon panel.
 const HOTDOG_ITEM_IDS = ITEM_ORDER.filter((i) => i.categories.includes("hotdog")).map((i) => i.id);
 
+// Items where the customer must pick which ade flavor (lemon vs green grape).
+// setB is "Ade + Hotdog" without a specific flavor — the staff needs to know which.
+// grape / lemon singles are explicit already but the user wants the same per-unit popup for consistency.
+const ADE_ITEM_IDS = ["grape", "lemon", "setB"] as const;
+type AdeFlavor = "grape" | "lemon";
+const ADE_FLAVORS: { id: AdeFlavor; name: string; emoji: string }[] = [
+  { id: "grape", name: "청포도 에이드", emoji: "🍇" },
+  { id: "lemon", name: "레몬 에이드", emoji: "🍋" },
+];
+const ADE_DEFAULT: Record<string, AdeFlavor | null> = {
+  grape: "grape",
+  lemon: "lemon",
+  setB: null,
+};
+
 const BANK_INFO = {
   bank: "토스뱅크",
   account: "1002-4730-0262",
