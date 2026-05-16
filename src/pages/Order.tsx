@@ -277,6 +277,7 @@ export default function Order() {
     setOrderCreatedAt(null);
     setQueueAhead(null);
     setElapsedSec(0);
+    setOrderFulfilled(false);
   };
 
   // Compute queue position when QR is shown, and refresh every 30s.
