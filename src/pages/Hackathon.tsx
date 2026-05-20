@@ -49,8 +49,8 @@ const T = {
   prize1Sub: { ko: "1st Place", en: "1st Place" },
   prize2: { ko: "500,000원", en: "₩500,000" },
   prize2Sub: { ko: "2nd Place", en: "2nd Place" },
-  prize3: { ko: "커스텀 USB & 부상", en: "Custom USB & Goodies" },
-  prize3Sub: { ko: "3rd Place", en: "3rd Place" },
+  prize3: { ko: "200,000원", en: "₩200,000" },
+  prize3Sub: { ko: "3rd Place (3 teams)", en: "3rd Place (3 teams)" },
 
   perksLabel: { ko: "// PERKS", en: "// PERKS" },
   perksTitle: { ko: "우리 해커톤의 특징", en: "What Makes Us Different" },
