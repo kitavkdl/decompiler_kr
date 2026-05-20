@@ -12,21 +12,21 @@ const APPLY_URL = "https://forms.gle/kcg8cHj2dgaZuTTC8";
 
 const T = {
   badge: { ko: "DECOMPILER × SUNY KOREA", en: "DECOMPILER × SUNY KOREA" },
-  presents: { ko: "PRESENTS", en: "PRESENTS" },
-  tagline: { ko: "Dare to Challenge", en: "Dare to Challenge" },
+  presents: { ko: "참가자 모집 중", en: "NOW OPEN" },
+  tagline: { ko: "총상금 200만 원 상당의 DX 해커톤", en: "DX Hackathon · ₩2M+ Prize Pool" },
   year: { ko: "2026", en: "2026" },
   intro: {
-    ko: "디지털 트랜스포메이션(DX)을 주제로, 무박 2일 동안 코드로 세상을 다시 컴파일하다.",
-    en: "A 24-hour overnight hackathon to recompile the world through Digital Transformation.",
+    ko: "Decompiler Club이 주최하는 HACKATHON THE X 2026의 참가 신청이 시작되었습니다! 이번 대회는 디지털 트랜스포메이션(DX)을 주제로, 디지털 기술과 도구를 활용해 우리 삶의 방식을 바꾸고 현실 세계의 문제를 해결할 창의적인 아이디어를 제안하는 장입니다.",
+    en: "Registration is now open for HACKATHON THE X 2026, hosted by Decompiler Club! This event focuses on Digital Transformation (DX), providing a stage to propose creative ideas that change the way we live and solve real-world problems using digital technology and tools.",
   },
-  cta: { ko: "지금 신청하기", en: "Apply Now" },
+  cta: { ko: "지금 바로 신청하기", en: "Apply Now" },
   ctaSub: { ko: "선착순 마감 · 폼 응답 기반 선발", en: "First-come, first-served · Curated by responses" },
 
   themeLabel: { ko: "// THEME", en: "// THEME" },
   themeTitle: { ko: "Digital Transformation", en: "Digital Transformation" },
   themeDesc: {
-    ko: "기술로 산업과 일상을 재정의하는 모든 아이디어. 자유로운 형식, 무한한 가능성.",
-    en: "Any idea that redefines industries and everyday life through technology. Free form, infinite possibilities.",
+    ko: "기술, 기획, 디자인, 비즈니스 모델 등 분야에 상관없이 혁신에 관심 있는 대학생이라면 누구나 환영합니다. 팀 신청과 개인 신청 모두 가능하며, 개인 지원자의 경우 운영진이 전공과 역량을 고려해 임의로 팀을 배정해 드립니다. 바이브코딩 및 AI 사용 100% 가능합니다.",
+    en: "Any university student interested in innovation is welcome, regardless of major—tech, planning, design, or business model. Both team and individual applications are accepted; individual applicants will be assigned to teams by the organizers based on their major and skills. Vibe coding and AI usage are 100% allowed.",
   },
 
   scheduleLabel: { ko: "// SCHEDULE", en: "// SCHEDULE" },
@@ -49,13 +49,13 @@ const T = {
   prize1Sub: { ko: "1st Place", en: "1st Place" },
   prize2: { ko: "500,000원", en: "₩500,000" },
   prize2Sub: { ko: "2nd Place", en: "2nd Place" },
-  prize3: { ko: "커스텀 USB & 부상", en: "Custom USB & Goodies" },
-  prize3Sub: { ko: "3rd Place", en: "3rd Place" },
+  prize3: { ko: "200,000원", en: "₩200,000" },
+  prize3Sub: { ko: "3rd Place (3 teams)", en: "3rd Place (3 teams)" },
 
   perksLabel: { ko: "// PERKS", en: "// PERKS" },
   perksTitle: { ko: "우리 해커톤의 특징", en: "What Makes Us Different" },
   perk1Title: { ko: "전 식사 제공", en: "All Meals Provided" },
-  perk1Desc: { ko: "아침·점심·저녁·야식까지 전부", en: "Breakfast, lunch, dinner & midnight snacks" },
+  perk1Desc: { ko: "아침·점심·저녁·야식 등 5끼니 이상", en: "5+ meals including breakfast, lunch, dinner & midnight snacks" },
   perk2Title: { ko: "무한 카페인", en: "Unlimited Caffeine" },
   perk2Desc: { ko: "커피, 에너지드링크, 간식 무제한", en: "Coffee, energy drinks, snacks — limitless" },
   perk3Title: { ko: "All in English", en: "All in English" },
