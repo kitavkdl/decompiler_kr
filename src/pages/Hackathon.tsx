@@ -25,8 +25,8 @@ const T = {
   themeLabel: { ko: "// THEME", en: "// THEME" },
   themeTitle: { ko: "Digital Transformation", en: "Digital Transformation" },
   themeDesc: {
-    ko: "기술로 산업과 일상을 재정의하는 모든 아이디어. 자유로운 형식, 무한한 가능성.",
-    en: "Any idea that redefines industries and everyday life through technology. Free form, infinite possibilities.",
+    ko: "기술, 기획, 디자인, 비즈니스 모델 등 분야에 상관없이 혁신에 관심 있는 대학생이라면 누구나 환영합니다. 팀 신청과 개인 신청 모두 가능하며, 개인 지원자의 경우 운영진이 전공과 역량을 고려해 임의로 팀을 배정해 드립니다. 바이브코딩 및 AI 사용 100% 가능합니다.",
+    en: "Any university student interested in innovation is welcome, regardless of major—tech, planning, design, or business model. Both team and individual applications are accepted; individual applicants will be assigned to teams by the organizers based on their major and skills. Vibe coding and AI usage are 100% allowed.",
   },
 
   scheduleLabel: { ko: "// SCHEDULE", en: "// SCHEDULE" },
