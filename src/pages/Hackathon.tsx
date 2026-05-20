@@ -55,7 +55,7 @@ const T = {
   perksLabel: { ko: "// PERKS", en: "// PERKS" },
   perksTitle: { ko: "우리 해커톤의 특징", en: "What Makes Us Different" },
   perk1Title: { ko: "전 식사 제공", en: "All Meals Provided" },
-  perk1Desc: { ko: "아침·점심·저녁·야식까지 전부", en: "Breakfast, lunch, dinner & midnight snacks" },
+  perk1Desc: { ko: "아침·점심·저녁·야식 등 5끼니 이상", en: "5+ meals including breakfast, lunch, dinner & midnight snacks" },
   perk2Title: { ko: "무한 카페인", en: "Unlimited Caffeine" },
   perk2Desc: { ko: "커피, 에너지드링크, 간식 무제한", en: "Coffee, energy drinks, snacks — limitless" },
   perk3Title: { ko: "All in English", en: "All in English" },
