@@ -12,14 +12,14 @@ const APPLY_URL = "https://forms.gle/kcg8cHj2dgaZuTTC8";
 
 const T = {
   badge: { ko: "DECOMPILER × SUNY KOREA", en: "DECOMPILER × SUNY KOREA" },
-  presents: { ko: "PRESENTS", en: "PRESENTS" },
-  tagline: { ko: "Dare to Challenge", en: "Dare to Challenge" },
+  presents: { ko: "참가자 모집 중", en: "NOW OPEN" },
+  tagline: { ko: "총상금 200만 원 상당의 DX 해커톤", en: "DX Hackathon · ₩2M+ Prize Pool" },
   year: { ko: "2026", en: "2026" },
   intro: {
-    ko: "디지털 트랜스포메이션(DX)을 주제로, 무박 2일 동안 코드로 세상을 다시 컴파일하다.",
-    en: "A 24-hour overnight hackathon to recompile the world through Digital Transformation.",
+    ko: "Decompiler Club이 주최하는 HACKATHON THE X 2026의 참가 신청이 시작되었습니다! 이번 대회는 디지털 트랜스포메이션(DX)을 주제로, 디지털 기술과 도구를 활용해 우리 삶의 방식을 바꾸고 현실 세계의 문제를 해결할 창의적인 아이디어를 제안하는 장입니다.",
+    en: "Registration is now open for HACKATHON THE X 2026, hosted by Decompiler Club! This event focuses on Digital Transformation (DX), providing a stage to propose creative ideas that change the way we live and solve real-world problems using digital technology and tools.",
   },
-  cta: { ko: "지금 신청하기", en: "Apply Now" },
+  cta: { ko: "지금 바로 신청하기", en: "Apply Now" },
   ctaSub: { ko: "선착순 마감 · 폼 응답 기반 선발", en: "First-come, first-served · Curated by responses" },
 
   themeLabel: { ko: "// THEME", en: "// THEME" },
