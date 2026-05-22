@@ -3,7 +3,7 @@ import ReticleCursor from "@/components/ReticleCursor";
 import LanguageToggle from "@/components/LanguageToggle";
 import ScrambleText from "@/components/ScrambleText";
 import { useLang } from "@/i18n/LanguageContext";
-import { Calendar, MapPin, Trophy, Globe2, Coffee, UtensilsCrossed, Sparkles, ArrowRight } from "lucide-react";
+import { Calendar, MapPin, Trophy, Globe2, Coffee, UtensilsCrossed, Gift, Sparkles, ArrowRight } from "lucide-react";
 
 const glass =
   "backdrop-blur-lg bg-background/30 border border-foreground/[0.08] rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.4)]";
@@ -60,6 +60,8 @@ const T = {
   perk2Desc: { ko: "커피, 에너지드링크, 간식 무제한", en: "Coffee, energy drinks, snacks — limitless" },
   perk3Title: { ko: "All in English", en: "All in English" },
   perk3Desc: { ko: "모든 진행과 발표가 영어로", en: "Every session and presentation in English" },
+  perk4Title: { ko: "학교 기념품", en: "School Souvenirs" },
+  perk4Desc: { ko: "모든 참가자에게 학교 기념품 증정", en: "School souvenirs for all participants" },
 
   applyLabel: { ko: "// REGISTER", en: "// REGISTER" },
   applyTitle: { ko: "도전할 준비, 됐는가?", en: "Ready to Challenge?" },
@@ -232,11 +234,12 @@ const Hackathon = () => {
             <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground">{T.perksTitle[lang]}</h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
               { icon: UtensilsCrossed, title: T.perk1Title[lang], desc: T.perk1Desc[lang] },
               { icon: Coffee, title: T.perk2Title[lang], desc: T.perk2Desc[lang] },
               { icon: Globe2, title: T.perk3Title[lang], desc: T.perk3Desc[lang] },
+              { icon: Gift, title: T.perk4Title[lang], desc: T.perk4Desc[lang] },
             ].map((p, i) => {
               const Icon = p.icon;
               return (
