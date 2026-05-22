@@ -3,7 +3,7 @@ import ReticleCursor from "@/components/ReticleCursor";
 import LanguageToggle from "@/components/LanguageToggle";
 import ScrambleText from "@/components/ScrambleText";
 import { useLang } from "@/i18n/LanguageContext";
-import { Calendar, MapPin, Trophy, Globe2, Coffee, UtensilsCrossed, Sparkles, ArrowRight } from "lucide-react";
+import { Calendar, MapPin, Trophy, Globe2, Coffee, UtensilsCrossed, Gift, ArrowRight } from "lucide-react";
 
 const glass =
   "backdrop-blur-lg bg-background/30 border border-foreground/[0.08] rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.4)]";
