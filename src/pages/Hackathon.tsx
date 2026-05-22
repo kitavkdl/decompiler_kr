@@ -31,8 +31,8 @@ const T = {
 
   scheduleLabel: { ko: "// SCHEDULE", en: "// SCHEDULE" },
   scheduleTitle: { ko: "일정", en: "Schedule" },
-  scheduleDate: { ko: "2026년 5월 30일 – 31일", en: "May 30 – 31, 2026" },
-  scheduleSub: { ko: "무박 2일 · 24시간 풀 코딩", en: "Overnight · 24 hours of pure code" },
+  scheduleDate: { ko: "2026년 5월 30일", en: "May 30, 2026" },
+  scheduleSub: { ko: "12시간 풀 코딩", en: "Overnight · 12 hours of pure code" },
 
   locationLabel: { ko: "// LOCATION", en: "// LOCATION" },
   locationTitle: { ko: "장소", en: "Location" },
