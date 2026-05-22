@@ -13,7 +13,7 @@ const APPLY_URL = "https://forms.gle/kcg8cHj2dgaZuTTC8";
 const T = {
   badge: { ko: "DECOMPILER × SUNY KOREA", en: "DECOMPILER × SUNY KOREA" },
   presents: { ko: "참가자 모집 중", en: "NOW OPEN" },
-  tagline: { ko: "총상금 200만 원 상당의 DX 해커톤", en: "DX Hackathon · ₩2M+ Prize Pool" },
+  tagline: { ko: "총상금 100만 원 상당의 DX 해커톤", en: "DX Hackathon · ₩1M+ Prize Pool" },
   year: { ko: "2026", en: "2026" },
   intro: {
     ko: "Decompiler Club이 주최하는 HACKATHON THE X 2026의 참가 신청이 시작되었습니다! 이번 대회는 디지털 트랜스포메이션(DX)을 주제로, 디지털 기술과 도구를 활용해 우리 삶의 방식을 바꾸고 현실 세계의 문제를 해결할 창의적인 아이디어를 제안하는 장입니다.",
@@ -25,7 +25,7 @@ const T = {
   themeLabel: { ko: "// THEME", en: "// THEME" },
   themeTitle: { ko: "Digital Transformation", en: "Digital Transformation" },
   themeDesc: {
-    ko: "기술, 기획, 디자인, 비즈니스 모델 등 분야에 상관없이 혁신에 관심 있는 대학생이라면 누구나 환영합니다. 팀 신청과 개인 신청 모두 가능하며, 개인 지원자의 경우 운영진이 전공과 역량을 고려해 임의로 팀을 배정해 드립니다. 바이브코딩 및 AI 사용 100% 가능합니다.",
+    ko: "기술, 기획, 디자인, 비즈니스 모델 등 분야에 상관없이 혁신에 관심 있는 SUNY Korea 대학생이라면 누구나 환영합니다. 팀 신청과 개인 신청 모두 가능하며, 개인 지원자의 경우 운영진이 전공과 역량을 고려해 임의로 팀을 배정해 드립니다. 바이브코딩 및 AI 사용 100% 가능합니다.",
     en: "Any university student interested in innovation is welcome, regardless of major—tech, planning, design, or business model. Both team and individual applications are accepted; individual applicants will be assigned to teams by the organizers based on their major and skills. Vibe coding and AI usage are 100% allowed.",
   },
 
@@ -45,17 +45,17 @@ const T = {
 
   prizeLabel: { ko: "// PRIZES", en: "// PRIZES" },
   prizeTitle: { ko: "상금", en: "Prizes" },
-  prize1: { ko: "1,000,000원", en: "₩1,000,000" },
+  prize1: { ko: "500,000원", en: "₩500,000" },
   prize1Sub: { ko: "1st Place", en: "1st Place" },
-  prize2: { ko: "500,000원", en: "₩500,000" },
+  prize2: { ko: "300,000원", en: "₩300,000" },
   prize2Sub: { ko: "2nd Place", en: "2nd Place" },
-  prize3: { ko: "200,000원", en: "₩200,000" },
-  prize3Sub: { ko: "3rd Place (3 teams)", en: "3rd Place (3 teams)" },
+  prize3: { ko: "100,000원", en: "₩100,000" },
+  prize3Sub: { ko: "3rd Place (2 teams)", en: "3rd Place (2 teams)" },
 
   perksLabel: { ko: "// PERKS", en: "// PERKS" },
   perksTitle: { ko: "우리 해커톤의 특징", en: "What Makes Us Different" },
   perk1Title: { ko: "전 식사 제공", en: "All Meals Provided" },
-  perk1Desc: { ko: "아침·점심·저녁·야식 등 5끼니 이상", en: "5+ meals including breakfast, lunch, dinner & midnight snacks" },
+  perk1Desc: { ko: "점심·저녁 2끼니", en: "lunch & dinner" },
   perk2Title: { ko: "무한 카페인", en: "Unlimited Caffeine" },
   perk2Desc: { ko: "커피, 에너지드링크, 간식 무제한", en: "Coffee, energy drinks, snacks — limitless" },
   perk3Title: { ko: "All in English", en: "All in English" },
@@ -73,9 +73,7 @@ const Hackathon = () => {
   const { lang } = useLang();
 
   useEffect(() => {
-    document.title = lang === "ko"
-      ? "Hackathon: The X 2026 — Decompiler"
-      : "Hackathon: The X 2026 — Decompiler";
+    document.title = lang === "ko" ? "Hackathon: The X 2026 — Decompiler" : "Hackathon: The X 2026 — Decompiler";
   }, [lang]);
 
   return (
@@ -149,9 +147,7 @@ const Hackathon = () => {
               <span className="text-foreground/70 mx-3">/</span>
               {T.themeTitle[lang]}
             </h2>
-            <p className="max-w-2xl mx-auto text-muted-foreground text-sm md:text-base">
-              {T.themeDesc[lang]}
-            </p>
+            <p className="max-w-2xl mx-auto text-muted-foreground text-sm md:text-base">{T.themeDesc[lang]}</p>
           </div>
         </section>
 
@@ -217,9 +213,7 @@ const Hackathon = () => {
                 <p className={`text-${p.color} ${p.glow} text-3xl md:text-4xl font-display font-bold mb-2 relative`}>
                   {p.title}
                 </p>
-                <p className="text-muted-foreground text-xs tracking-[0.3em] uppercase font-mono relative">
-                  {p.sub}
-                </p>
+                <p className="text-muted-foreground text-xs tracking-[0.3em] uppercase font-mono relative">{p.sub}</p>
               </div>
             ))}
           </div>
@@ -235,9 +229,7 @@ const Hackathon = () => {
               </span>
               <div className="w-8 h-px bg-secondary/40" />
             </div>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground">
-              {T.perksTitle[lang]}
-            </h2>
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground">{T.perksTitle[lang]}</h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-5">
@@ -255,9 +247,7 @@ const Hackathon = () => {
                   <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 border border-primary/30 mb-4 group-hover:bg-primary/20 transition-colors">
                     <Icon className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg md:text-xl font-display font-bold text-foreground mb-2">
-                    {p.title}
-                  </h3>
+                  <h3 className="text-lg md:text-xl font-display font-bold text-foreground mb-2">{p.title}</h3>
                   <p className="text-muted-foreground text-sm">{p.desc}</p>
                 </div>
               );
@@ -277,9 +267,7 @@ const Hackathon = () => {
                 {T.applyTitle[lang].split("").map((c, i) => c)}
                 <span className="text-primary text-glow">_</span>
               </h2>
-              <p className="text-muted-foreground text-sm md:text-base max-w-xl mx-auto mb-8">
-                {T.applyDesc[lang]}
-              </p>
+              <p className="text-muted-foreground text-sm md:text-base max-w-xl mx-auto mb-8">{T.applyDesc[lang]}</p>
               <a
                 href={APPLY_URL}
                 target="_blank"
@@ -289,9 +277,7 @@ const Hackathon = () => {
                 {T.cta[lang]}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </a>
-              <p className="mt-6 text-xs text-muted-foreground font-mono">
-                contact: decompiler.sbu@gmail.com
-              </p>
+              <p className="mt-6 text-xs text-muted-foreground font-mono">contact: decompiler.sbu@gmail.com</p>
             </div>
           </div>
         </section>
