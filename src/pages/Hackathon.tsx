@@ -60,6 +60,8 @@ const T = {
   perk2Desc: { ko: "커피, 에너지드링크, 간식 무제한", en: "Coffee, energy drinks, snacks — limitless" },
   perk3Title: { ko: "All in English", en: "All in English" },
   perk3Desc: { ko: "모든 진행과 발표가 영어로", en: "Every session and presentation in English" },
+  perk4Title: { ko: "학교 기념품", en: "School Souvenirs" },
+  perk4Desc: { ko: "모든 참가자에게 학교 기념품 증정", en: "School souvenirs for all participants" },
 
   applyLabel: { ko: "// REGISTER", en: "// REGISTER" },
   applyTitle: { ko: "도전할 준비, 됐는가?", en: "Ready to Challenge?" },
