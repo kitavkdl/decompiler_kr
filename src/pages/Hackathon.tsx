@@ -234,11 +234,12 @@ const Hackathon = () => {
             <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground">{T.perksTitle[lang]}</h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
               { icon: UtensilsCrossed, title: T.perk1Title[lang], desc: T.perk1Desc[lang] },
               { icon: Coffee, title: T.perk2Title[lang], desc: T.perk2Desc[lang] },
               { icon: Globe2, title: T.perk3Title[lang], desc: T.perk3Desc[lang] },
+              { icon: Gift, title: T.perk4Title[lang], desc: T.perk4Desc[lang] },
             ].map((p, i) => {
               const Icon = p.icon;
               return (
