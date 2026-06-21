@@ -293,7 +293,14 @@ const ActivityCards = () => {
               </div>
 
               <div className="rounded-lg border border-foreground/[0.06] bg-background/40 p-4">
-                <div className="text-[10px] text-foreground/40 mb-2 tracking-wider">$ cat {selFileName}.md</div>
+                <div className="text-[10px] text-foreground/40 mb-2 tracking-wider">
+                  <Typewriter
+                    key={`cat-${selected!.dir}-${selected!.file}-${lang}`}
+                    text={`$ cat ${selFileName}.md`}
+                    speed={28}
+                    caret
+                  />
+                </div>
                 <p className="text-xs md:text-sm leading-relaxed text-foreground/85 whitespace-pre-line">
                   {sel.body[lang]}
                 </p>
