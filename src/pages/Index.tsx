@@ -5,6 +5,8 @@ import ActivityCards from "../components/ActivityCards";
 import PhotoGallery from "../components/PhotoGallery";
 import NetworkSection from "../components/NetworkSection";
 import LanguageToggle from "../components/LanguageToggle";
+import TypingLabel from "../components/TypingLabel";
+import RevealLines from "../components/RevealLines";
 import { useLang } from "@/i18n/LanguageContext";
 import { translations as t } from "@/i18n/translations";
 
