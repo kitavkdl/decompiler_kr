@@ -2,6 +2,7 @@ import { Folder, FolderOpen, FileCode, Terminal, ChevronRight, X, ExternalLink }
 import { useState } from "react";
 import { useLang } from "@/i18n/LanguageContext";
 import { translations as t } from "@/i18n/translations";
+import Typewriter from "./Typewriter";
 
 const glass =
   "backdrop-blur-lg bg-background/25 border border-foreground/[0.06] rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.3)]";
