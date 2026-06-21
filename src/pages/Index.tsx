@@ -63,9 +63,14 @@ const Index = () => {
               </div>
               <div className={`${glass} p-6 md:p-8`}>
                 <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-4">
-                  {t.about.title1[lang]}<span className="text-primary text-glow">{t.about.titleHighlight1[lang]}</span>{t.about.titleMid[lang]}
-                  <br />
-                  <span className="text-secondary text-glow-cyan">{t.about.titleHighlight2[lang]}</span>{t.about.titleEnd[lang]}
+                  <BrandHeadline
+                    key={`bh-${lang}`}
+                    prefix={t.about.title1[lang]}
+                    shatter={t.about.titleHighlight1[lang]}
+                    mid={t.about.titleMid[lang]}
+                    assemble={t.about.titleHighlight2[lang]}
+                    suffix={t.about.titleEnd[lang]}
+                  />
                 </h2>
               </div>
               <div className={`${glass} p-5 md:p-6`}>
