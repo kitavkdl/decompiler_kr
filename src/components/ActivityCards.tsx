@@ -194,10 +194,17 @@ const ActivityCards = () => {
                       {items.map((item, j) => {
                         const isLastItem = j === items.length - 1;
                         const isSel = selected?.dir === i && selected?.file === j;
+                        const linkUrl = fileLinks[i]?.[j];
                         return (
                           <button
                             key={j}
-                            onClick={() => setSelected({ dir: i, file: j })}
+                            onClick={() => {
+                              if (linkUrl) {
+                                window.open(linkUrl, "_blank", "noopener,noreferrer");
+                              } else {
+                                setSelected({ dir: i, file: j });
+                              }
+                            }}
                             className={`w-full flex items-center gap-2 py-1 px-1 -mx-1 rounded transition-colors duration-200 text-left ${
                               isSel
                                 ? "bg-primary/10 text-foreground"
@@ -208,9 +215,12 @@ const ActivityCards = () => {
                               {isLast && isLastItem ? "└──" : "├──"}
                             </span>
                             <FileCode
-                              className={`w-3.5 h-3.5 flex-shrink-0 ${isSel ? "text-primary" : "text-secondary/60"}`}
+                              className={`w-3.5 h-3.5 flex-shrink-0 ${isSel ? "text-primary" : linkUrl ? "text-secondary" : "text-secondary/60"}`}
                             />
                             <span className="text-xs md:text-sm leading-5 truncate">{item}</span>
+                            {linkUrl && (
+                              <ExternalLink className="w-3 h-3 text-secondary/70 flex-shrink-0 ml-auto" />
+                            )}
                           </button>
                         );
                       })}
