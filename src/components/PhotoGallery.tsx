@@ -16,8 +16,14 @@ const PhotoGallery = () => {
     <div className="w-full max-w-6xl mx-auto space-y-10 md:space-y-16">
       {t.gallery.photos.map((photo, i) => {
         const reverse = i % 2 === 1;
-        const accent = i % 2 === 0 ? "primary" : "secondary";
-        const glowClass = accent === "primary" ? "text-glow" : "text-glow-cyan";
+        const isPrimary = i % 2 === 0;
+        const tickColor = isPrimary ? "border-primary/70" : "border-secondary/70";
+        const tagColor = isPrimary ? "text-primary" : "text-secondary";
+        const tagColorSoft = isPrimary ? "text-primary/70" : "text-secondary/70";
+        const titleClass = isPrimary ? "text-primary text-glow" : "text-secondary text-glow-cyan";
+        const lineColor = isPrimary ? "bg-primary/60" : "bg-secondary/60";
+        const hoverBorder = isPrimary ? "hover:border-primary/40" : "hover:border-secondary/40";
+
         return (
           <div
             key={i}
@@ -26,14 +32,11 @@ const PhotoGallery = () => {
             }`}
           >
             {/* Image */}
-            <div
-              className={`${glass} md:col-span-8 relative overflow-hidden p-0 hover:border-${accent}/40 transition-all duration-500`}
-            >
-              {/* corner ticks */}
-              <span className={`absolute top-3 left-3 z-20 w-4 h-4 border-t-2 border-l-2 border-${accent}/70`} />
-              <span className={`absolute top-3 right-3 z-20 w-4 h-4 border-t-2 border-r-2 border-${accent}/70`} />
-              <span className={`absolute bottom-3 left-3 z-20 w-4 h-4 border-b-2 border-l-2 border-${accent}/70`} />
-              <span className={`absolute bottom-3 right-3 z-20 w-4 h-4 border-b-2 border-r-2 border-${accent}/70`} />
+            <div className={`${glass} md:col-span-8 relative overflow-hidden p-0 ${hoverBorder} transition-all duration-500`}>
+              <span className={`absolute top-3 left-3 z-20 w-4 h-4 border-t-2 border-l-2 ${tickColor}`} />
+              <span className={`absolute top-3 right-3 z-20 w-4 h-4 border-t-2 border-r-2 ${tickColor}`} />
+              <span className={`absolute bottom-3 left-3 z-20 w-4 h-4 border-b-2 border-l-2 ${tickColor}`} />
+              <span className={`absolute bottom-3 right-3 z-20 w-4 h-4 border-b-2 border-r-2 ${tickColor}`} />
 
               <div className="relative overflow-hidden">
                 <img
@@ -43,7 +46,6 @@ const PhotoGallery = () => {
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-tr from-background/80 via-background/10 to-transparent" />
-                {/* scan overlay */}
                 <div
                   className="pointer-events-none absolute inset-0 opacity-30 mix-blend-overlay"
                   style={{
@@ -52,7 +54,7 @@ const PhotoGallery = () => {
                   }}
                 />
                 <div className="absolute top-4 left-4 z-10">
-                  <span className={`font-mono text-[10px] tracking-[0.4em] uppercase text-${accent} bg-background/70 px-2 py-1 rounded`}>
+                  <span className={`font-mono text-[10px] tracking-[0.4em] uppercase ${tagColor} bg-background/70 px-2 py-1 rounded`}>
                     {`// ${String(i + 1).padStart(2, "0")}`}
                   </span>
                 </div>
@@ -61,15 +63,13 @@ const PhotoGallery = () => {
 
             {/* Caption */}
             <div className="md:col-span-4 px-1 md:px-2">
-              <div className={`font-mono text-[10px] tracking-[0.4em] uppercase text-${accent}/70 mb-2`}>
+              <div className={`font-mono text-[10px] tracking-[0.4em] uppercase ${tagColorSoft} mb-2`}>
                 LOG_{String(i + 1).padStart(3, "0")}
               </div>
-              <h3
-                className={`font-display font-bold text-2xl md:text-4xl leading-tight mb-3 text-${accent} ${glowClass}`}
-              >
+              <h3 className={`font-display font-bold text-2xl md:text-4xl leading-tight mb-3 ${titleClass}`}>
                 {photo.title[lang]}
               </h3>
-              <div className={`h-px w-12 bg-${accent}/60 mb-3`} />
+              <div className={`h-px w-12 ${lineColor} mb-3`} />
               <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
                 {photo.desc[lang]}
               </p>
