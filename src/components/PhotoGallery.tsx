@@ -18,9 +18,38 @@ const srcs = [forum2025, hackathonA, hackathonB, summerFestival, mtA, mtB, mtC, 
 
 const PhotoGallery = () => {
   const { lang } = useLang();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const cards = containerRef.current.querySelectorAll<HTMLElement>("[data-photo-card]");
+    const tweens: gsap.core.Tween[] = [];
+    cards.forEach((card, idx) => {
+      gsap.set(card, { y: 40, opacity: 0 });
+      const tw = gsap.to(card, {
+        y: 0,
+        opacity: 1,
+        duration: 0.9,
+        ease: "power3.out",
+        delay: (idx % 2) * 0.12,
+        scrollTrigger: {
+          trigger: card,
+          start: "top 88%",
+          once: true,
+        },
+      });
+      tweens.push(tw);
+    });
+    return () => {
+      tweens.forEach((tw) => {
+        tw.scrollTrigger?.kill();
+        tw.kill();
+      });
+    };
+  }, []);
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-10 md:space-y-16">
+    <div ref={containerRef} className="w-full max-w-6xl mx-auto space-y-10 md:space-y-16">
       {t.gallery.photos.map((photo, i) => {
         const reverse = i % 2 === 1;
         const isPrimary = i % 2 === 0;
@@ -34,6 +63,7 @@ const PhotoGallery = () => {
         return (
           <div
             key={i}
+            data-photo-card
             className={`group relative grid md:grid-cols-12 gap-4 md:gap-6 items-center ${
               reverse ? "md:[&>*:first-child]:order-2" : ""
             }`}
