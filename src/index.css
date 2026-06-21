@@ -53,7 +53,6 @@
 @layer base {
   * {
     @apply border-border;
-    cursor: none;
   }
 
   html, body {
@@ -63,8 +62,38 @@
 
   body {
     @apply bg-background text-foreground font-body antialiased;
-    cursor: none;
   }
+
+  /* Hide native cursor only on devices with a fine pointer (mouse/trackpad).
+     Touch devices keep their native behavior. */
+  @media (hover: hover) and (pointer: fine) {
+    *, body {
+      cursor: none;
+    }
+  }
+
+  /* Brief decode/scramble flicker on language change (~400ms) */
+  @keyframes lang-decode-flicker {
+    0% { filter: none; text-shadow: none; opacity: 1; }
+    20% {
+      filter: blur(0.6px) brightness(1.1);
+      text-shadow: 2px 0 hsl(189 100% 50% / 0.8), -2px 0 hsl(300 100% 60% / 0.8);
+      opacity: 0.92;
+    }
+    55% {
+      filter: blur(0.8px) brightness(1.2);
+      text-shadow: -3px 0 hsl(189 100% 50% / 0.7), 3px 0 hsl(300 100% 60% / 0.7);
+      opacity: 0.88;
+    }
+    100% { filter: none; text-shadow: none; opacity: 1; }
+  }
+
+  .lang-scrambling #scroll-container,
+  .lang-scrambling header,
+  .lang-scrambling [data-lang-scramble] {
+    animation: lang-decode-flicker 420ms ease-in-out;
+  }
+
 
   /* Pages that need the native OS cursor (e.g. /order, /whatisorder, /qrreader) */
   .show-cursor, .show-cursor * {
