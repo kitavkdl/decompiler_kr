@@ -7,6 +7,7 @@ import NetworkSection from "../components/NetworkSection";
 import LanguageToggle from "../components/LanguageToggle";
 import TypingLabel from "../components/TypingLabel";
 import RevealLines from "../components/RevealLines";
+import BrandHeadline from "../components/BrandHeadline";
 import { useLang } from "@/i18n/LanguageContext";
 import { translations as t } from "@/i18n/translations";
 
@@ -30,13 +31,13 @@ const Index = () => {
                 {t.hero.subtitle[lang]}
               </p>
               <h1 className="text-4xl md:text-7xl lg:text-8xl font-display font-bold text-foreground mb-4 leading-tight">
-                <ScrambleText text="Decompiler" className="text-primary text-glow" />
+                <ScrambleText text="Decompiler" className="text-primary text-glow" autoPlay duration={1700} revealStagger={90} />
               </h1>
               <p className="text-base md:text-2xl font-display font-light text-foreground/80 mb-2">
-                <ScrambleText text={t.hero.tagline1[lang]} />
+                <ScrambleText key={`tl1-${lang}`} text={t.hero.tagline1[lang]} autoPlay duration={1500} revealStagger={50} />
               </p>
               <p className="text-base md:text-2xl font-display font-light text-secondary text-glow-cyan">
-                <ScrambleText text={t.hero.tagline2[lang]} />
+                <ScrambleText key={`tl2-${lang}`} text={t.hero.tagline2[lang]} autoPlay duration={1700} revealStagger={45} />
               </p>
             </div>
             <div className="mt-10 flex items-center gap-3 text-muted-foreground text-[10px] tracking-[0.3em] uppercase animate-pulse-glow font-mono">
