@@ -3,6 +3,7 @@ import ScrambleText from "../components/ScrambleText";
 import ReticleCursor from "../components/ReticleCursor";
 import ActivityCards from "../components/ActivityCards";
 import PhotoGallery from "../components/PhotoGallery";
+import NetworkSection from "../components/NetworkSection";
 import LanguageToggle from "../components/LanguageToggle";
 import { useLang } from "@/i18n/LanguageContext";
 import { translations as t } from "@/i18n/translations";
