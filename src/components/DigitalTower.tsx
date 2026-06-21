@@ -150,6 +150,17 @@ const DigitalTower = () => {
 
   useScrollProgress();
 
+  // Slow float + rotation on the whole wireframe assembly.
+  useFrame((state) => {
+    if (!groupRef.current) return;
+    const t = state.clock.elapsedTime;
+    groupRef.current.position.y = Math.sin(t * 0.25) * 0.18;
+    groupRef.current.rotation.y = t * 0.04;
+    groupRef.current.rotation.z = Math.sin(t * 0.15) * 0.03;
+  });
+
+
+
   const palette = ["#FF00FF", "#8A2BE2", "#CC44FF", "#AA33DD", "#FF44CC"];
 
   const rings = useMemo(() => {
