@@ -1,4 +1,4 @@
-import { Folder, FolderOpen, FileCode, Terminal, ChevronRight, X } from "lucide-react";
+import { Folder, FolderOpen, FileCode, Terminal, ChevronRight, X, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { useLang } from "@/i18n/LanguageContext";
 import { translations as t } from "@/i18n/translations";
@@ -7,6 +7,11 @@ const glass =
   "backdrop-blur-lg bg-background/25 border border-foreground/[0.06] rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.3)]";
 
 const itemsByIndex = t.activities.cards.map((card) => card.items);
+
+// External-link map: clicking these files opens an external URL instead of the detail pane.
+const fileLinks: Record<number, Record<number, string>> = {
+  1: { 3: "https://www.seek-once.com" },
+};
 
 // Dummy details (replace freely in code) — [dirIdx][fileIdx] = { meta, body }
 const fileDetails: Record<
@@ -189,10 +194,17 @@ const ActivityCards = () => {
                       {items.map((item, j) => {
                         const isLastItem = j === items.length - 1;
                         const isSel = selected?.dir === i && selected?.file === j;
+                        const linkUrl = fileLinks[i]?.[j];
                         return (
                           <button
                             key={j}
-                            onClick={() => setSelected({ dir: i, file: j })}
+                            onClick={() => {
+                              if (linkUrl) {
+                                window.open(linkUrl, "_blank", "noopener,noreferrer");
+                              } else {
+                                setSelected({ dir: i, file: j });
+                              }
+                            }}
                             className={`w-full flex items-center gap-2 py-1 px-1 -mx-1 rounded transition-colors duration-200 text-left ${
                               isSel
                                 ? "bg-primary/10 text-foreground"
@@ -203,9 +215,12 @@ const ActivityCards = () => {
                               {isLast && isLastItem ? "└──" : "├──"}
                             </span>
                             <FileCode
-                              className={`w-3.5 h-3.5 flex-shrink-0 ${isSel ? "text-primary" : "text-secondary/60"}`}
+                              className={`w-3.5 h-3.5 flex-shrink-0 ${isSel ? "text-primary" : linkUrl ? "text-secondary" : "text-secondary/60"}`}
                             />
                             <span className="text-xs md:text-sm leading-5 truncate">{item}</span>
+                            {linkUrl && (
+                              <ExternalLink className="w-3 h-3 text-secondary/70 flex-shrink-0 ml-auto" />
+                            )}
                           </button>
                         );
                       })}
