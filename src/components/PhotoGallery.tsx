@@ -4,7 +4,8 @@ import groupStudy from "@/assets/group_study.jpeg";
 import { useLang } from "@/i18n/LanguageContext";
 import { translations as t } from "@/i18n/translations";
 
-const glass = "backdrop-blur-lg bg-background/25 border border-foreground/[0.06] rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.3)]";
+const glass =
+  "backdrop-blur-lg bg-background/25 border border-foreground/[0.08] rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.5)]";
 
 const srcs = [endSeminar, ideathon, groupStudy];
 
@@ -12,27 +13,70 @@ const PhotoGallery = () => {
   const { lang } = useLang();
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full max-w-4xl mx-auto">
-      {t.gallery.photos.map((photo, i) => (
-        <div
-          key={i}
-          className={`${glass} group overflow-hidden p-0 hover:border-primary/30 transition-all duration-500`}
-        >
-          <div className="relative overflow-hidden">
-            <img
-              src={srcs[i]}
-              alt={photo.title[lang]}
-              className="w-full h-44 object-cover transition-transform duration-700 group-hover:scale-110"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-3">
-              <h4 className="font-display font-semibold text-foreground text-sm">{photo.title[lang]}</h4>
-              <p className="text-muted-foreground text-xs mt-0.5">{photo.desc[lang]}</p>
+    <div className="w-full max-w-6xl mx-auto space-y-10 md:space-y-16">
+      {t.gallery.photos.map((photo, i) => {
+        const reverse = i % 2 === 1;
+        const isPrimary = i % 2 === 0;
+        const tickColor = isPrimary ? "border-primary/70" : "border-secondary/70";
+        const tagColor = isPrimary ? "text-primary" : "text-secondary";
+        const tagColorSoft = isPrimary ? "text-primary/70" : "text-secondary/70";
+        const titleClass = isPrimary ? "text-primary text-glow" : "text-secondary text-glow-cyan";
+        const lineColor = isPrimary ? "bg-primary/60" : "bg-secondary/60";
+        const hoverBorder = isPrimary ? "hover:border-primary/40" : "hover:border-secondary/40";
+
+        return (
+          <div
+            key={i}
+            className={`group relative grid md:grid-cols-12 gap-4 md:gap-6 items-center ${
+              reverse ? "md:[&>*:first-child]:order-2" : ""
+            }`}
+          >
+            {/* Image */}
+            <div className={`${glass} md:col-span-8 relative overflow-hidden p-0 ${hoverBorder} transition-all duration-500`}>
+              <span className={`absolute top-3 left-3 z-20 w-4 h-4 border-t-2 border-l-2 ${tickColor}`} />
+              <span className={`absolute top-3 right-3 z-20 w-4 h-4 border-t-2 border-r-2 ${tickColor}`} />
+              <span className={`absolute bottom-3 left-3 z-20 w-4 h-4 border-b-2 border-l-2 ${tickColor}`} />
+              <span className={`absolute bottom-3 right-3 z-20 w-4 h-4 border-b-2 border-r-2 ${tickColor}`} />
+
+              <div className="relative overflow-hidden">
+                <img
+                  src={srcs[i]}
+                  alt={photo.title[lang]}
+                  className="w-full h-[340px] md:h-[520px] object-cover transition-transform duration-[1200ms] group-hover:scale-[1.06]"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-tr from-background/80 via-background/10 to-transparent" />
+                <div
+                  className="pointer-events-none absolute inset-0 opacity-30 mix-blend-overlay"
+                  style={{
+                    backgroundImage:
+                      "repeating-linear-gradient(0deg, transparent 0 2px, rgba(255,255,255,0.04) 2px 3px)",
+                  }}
+                />
+                <div className="absolute top-4 left-4 z-10">
+                  <span className={`font-mono text-[10px] tracking-[0.4em] uppercase ${tagColor} bg-background/70 px-2 py-1 rounded`}>
+                    {`// ${String(i + 1).padStart(2, "0")}`}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Caption */}
+            <div className="md:col-span-4 px-1 md:px-2">
+              <div className={`font-mono text-[10px] tracking-[0.4em] uppercase ${tagColorSoft} mb-2`}>
+                LOG_{String(i + 1).padStart(3, "0")}
+              </div>
+              <h3 className={`font-display font-bold text-2xl md:text-4xl leading-tight mb-3 ${titleClass}`}>
+                {photo.title[lang]}
+              </h3>
+              <div className={`h-px w-12 ${lineColor} mb-3`} />
+              <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+                {photo.desc[lang]}
+              </p>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
