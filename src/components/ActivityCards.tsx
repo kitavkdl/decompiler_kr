@@ -235,7 +235,11 @@ const ActivityCards = () => {
           <div className="mt-6 flex items-center gap-2 text-xs text-foreground/40">
             <span className="text-primary">➜</span>
             <span className="text-secondary/60">modules</span>
-            <span className="inline-block w-2 h-4 bg-primary/60 animate-pulse" />
+            <span
+              className="inline-block w-2 h-4 bg-primary/70 align-middle"
+              style={{ animation: "term-caret 1s steps(2) infinite" }}
+            />
+            <style>{`@keyframes term-caret{0%,49%{opacity:1}50%,100%{opacity:0}}`}</style>
           </div>
         </div>
 
