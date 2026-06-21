@@ -7,6 +7,7 @@ import NetworkSection from "../components/NetworkSection";
 import LanguageToggle from "../components/LanguageToggle";
 import TypingLabel from "../components/TypingLabel";
 import RevealLines from "../components/RevealLines";
+import BrandHeadline from "../components/BrandHeadline";
 import { useLang } from "@/i18n/LanguageContext";
 import { translations as t } from "@/i18n/translations";
 
@@ -30,13 +31,13 @@ const Index = () => {
                 {t.hero.subtitle[lang]}
               </p>
               <h1 className="text-4xl md:text-7xl lg:text-8xl font-display font-bold text-foreground mb-4 leading-tight">
-                <ScrambleText text="Decompiler" className="text-primary text-glow" />
+                <ScrambleText text="Decompiler" className="text-primary text-glow" autoPlay duration={1700} revealStagger={90} />
               </h1>
               <p className="text-base md:text-2xl font-display font-light text-foreground/80 mb-2">
-                <ScrambleText text={t.hero.tagline1[lang]} />
+                <ScrambleText key={`tl1-${lang}`} text={t.hero.tagline1[lang]} autoPlay duration={1500} revealStagger={50} />
               </p>
               <p className="text-base md:text-2xl font-display font-light text-secondary text-glow-cyan">
-                <ScrambleText text={t.hero.tagline2[lang]} />
+                <ScrambleText key={`tl2-${lang}`} text={t.hero.tagline2[lang]} autoPlay duration={1700} revealStagger={45} />
               </p>
             </div>
             <div className="mt-10 flex items-center gap-3 text-muted-foreground text-[10px] tracking-[0.3em] uppercase animate-pulse-glow font-mono">
@@ -62,9 +63,14 @@ const Index = () => {
               </div>
               <div className={`${glass} p-6 md:p-8`}>
                 <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-4">
-                  {t.about.title1[lang]}<span className="text-primary text-glow">{t.about.titleHighlight1[lang]}</span>{t.about.titleMid[lang]}
-                  <br />
-                  <span className="text-secondary text-glow-cyan">{t.about.titleHighlight2[lang]}</span>{t.about.titleEnd[lang]}
+                  <BrandHeadline
+                    key={`bh-${lang}`}
+                    prefix={t.about.title1[lang]}
+                    shatter={t.about.titleHighlight1[lang]}
+                    mid={t.about.titleMid[lang]}
+                    assemble={t.about.titleHighlight2[lang]}
+                    suffix={t.about.titleEnd[lang]}
+                  />
                 </h2>
               </div>
               <div className={`${glass} p-5 md:p-6`}>
@@ -153,14 +159,27 @@ const Index = () => {
               <p className="text-muted-foreground text-sm mb-8 whitespace-pre-line">
                 {t.join.desc[lang]}
               </p>
-              <a
-                href="https://forms.gle/ATrZoSs8qcBwoc4C6"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block px-10 py-3.5 bg-primary/10 border border-primary text-primary font-display font-semibold tracking-wider uppercase text-sm rounded-lg neon-border hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-              >
-                {t.join.cta[lang]}
-              </a>
+              {(() => {
+                const raw = t.join.cta[lang];
+                const label = raw.replace(/[→\s]+$/, "");
+                return (
+                  <a
+                    href="https://forms.gle/ATrZoSs8qcBwoc4C6"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative inline-flex items-center gap-2 px-10 py-3.5 bg-primary/10 border border-primary text-primary font-display font-semibold tracking-wider uppercase text-sm rounded-lg neon-border hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-[0_0_0_rgba(0,0,0,0)] hover:shadow-[0_0_32px_hsl(var(--primary)/0.55),0_0_64px_hsl(var(--primary)/0.25)]"
+                  >
+                    <span>{label}</span>
+                    <span
+                      aria-hidden
+                      className="inline-block will-change-transform group-hover:[animation:recruit-arrow_1.1s_ease-in-out_infinite]"
+                    >
+                      →
+                    </span>
+                    <style>{`@keyframes recruit-arrow{0%,100%{transform:translateX(0)}50%{transform:translateX(8px)}}`}</style>
+                  </a>
+                );
+              })()}
             </div>
             <div className="mt-16 text-muted-foreground text-[10px] opacity-40 font-mono">
               © 2026 Decompiler — SUNY Korea

@@ -1,76 +1,113 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const SYMBOLS = "!@#$%^&*()_+-=[]{}|;:<>?/\\~`01";
+const DEFAULT_SYMBOLS = "!@#$%^&*()_+-=[]{}|;:<>?/\\~`0123456789ABCDEF";
 
 interface ScrambleTextProps {
   text: string;
   className?: string;
+  /** Auto-play on mount. Default: false (hover-only, legacy). */
+  autoPlay?: boolean;
+  /** Total duration in ms when autoPlay is on. Default 1500. */
+  duration?: number;
+  /** Per-char reveal stagger when autoPlay is on. Default 60. */
+  revealStagger?: number;
+  /** Tick interval for scramble updates. Default 35. */
+  tickMs?: number;
+  /** Trailing blinking caret. Default false. */
+  caret?: boolean;
+  /** Disable hover re-trigger. Default false. */
+  disableHover?: boolean;
 }
 
-const ScrambleText = ({ text, className = "" }: ScrambleTextProps) => {
-  const [displayed, setDisplayed] = useState(text);
+const ScrambleText = ({
+  text,
+  className = "",
+  autoPlay = false,
+  duration = 1500,
+  revealStagger = 60,
+  tickMs = 35,
+  caret = false,
+  disableHover = false,
+}: ScrambleTextProps) => {
+  const [displayed, setDisplayed] = useState(autoPlay ? "" : text);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const playingRef = useRef(false);
 
-  const scramble = useCallback(() => {
-    // Clear previous
+  const rand = () => DEFAULT_SYMBOLS[Math.floor(Math.random() * DEFAULT_SYMBOLS.length)];
+
+  const clearAll = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
-    timeoutRef.current.forEach(clearTimeout);
-    timeoutRef.current = [];
+    timeoutsRef.current.forEach(clearTimeout);
+    timeoutsRef.current = [];
+  };
 
+  const run = (totalMs: number, stagger: number) => {
+    clearAll();
+    playingRef.current = true;
     const chars = text.split("");
-    const result = chars.map(() => SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)]);
-    setDisplayed(result.join(""));
+    setDisplayed(chars.map(() => rand()).join(""));
 
-    // Reveal each character one by one
-    chars.forEach((char, i) => {
-      const delay = 30 + i * 40 + Math.random() * 30;
+    chars.forEach((ch, i) => {
+      const delay = Math.min(totalMs - 100, 30 + i * stagger + Math.random() * 40);
       const t = setTimeout(() => {
         setDisplayed((prev) => {
           const arr = prev.split("");
-          arr[i] = char;
+          arr[i] = ch;
           return arr.join("");
         });
       }, delay);
-      timeoutRef.current.push(t);
+      timeoutsRef.current.push(t);
     });
 
-    // Rapid scramble during reveal
-    let tick = 0;
+    let elapsed = 0;
     intervalRef.current = setInterval(() => {
-      tick++;
+      elapsed += tickMs;
       setDisplayed((prev) => {
         const arr = prev.split("");
-        // Only scramble characters that haven't been revealed yet
-        const revealedCount = Math.floor(tick * 1.5);
-        for (let i = revealedCount; i < arr.length; i++) {
-          if (arr[i] !== chars[i]) {
-            arr[i] = SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
-          }
+        const revealed = Math.floor(elapsed / stagger);
+        for (let i = revealed; i < arr.length; i++) {
+          if (arr[i] !== chars[i]) arr[i] = rand();
         }
         return arr.join("");
       });
-      if (tick > chars.length * 2) {
+      if (elapsed >= totalMs) {
         clearInterval(intervalRef.current!);
         setDisplayed(text);
+        playingRef.current = false;
       }
-    }, 30);
-  }, [text]);
+    }, tickMs);
+  };
 
   useEffect(() => {
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      timeoutRef.current.forEach(clearTimeout);
-    };
-  }, []);
+    if (autoPlay) run(duration, revealStagger);
+    return clearAll;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [text, autoPlay]);
+
+  const handleHover = () => {
+    if (disableHover || playingRef.current) return;
+    run(Math.max(900, text.length * 80), 40);
+  };
 
   return (
     <span
       className={`inline-block ${className}`}
-      onMouseEnter={scramble}
+      onMouseEnter={handleHover}
       style={{ whiteSpace: "pre" }}
     >
       {displayed}
+      {caret && (
+        <>
+          <span
+            className="inline-block ml-0.5 align-baseline"
+            style={{ animation: "scramble-caret 1s steps(2) infinite" }}
+          >
+            ▮
+          </span>
+          <style>{`@keyframes scramble-caret{0%,49%{opacity:1}50%,100%{opacity:0}}`}</style>
+        </>
+      )}
     </span>
   );
 };

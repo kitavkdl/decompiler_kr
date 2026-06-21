@@ -2,6 +2,7 @@ import { Folder, FolderOpen, FileCode, Terminal, ChevronRight, X, ExternalLink }
 import { useState } from "react";
 import { useLang } from "@/i18n/LanguageContext";
 import { translations as t } from "@/i18n/translations";
+import Typewriter from "./Typewriter";
 
 const glass =
   "backdrop-blur-lg bg-background/25 border border-foreground/[0.06] rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.3)]";
@@ -234,7 +235,11 @@ const ActivityCards = () => {
           <div className="mt-6 flex items-center gap-2 text-xs text-foreground/40">
             <span className="text-primary">➜</span>
             <span className="text-secondary/60">modules</span>
-            <span className="inline-block w-2 h-4 bg-primary/60 animate-pulse" />
+            <span
+              className="inline-block w-2 h-4 bg-primary/70 align-middle"
+              style={{ animation: "term-caret 1s steps(2) infinite" }}
+            />
+            <style>{`@keyframes term-caret{0%,49%{opacity:1}50%,100%{opacity:0}}`}</style>
           </div>
         </div>
 
@@ -288,7 +293,14 @@ const ActivityCards = () => {
               </div>
 
               <div className="rounded-lg border border-foreground/[0.06] bg-background/40 p-4">
-                <div className="text-[10px] text-foreground/40 mb-2 tracking-wider">$ cat {selFileName}.md</div>
+                <div className="text-[10px] text-foreground/40 mb-2 tracking-wider">
+                  <Typewriter
+                    key={`cat-${selected!.dir}-${selected!.file}-${lang}`}
+                    text={`$ cat ${selFileName}.md`}
+                    speed={28}
+                    caret
+                  />
+                </div>
                 <p className="text-xs md:text-sm leading-relaxed text-foreground/85 whitespace-pre-line">
                   {sel.body[lang]}
                 </p>

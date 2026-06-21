@@ -26,6 +26,20 @@ const PhotoGallery = () => {
     const tweens: gsap.core.Tween[] = [];
     cards.forEach((card, idx) => {
       gsap.set(card, { y: 40, opacity: 0 });
+
+      const brackets = card.querySelectorAll<HTMLElement>("[data-bracket]");
+      const log = card.querySelector<HTMLElement>("[data-log]");
+      const logFinal = log?.getAttribute("data-log-final") || "";
+
+      // Brackets: start pushed outward + invisible
+      brackets.forEach((b) => {
+        const corner = b.getAttribute("data-bracket") || "";
+        const dx = corner.includes("l") ? -16 : 16;
+        const dy = corner.includes("t") ? -16 : 16;
+        gsap.set(b, { x: dx, y: dy, opacity: 0, scale: 1.4 });
+      });
+      if (log) gsap.set(log, { textContent: "" });
+
       const tw = gsap.to(card, {
         y: 0,
         opacity: 1,
@@ -36,6 +50,29 @@ const PhotoGallery = () => {
           trigger: card,
           start: "top 88%",
           once: true,
+          onEnter: () => {
+            // Focus-in brackets
+            gsap.to(brackets, {
+              x: 0,
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              duration: 0.7,
+              ease: "power3.out",
+              delay: 0.15,
+              stagger: 0.05,
+            });
+            // Typewriter LOG_00X
+            if (log && logFinal) {
+              let i = 0;
+              const tick = () => {
+                i += 1;
+                log.textContent = logFinal.slice(0, i);
+                if (i < logFinal.length) window.setTimeout(tick, 55);
+              };
+              window.setTimeout(tick, 250);
+            }
+          },
         },
       });
       tweens.push(tw);
@@ -70,10 +107,10 @@ const PhotoGallery = () => {
           >
             {/* Image */}
             <div className={`${glass} md:col-span-8 relative overflow-hidden p-0 ${hoverBorder} transition-all duration-500`}>
-              <span className={`absolute top-3 left-3 z-20 w-4 h-4 border-t-2 border-l-2 ${tickColor}`} />
-              <span className={`absolute top-3 right-3 z-20 w-4 h-4 border-t-2 border-r-2 ${tickColor}`} />
-              <span className={`absolute bottom-3 left-3 z-20 w-4 h-4 border-b-2 border-l-2 ${tickColor}`} />
-              <span className={`absolute bottom-3 right-3 z-20 w-4 h-4 border-b-2 border-r-2 ${tickColor}`} />
+              <span data-bracket="tl" className={`absolute top-3 left-3 z-20 w-4 h-4 border-t-2 border-l-2 ${tickColor}`} />
+              <span data-bracket="tr" className={`absolute top-3 right-3 z-20 w-4 h-4 border-t-2 border-r-2 ${tickColor}`} />
+              <span data-bracket="bl" className={`absolute bottom-3 left-3 z-20 w-4 h-4 border-b-2 border-l-2 ${tickColor}`} />
+              <span data-bracket="br" className={`absolute bottom-3 right-3 z-20 w-4 h-4 border-b-2 border-r-2 ${tickColor}`} />
 
               <div className="relative overflow-hidden">
                 <img
@@ -100,7 +137,11 @@ const PhotoGallery = () => {
 
             {/* Caption */}
             <div className="md:col-span-4 px-1 md:px-2">
-              <div className={`font-mono text-[10px] tracking-[0.4em] uppercase ${tagColorSoft} mb-2`}>
+              <div
+                data-log
+                data-log-final={`LOG_${String(i + 1).padStart(3, "0")}`}
+                className={`font-mono text-[10px] tracking-[0.4em] uppercase ${tagColorSoft} mb-2 min-h-[1em]`}
+              >
                 LOG_{String(i + 1).padStart(3, "0")}
               </div>
               <h3 className={`font-display font-bold text-2xl md:text-4xl leading-tight mb-3 ${titleClass}`}>
