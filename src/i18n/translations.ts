@@ -75,6 +75,17 @@ export const translations = {
       { title: { ko: "Group Study", en: "Group Study" }, desc: { ko: "함께 배우고 성장하는 그룹 스터디", en: "Learning and growing together" } },
     ],
   },
+  network: {
+    cmd: { ko: "> network.status()", en: "> network.status()" },
+    title1: { ko: "커뮤니티 & ", en: "Community & " },
+    titleHighlight: { ko: "네트워크", en: "Network" },
+    titleEnd: { ko: "", en: "" },
+    pillarsLabel: { ko: "핵심 영역", en: "Core Pillars" },
+    desc: {
+      ko: "Decompiler는 SUNY Korea를 넘어 고려대학교, 중앙대학교, 경희대학교 등 34개 이상의 대학 보안 동아리 연합과 함께하며, 10명 이상의 교수진 및 외부 전문가와의 멘토링, 연 10회 이상의 행사로 활발한 네트워크를 이어가고 있습니다.",
+      en: "Beyond SUNY Korea, Decompiler connects with 34+ university security clubs including Korea, Chung-Ang, and Kyung Hee Universities, with mentorship from 10+ faculty and external experts and 10+ events every year.",
+    },
+  },
   join: {
     cmd: { ko: "> recruit.apply()", en: "> recruit.apply()" },
     title1: { ko: "함께 ", en: "Ready to " },
