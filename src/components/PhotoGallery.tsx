@@ -1,13 +1,18 @@
-import endSeminar from "@/assets/end_seminar.jpeg";
-import ideathon from "@/assets/ideathon.jpeg";
-import groupStudy from "@/assets/group_study.jpeg";
+import forum2025 from "@/assets/forum_2025.jpg";
+import hackathonA from "@/assets/hackathon_2026_a.jpg";
+import hackathonB from "@/assets/hackathon_2026_b.jpg";
+import summerFestival from "@/assets/summer_festival.jpg";
+import mtA from "@/assets/mt_2026_a.jpg";
+import mtB from "@/assets/mt_2026_b.jpg";
+import mtC from "@/assets/mt_2026_c.jpg";
+import mtD from "@/assets/mt_2026_d.jpg";
 import { useLang } from "@/i18n/LanguageContext";
 import { translations as t } from "@/i18n/translations";
 
 const glass =
   "backdrop-blur-lg bg-background/25 border border-foreground/[0.08] rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.5)]";
 
-const srcs = [endSeminar, ideathon, groupStudy];
+const srcs = [forum2025, hackathonA, hackathonB, summerFestival, mtA, mtB, mtC, mtD];
 
 const PhotoGallery = () => {
   const { lang } = useLang();
