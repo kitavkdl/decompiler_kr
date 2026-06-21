@@ -107,10 +107,10 @@ const PhotoGallery = () => {
           >
             {/* Image */}
             <div className={`${glass} md:col-span-8 relative overflow-hidden p-0 ${hoverBorder} transition-all duration-500`}>
-              <span className={`absolute top-3 left-3 z-20 w-4 h-4 border-t-2 border-l-2 ${tickColor}`} />
-              <span className={`absolute top-3 right-3 z-20 w-4 h-4 border-t-2 border-r-2 ${tickColor}`} />
-              <span className={`absolute bottom-3 left-3 z-20 w-4 h-4 border-b-2 border-l-2 ${tickColor}`} />
-              <span className={`absolute bottom-3 right-3 z-20 w-4 h-4 border-b-2 border-r-2 ${tickColor}`} />
+              <span data-bracket="tl" className={`absolute top-3 left-3 z-20 w-4 h-4 border-t-2 border-l-2 ${tickColor}`} />
+              <span data-bracket="tr" className={`absolute top-3 right-3 z-20 w-4 h-4 border-t-2 border-r-2 ${tickColor}`} />
+              <span data-bracket="bl" className={`absolute bottom-3 left-3 z-20 w-4 h-4 border-b-2 border-l-2 ${tickColor}`} />
+              <span data-bracket="br" className={`absolute bottom-3 right-3 z-20 w-4 h-4 border-b-2 border-r-2 ${tickColor}`} />
 
               <div className="relative overflow-hidden">
                 <img
