@@ -36,15 +36,30 @@ export const translations = {
         subtitle: { ko: "보안 연구", en: "Security Research" },
         items: {
           ko: ["웹 해킹 & 시스템 해킹", "리버스 엔지니어링", "CTF 대회 참가 지원", "Google Cybersecurity Certificate"],
-          en: ["Web & System Hacking", "Reverse Engineering", "CTF Competition Support", "Google Cybersecurity Certificate"],
+          en: [
+            "Web & System Hacking",
+            "Reverse Engineering",
+            "CTF Competition Support",
+            "Google Cybersecurity Certificate",
+          ],
         },
       },
       {
         title: { ko: "Development", en: "Development" },
         subtitle: { ko: "개발 스터디", en: "Dev Study" },
         items: {
-          ko: ["웹 개발 (React, Node.js, etc..)", "Python / Java 코딩 스터디", "AI & 머신러닝 프로젝트", "SBU Seek-Once Project"],
-          en: ["Web Dev (React, Node.js, etc..)", "Python / Java Coding Study", "AI & Machine Learning Projects", "SBU Seek-Once Project"],
+          ko: [
+            "웹 개발 (React, Node.js, etc..)",
+            "Python / Java 코딩 스터디",
+            "AI & 머신러닝 프로젝트",
+            "SBU Seek-Once Project",
+          ],
+          en: [
+            "Web Dev (React, Node.js, etc..)",
+            "Python / Java Coding Study",
+            "AI & Machine Learning Projects",
+            "SBU Seek-Once Project",
+          ],
         },
       },
       {
@@ -59,8 +74,18 @@ export const translations = {
         title: { ko: "Professional", en: "Professional" },
         subtitle: { ko: "전문 활동", en: "Professional" },
         items: {
-          ko: ["SUNY Korea 최초 아이디어톤 개최", "외부 기관 협력 프로젝트", "실생활 보안연구 및 제언", "외부기업 탐방 및 투어"],
-          en: ["First-ever SUNY Korea Ideathon", "External Collaboration Projects", "Real-world Security Research", "Company Visits & Tours"],
+          ko: [
+            "SUNY Korea 최초 아이디어톤 개최",
+            "외부 기관 협력 프로젝트",
+            "실생활 보안연구 및 제언",
+            "외부기업 탐방 및 투어",
+          ],
+          en: [
+            "First-ever SUNY Korea Ideathon",
+            "External Collaboration Projects",
+            "Real-world Security Research",
+            "Company Visits & Tours",
+          ],
         },
       },
     ],
@@ -70,14 +95,41 @@ export const translations = {
     title: { ko: "우리의 ", en: "Our " },
     titleHighlight: { ko: "순간들", en: "Moments" },
     photos: [
-      { title: { ko: "Decompiler × Untitled Innovation Forum 2025", en: "Decompiler × Untitled Innovation Forum 2025" }, desc: { ko: "SUNY Korea R&BDF 공동 주최 · Problem Validation to Business Model Fit", en: "Co-hosted with SUNY Korea R&BDF · Problem Validation to Business Model Fit" } },
-      { title: { ko: "HACKATHON THE X 2026", en: "HACKATHON THE X 2026" }, desc: { ko: "Decompiler 주최 DX 해커톤 · 단체 사진", en: "Decompiler's flagship DX hackathon · group shot" } },
-      { title: { ko: "HACKATHON THE X 2026", en: "HACKATHON THE X 2026" }, desc: { ko: "현장 스케치 · 밤샘 코딩과 발표", en: "On-site moments · all-night coding and demos" } },
-      { title: { ko: "Summer Festival", en: "Summer Festival" }, desc: { ko: "동아리 여름 축제 · 그릴, 음식, 그리고 사람들", en: "Club summer festival · grill, food, and people" } },
-      { title: { ko: "2026 Spring MT", en: "2026 Spring MT" }, desc: { ko: "봄 MT · 불꽃놀이의 밤", en: "Spring retreat · fireworks under the night sky" } },
-      { title: { ko: "2026 Spring MT", en: "2026 Spring MT" }, desc: { ko: "봄 MT · 다 함께 거실에서", en: "Spring retreat · everyone together in the lounge" } },
-      { title: { ko: "2026 Spring MT", en: "2026 Spring MT" }, desc: { ko: "봄 MT · 둘러앉아 이야기 나누는 밤", en: "Spring retreat · gathered around, sharing stories" } },
-      { title: { ko: "2026 Spring MT", en: "2026 Spring MT" }, desc: { ko: "봄 MT · 셰프들의 바베큐", en: "Spring retreat · the chefs at the grill" } },
+      {
+        title: { ko: "Decompiler × Untitled Innovation Forum 2025", en: "Decompiler × Untitled Innovation Forum 2025" },
+        desc: {
+          ko: "SUNY Korea R&BDF 공동 주최 · Problem Validation to Business Model Fit",
+          en: "Co-hosted with SUNY Korea R&BDF · Problem Validation to Business Model Fit",
+        },
+      },
+      {
+        title: { ko: "HACKATHON THE X 2026", en: "HACKATHON THE X 2026" },
+        desc: { ko: "Decompiler 주최 DX 해커톤 · 단체 사진", en: "Decompiler's flagship DX hackathon · group shot" },
+      },
+      {
+        title: { ko: "HACKATHON THE X 2026", en: "HACKATHON THE X 2026" },
+        desc: { ko: "현장 스케치 · 밤샘 코딩과 발표", en: "On-site moments · all-night coding and demos" },
+      },
+      {
+        title: { ko: "Summer Festival", en: "Summer Festival" },
+        desc: { ko: "동아리 여름 축제 · 그릴, 음식, 사람", en: "Club summer festival · grill, food, and people" },
+      },
+      {
+        title: { ko: "Spring MT", en: "Spring MT" },
+        desc: { ko: "봄 MT · 불꽃놀이", en: "Spring retreat · fireworks under the night sky" },
+      },
+      {
+        title: { ko: "Spring MT", en: "Spring MT" },
+        desc: { ko: "봄 MT · 다 함께 거실", en: "Spring retreat · everyone together in the lounge" },
+      },
+      {
+        title: { ko: "Spring MT", en: "Spring MT" },
+        desc: { ko: "봄 MT", en: "Spring retreat · gathered around, sharing stories" },
+      },
+      {
+        title: { ko: "Spring MT", en: "Spring MT" },
+        desc: { ko: "봄 MT · 바베큐", en: "Spring retreat · the chefs at the grill" },
+      },
     ],
   },
   network: {
@@ -97,7 +149,10 @@ export const translations = {
     titleHighlight: { ko: "활동", en: "Join" },
     titleEnd: { ko: "할", en: "" },
     title2: { ko: "준비가 되셨나요?", en: "Us?" },
-    desc: { ko: "코딩을 몰라도 괜찮습니다.\n열정만 있다면 누구나 환영합니다.", en: "No coding experience needed.\nEveryone with passion is welcome." },
+    desc: {
+      ko: "코딩을 몰라도 괜찮습니다.\n열정만 있다면 누구나 환영합니다.",
+      en: "No coding experience needed.\nEveryone with passion is welcome.",
+    },
     cta: { ko: "지원하기 →", en: "Apply Now →" },
   },
   langToggle: { ko: "EN", en: "한" },
