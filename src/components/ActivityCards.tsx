@@ -1,4 +1,4 @@
-import { Folder, FolderOpen, FileCode, Terminal, ChevronRight, X } from "lucide-react";
+import { Folder, FolderOpen, FileCode, Terminal, ChevronRight, X, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { useLang } from "@/i18n/LanguageContext";
 import { translations as t } from "@/i18n/translations";
@@ -7,6 +7,11 @@ const glass =
   "backdrop-blur-lg bg-background/25 border border-foreground/[0.06] rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.3)]";
 
 const itemsByIndex = t.activities.cards.map((card) => card.items);
+
+// External-link map: clicking these files opens an external URL instead of the detail pane.
+const fileLinks: Record<number, Record<number, string>> = {
+  1: { 3: "https://www.seek-once.com" },
+};
 
 // Dummy details (replace freely in code) — [dirIdx][fileIdx] = { meta, body }
 const fileDetails: Record<
