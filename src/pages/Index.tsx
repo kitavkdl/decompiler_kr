@@ -5,6 +5,8 @@ import ActivityCards from "../components/ActivityCards";
 import PhotoGallery from "../components/PhotoGallery";
 import NetworkSection from "../components/NetworkSection";
 import LanguageToggle from "../components/LanguageToggle";
+import TypingLabel from "../components/TypingLabel";
+import RevealLines from "../components/RevealLines";
 import { useLang } from "@/i18n/LanguageContext";
 import { translations as t } from "@/i18n/translations";
 
@@ -52,9 +54,11 @@ const Index = () => {
           <div className="flex items-center justify-start min-h-screen px-4 md:px-20">
             <div className="max-w-2xl space-y-4">
               <div className={`${glass} px-5 py-3 inline-block`}>
-                <span className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 font-mono">
-                  {t.about.cmd[lang]}
-                </span>
+                <TypingLabel
+                  key={`about-${lang}`}
+                  text={t.about.cmd[lang]}
+                  className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 font-mono"
+                />
               </div>
               <div className={`${glass} p-6 md:p-8`}>
                 <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-4">
@@ -64,9 +68,11 @@ const Index = () => {
                 </h2>
               </div>
               <div className={`${glass} p-5 md:p-6`}>
-                <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
-                  {t.about.desc[lang]}
-                </p>
+                <RevealLines
+                  key={`about-desc-${lang}`}
+                  text={t.about.desc[lang]}
+                  className="text-muted-foreground leading-relaxed text-sm md:text-base"
+                />
               </div>
             </div>
           </div>
@@ -78,9 +84,11 @@ const Index = () => {
         <section id="activities">
           <div className="flex flex-col items-center justify-center min-h-screen px-4 md:px-20 py-16">
             <div className={`${glass} px-5 py-3 mb-4`}>
-              <span className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 font-mono">
-                {t.activities.cmd[lang]}
-              </span>
+              <TypingLabel
+                key={`act-${lang}`}
+                text={t.activities.cmd[lang]}
+                className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 font-mono"
+              />
             </div>
             <div className={`${glass} p-5 md:p-6 text-center mb-4`}>
               <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-3">{t.activities.title[lang]}</h2>
@@ -104,9 +112,11 @@ const Index = () => {
         <section id="gallery">
           <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 md:px-20 py-16">
             <div className={`${glass} px-5 py-3 mb-4`}>
-              <span className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 font-mono">
-                {t.gallery.cmd[lang]}
-              </span>
+              <TypingLabel
+                key={`gal-${lang}`}
+                text={t.gallery.cmd[lang]}
+                className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 font-mono"
+              />
             </div>
             <div className={`${glass} p-5 text-center mb-8`}>
               <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground">
@@ -128,9 +138,11 @@ const Index = () => {
         <section id="join">
           <div className="flex flex-col items-center justify-center min-h-screen text-center px-4">
             <div className={`${glass} px-5 py-3 mb-4`}>
-              <span className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 font-mono">
-                {t.join.cmd[lang]}
-              </span>
+              <TypingLabel
+                key={`join-${lang}`}
+                text={t.join.cmd[lang]}
+                className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 font-mono"
+              />
             </div>
             <div className={`${glass} p-6 md:p-10 max-w-lg mb-6`}>
               <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-4">

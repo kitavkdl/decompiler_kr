@@ -1,6 +1,8 @@
 import { Users, GraduationCap, Building2, CalendarDays } from "lucide-react";
 import { useLang } from "@/i18n/LanguageContext";
 import { translations as t } from "@/i18n/translations";
+import TypingLabel from "./TypingLabel";
+import CountUp from "./CountUp";
 
 const glass =
   "backdrop-blur-lg bg-background/25 border border-foreground/[0.06] rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.3)]";
@@ -66,9 +68,11 @@ const NetworkSection = () => {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
             <div>
               <div className={`${glass} px-5 py-3 inline-block mb-4`}>
-                <span className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 font-mono">
-                  {t.network.cmd[lang]}
-                </span>
+                <TypingLabel
+                  key={`net-${lang}`}
+                  text={t.network.cmd[lang]}
+                  className="text-[10px] tracking-[0.4em] uppercase text-secondary/60 font-mono"
+                />
               </div>
               <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground">
                 {t.network.title1[lang]}
@@ -102,7 +106,7 @@ const NetworkSection = () => {
                   </span>
                 </div>
                 <div className="text-3xl md:text-4xl font-display font-bold text-primary text-glow">
-                  {stat.value}
+                  <CountUp value={stat.value} />
                 </div>
               </div>
             );
