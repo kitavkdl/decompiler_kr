@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/i18n/LanguageContext";
+import { SmoothScrollProvider } from "@/lib/smoothScroll";
 import Index from "./pages/Index";
 import Order from "./pages/Order";
 import WhatIsOrder from "./pages/WhatIsOrder";
@@ -22,17 +23,19 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/order" element={<Order />} />
-            <Route path="/whatisorder" element={<WhatIsOrder />} />
-            <Route path="/qrreader" element={<QrReader />} />
-            <Route path="/skcs/order" element={<SkcsOrder />} />
-            <Route path="/skcs/whatisorder" element={<SkcsWhatIsOrder />} />
-            <Route path="/hackathon" element={<Hackathon />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <SmoothScrollProvider>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/order" element={<Order />} />
+              <Route path="/whatisorder" element={<WhatIsOrder />} />
+              <Route path="/qrreader" element={<QrReader />} />
+              <Route path="/skcs/order" element={<SkcsOrder />} />
+              <Route path="/skcs/whatisorder" element={<SkcsWhatIsOrder />} />
+              <Route path="/hackathon" element={<Hackathon />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </SmoothScrollProvider>
         </BrowserRouter>
       </TooltipProvider>
     </LanguageProvider>
