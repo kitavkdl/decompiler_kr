@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import forum2025 from "@/assets/forum_2025.jpg";
 import hackathonA from "@/assets/hackathon_2026_a.jpg";
 import hackathonB from "@/assets/hackathon_2026_b.jpg";
@@ -8,6 +9,7 @@ import mtC from "@/assets/mt_2026_c.jpg";
 import mtD from "@/assets/mt_2026_d.jpg";
 import { useLang } from "@/i18n/LanguageContext";
 import { translations as t } from "@/i18n/translations";
+import { gsap, ScrollTrigger } from "@/lib/smoothScroll";
 
 const glass =
   "backdrop-blur-lg bg-background/25 border border-foreground/[0.08] rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.5)]";
