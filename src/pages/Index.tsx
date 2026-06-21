@@ -119,6 +119,11 @@ const Index = () => {
 
         <div className="rgb-split h-px w-full my-4" />
 
+        {/* NETWORK */}
+        <NetworkSection />
+
+        <div className="rgb-split h-px w-full my-4" />
+
         {/* JOIN / CTA */}
         <section id="join">
           <div className="flex flex-col items-center justify-center min-h-screen text-center px-4">
