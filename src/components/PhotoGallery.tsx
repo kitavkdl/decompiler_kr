@@ -137,7 +137,11 @@ const PhotoGallery = () => {
 
             {/* Caption */}
             <div className="md:col-span-4 px-1 md:px-2">
-              <div className={`font-mono text-[10px] tracking-[0.4em] uppercase ${tagColorSoft} mb-2`}>
+              <div
+                data-log
+                data-log-final={`LOG_${String(i + 1).padStart(3, "0")}`}
+                className={`font-mono text-[10px] tracking-[0.4em] uppercase ${tagColorSoft} mb-2 min-h-[1em]`}
+              >
                 LOG_{String(i + 1).padStart(3, "0")}
               </div>
               <h3 className={`font-display font-bold text-2xl md:text-4xl leading-tight mb-3 ${titleClass}`}>
