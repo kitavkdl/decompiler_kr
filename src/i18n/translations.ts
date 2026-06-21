@@ -70,9 +70,14 @@ export const translations = {
     title: { ko: "우리의 ", en: "Our " },
     titleHighlight: { ko: "순간들", en: "Moments" },
     photos: [
-      { title: { ko: "End Semester Seminar", en: "End Semester Seminar" }, desc: { ko: "학기말 세미나 & 네트워킹", en: "End-of-semester seminar & networking" } },
-      { title: { ko: "2025 Ideathon", en: "2025 Ideathon" }, desc: { ko: "SUNY Korea 최초 아이디어톤 개최", en: "First-ever SUNY Korea Ideathon" } },
-      { title: { ko: "Group Study", en: "Group Study" }, desc: { ko: "함께 배우고 성장하는 그룹 스터디", en: "Learning and growing together" } },
+      { title: { ko: "Decompiler × Untitled Innovation Forum 2025", en: "Decompiler × Untitled Innovation Forum 2025" }, desc: { ko: "SUNY Korea R&BDF 공동 주최 · Problem Validation to Business Model Fit", en: "Co-hosted with SUNY Korea R&BDF · Problem Validation to Business Model Fit" } },
+      { title: { ko: "HACKATHON THE X 2026", en: "HACKATHON THE X 2026" }, desc: { ko: "Decompiler 주최 DX 해커톤 · 단체 사진", en: "Decompiler's flagship DX hackathon · group shot" } },
+      { title: { ko: "HACKATHON THE X 2026", en: "HACKATHON THE X 2026" }, desc: { ko: "현장 스케치 · 밤샘 코딩과 발표", en: "On-site moments · all-night coding and demos" } },
+      { title: { ko: "Summer Festival", en: "Summer Festival" }, desc: { ko: "동아리 여름 축제 · 그릴, 음식, 그리고 사람들", en: "Club summer festival · grill, food, and people" } },
+      { title: { ko: "2026 Spring MT", en: "2026 Spring MT" }, desc: { ko: "봄 MT · 불꽃놀이의 밤", en: "Spring retreat · fireworks under the night sky" } },
+      { title: { ko: "2026 Spring MT", en: "2026 Spring MT" }, desc: { ko: "봄 MT · 다 함께 거실에서", en: "Spring retreat · everyone together in the lounge" } },
+      { title: { ko: "2026 Spring MT", en: "2026 Spring MT" }, desc: { ko: "봄 MT · 둘러앉아 이야기 나누는 밤", en: "Spring retreat · gathered around, sharing stories" } },
+      { title: { ko: "2026 Spring MT", en: "2026 Spring MT" }, desc: { ko: "봄 MT · 셰프들의 바베큐", en: "Spring retreat · the chefs at the grill" } },
     ],
   },
   network: {
