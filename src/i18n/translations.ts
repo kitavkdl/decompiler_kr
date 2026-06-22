@@ -132,11 +132,21 @@ export const translations = {
         },
       },
       {
+        key: "springFestival",
+        count: 1,
+        title: { ko: "Spring Festival", en: "Spring Festival" },
+        desc: {
+          ko: "봄 축제 부스 · 직접 만든 음식과 함께한 캠퍼스의 하루",
+          en: "Spring festival booth · a campus day with homemade food",
+        },
+      },
+      {
         key: "summerFestival",
         count: 1,
         title: { ko: "Summer Festival", en: "Summer Festival" },
         desc: { ko: "야외 부스 운영 · 특별 메뉴와 함께한 여름 행사", en: "Outdoor booth day · a summer event with special menu items" },
       },
+
       {
         key: "springMT",
         count: 5,
