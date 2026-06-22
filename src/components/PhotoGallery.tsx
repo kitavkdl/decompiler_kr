@@ -12,6 +12,7 @@ import ideathonA from "@/assets/ideathon_2025_a.jpg.asset.json";
 import ideathonB from "@/assets/ideathon_2025_b.jpg.asset.json";
 import ideathonC from "@/assets/ideathon_2025_c.jpg.asset.json";
 import summerFestival2026 from "@/assets/summer_festival_2026.jpg.asset.json";
+import springFestivalAdd from "@/assets/spring_festival_add.jpg.asset.json";
 import { useLang } from "@/i18n/LanguageContext";
 import { translations as t } from "@/i18n/translations";
 import { gsap, ScrollTrigger } from "@/lib/smoothScroll";
@@ -24,9 +25,11 @@ const eventImages: Record<string, string[]> = {
   hackathon2026: [hackathonA, hackathonB],
   ideathon2025: [ideathonA.url, ideathonB.url, ideathonC.url],
   clubExpo: [clubExpo.url],
+  springFestival: [springFestivalAdd.url],
   summerFestival: [summerFestival2026.url],
   springMT: [summerFestival, mtA, mtB, mtC, mtD],
 };
+
 
 const ROTATE_MS = 3000;
 
