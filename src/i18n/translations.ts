@@ -94,8 +94,10 @@ export const translations = {
     cmd: { ko: "> gallery.render()", en: "> gallery.render()" },
     title: { ko: "우리의 ", en: "Our " },
     titleHighlight: { ko: "순간들", en: "Moments" },
-    photos: [
+    events: [
       {
+        key: "forum2025",
+        count: 1,
         title: { ko: "Decompiler × Untitled Innovation Forum 2025", en: "Decompiler × Untitled Innovation Forum 2025" },
         desc: {
           ko: "SUNY Korea R&BDF 공동 주최 · Problem Validation to Business Model Fit",
@@ -103,34 +105,40 @@ export const translations = {
         },
       },
       {
+        key: "hackathon2026",
+        count: 2,
         title: { ko: "HACKATHON THE X 2026", en: "HACKATHON THE X 2026" },
-        desc: { ko: "Decompiler 주최 DX 해커톤 · 단체 사진", en: "Decompiler's flagship DX hackathon · group shot" },
+        desc: {
+          ko: "Decompiler 주최 DX 해커톤 · 단체 사진과 현장 스케치",
+          en: "Decompiler's flagship DX hackathon · group shots and on-site moments",
+        },
       },
       {
-        title: { ko: "HACKATHON THE X 2026", en: "HACKATHON THE X 2026" },
-        desc: { ko: "현장 스케치 · 밤샘 코딩과 발표", en: "On-site moments · all-night coding and demos" },
+        key: "ideathon2025",
+        count: 3,
+        title: { ko: "2025 Green Digital Trade Ideathon", en: "2025 Green Digital Trade Ideathon" },
+        desc: {
+          ko: "Decompiler 공동 주최 · Innovate for a Sustainable Digital Future",
+          en: "Co-hosted by Decompiler · Innovate for a Sustainable Digital Future",
+        },
       },
       {
+        key: "summerFestival",
+        count: 1,
         title: { ko: "Summer Festival", en: "Summer Festival" },
         desc: { ko: "동아리 여름 축제 · 그릴, 음식, 사람", en: "Club summer festival · grill, food, and people" },
       },
       {
+        key: "springMT",
+        count: 4,
         title: { ko: "Spring MT", en: "Spring MT" },
-        desc: { ko: "봄 MT · 불꽃놀이", en: "Spring retreat · fireworks under the night sky" },
-      },
-      {
-        title: { ko: "Spring MT", en: "Spring MT" },
-        desc: { ko: "봄 MT · 다 함께 거실", en: "Spring retreat · everyone together in the lounge" },
-      },
-      {
-        title: { ko: "Spring MT", en: "Spring MT" },
-        desc: { ko: "봄 MT", en: "Spring retreat · gathered around, sharing stories" },
-      },
-      {
-        title: { ko: "Spring MT", en: "Spring MT" },
-        desc: { ko: "봄 MT · 바베큐", en: "Spring retreat · the chefs at the grill" },
+        desc: {
+          ko: "봄 MT · 불꽃놀이, 바베큐, 그리고 함께한 밤",
+          en: "Spring retreat · fireworks, BBQ, and nights together",
+        },
       },
     ],
+
   },
   network: {
     cmd: { ko: "> network.status()", en: "> network.status()" },
