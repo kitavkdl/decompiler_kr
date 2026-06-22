@@ -123,14 +123,23 @@ export const translations = {
         },
       },
       {
+        key: "clubExpo",
+        count: 1,
+        title: { ko: "Club Expo", en: "Club Expo" },
+        desc: {
+          ko: "학기 초 동아리 박람회 · 현장에서 Decompiler를 소개한 순간",
+          en: "Semester club expo · introducing Decompiler at the booth",
+        },
+      },
+      {
         key: "summerFestival",
         count: 1,
         title: { ko: "Summer Festival", en: "Summer Festival" },
-        desc: { ko: "동아리 여름 축제 · 그릴, 음식, 사람", en: "Club summer festival · grill, food, and people" },
+        desc: { ko: "야외 부스 운영 · 특별 메뉴와 함께한 여름 행사", en: "Outdoor booth day · a summer event with special menu items" },
       },
       {
         key: "springMT",
-        count: 4,
+        count: 5,
         title: { ko: "Spring MT", en: "Spring MT" },
         desc: {
           ko: "봄 MT · 불꽃놀이, 바베큐, 그리고 함께한 밤",
