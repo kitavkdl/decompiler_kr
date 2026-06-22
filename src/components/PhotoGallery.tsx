@@ -7,12 +7,12 @@ import mtA from "@/assets/mt_2026_a.jpg";
 import mtB from "@/assets/mt_2026_b.jpg";
 import mtC from "@/assets/mt_2026_c.jpg";
 import mtD from "@/assets/mt_2026_d.jpg";
-import clubExpo from "@/assets/club_expo.jpg.asset.json";
-import ideathonA from "@/assets/ideathon_2025_a.jpg.asset.json";
-import ideathonB from "@/assets/ideathon_2025_b.jpg.asset.json";
-import ideathonC from "@/assets/ideathon_2025_c.jpg.asset.json";
-import summerFestival2026 from "@/assets/summer_festival_2026.jpg.asset.json";
-import springFestivalAdd from "@/assets/spring_festival_add.jpg.asset.json";
+import clubExpo from "@/assets/club_expo.jpg";
+import ideathonA from "@/assets/ideathon_2025_a.jpg";
+import ideathonB from "@/assets/ideathon_2025_b.jpg";
+import ideathonC from "@/assets/ideathon_2025_c.jpg";
+import summerFestival2026 from "@/assets/summer_festival_2026.jpg";
+import springFestivalAdd from "@/assets/spring_festival_add.jpg";
 import { useLang } from "@/i18n/LanguageContext";
 import { translations as t } from "@/i18n/translations";
 import { gsap, ScrollTrigger } from "@/lib/smoothScroll";
@@ -23,10 +23,10 @@ const glass =
 const eventImages: Record<string, string[]> = {
   forum2025: [forum2025],
   hackathon2026: [hackathonA, hackathonB],
-  ideathon2025: [ideathonA.url, ideathonB.url, ideathonC.url],
-  clubExpo: [clubExpo.url],
-  springFestival: [springFestivalAdd.url],
-  summerFestival: [summerFestival2026.url],
+  ideathon2025: [ideathonA, ideathonB, ideathonC],
+  clubExpo: [clubExpo],
+  springFestival: [springFestivalAdd],
+  summerFestival: [summerFestival2026],
   springMT: [summerFestival, mtA, mtB, mtC, mtD],
 };
 
