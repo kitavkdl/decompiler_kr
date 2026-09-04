@@ -164,7 +164,7 @@ const Index = () => {
                 const label = raw.replace(/[→\s]+$/, "");
                 return (
                   <a
-                    href="https://forms.gle/ATrZoSs8qcBwoc4C6"
+                    href="https://forms.gle/6gyR6pFhpLdvjwd29"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group relative inline-flex items-center gap-2 px-10 py-3.5 bg-primary/10 border border-primary text-primary font-display font-semibold tracking-wider uppercase text-sm rounded-lg neon-border hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-[0_0_0_rgba(0,0,0,0)] hover:shadow-[0_0_32px_hsl(var(--primary)/0.55),0_0_64px_hsl(var(--primary)/0.25)]"
